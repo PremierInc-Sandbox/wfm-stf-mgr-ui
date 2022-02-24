@@ -1,0 +1,120 @@
+# WFM STAFF SCHEDULER UI build/deploy cicd
+# Add steps that build, run tests, deploy, and more:
+
+pool:
+  name: 'Premier QA Linux Agents'
+  demands:
+  - SYSTEM_JDK_11
+
+variables:
+ - group: 'SDLC Credentials'
+
+resources:
+  repositories:
+    - repository: sdlc_templates
+      type: github
+      name: PremierInc/shield-ado-templates
+      endpoint: PremierInc
+
+# trigger:
+#   branches:
+#     exclude:
+#       - main
+#       - master
+#       - release/* # this branch is used for bumping release version
+
+# pr:
+#   branches:
+#     exclude:
+#       - master
+
+stages:
+- stage: WFMStaffSchedulerUIBuild
+  jobs:
+  - job: WFMStaffSchedulerUIBuild
+    variables:
+      - group: "wfm-staff-scheduler-ui-dev"
+      - group: "wfm-ucp-np"
+    steps:
+      - bash: |
+          chmod +x ./gradlew && ./gradlew wrapper
+          ./gradlew release -Pregistry.username=${registry_username} -Pregistry.password=${registry_password}
+        env:
+          JAVA_HOME: $(SYSTEM_JDK_11)
+          registry_username: $(ucp_username)
+          registry_password: $(ucp_password)
+        displayName: WFMStaffSchedulerUIBuild
+
+      - bash: |
+          cat build/git.properties
+          version="$(grep 'git.build.version' build/git.properties | awk -F= '{print $2}')"
+          echo "version is $version"
+          echo "##vso[task.setvariable variable=APP_VERSION;isOutput=true]$version"
+        displayName: extract version
+        name: set_version
+
+      - bash: mkdir pipeline-artifact && cp build/stacks/* pipeline-artifact/
+        displayName: Prepare Artifact
+
+      - publish: pipeline-artifact
+        artifact: wfm_artifacts
+        displayName: Publish Artifacts
+
+  - job: BlackduckScan
+    dependsOn: ['WFMStaffSchedulerUIBuild']
+    displayName: Blackduck Scan
+    variables:
+      - name: APP_VERSION
+        value: $[ stageDependencies.WFMStaffSchedulerUIBuild.WFMStaffSchedulerUIBuild.outputs['set_version.APP_VERSION'] ]
+    steps:
+    - bash: chmod +x ./gradlew
+    - template: blackduck-scan.yml@sdlc_templates
+      parameters:
+        BLACKDUCK_API_TOKEN: $(BLACKDUCK_API_TOKEN)
+        BRANCH_SCAN_LIST: "feature"
+        DISTRIBUTION: "SAAS" 
+        PROJECT_NAME: "pcops:pco-staff-scheduler-ui"
+        SOURCE_PATH: "$(Build.SourcesDirectory)"
+        PROJECT_VERSION: "$(APP_VERSION)"
+        TEAM: "PCOPS"
+
+- stage: 'NON_PROD_DEPLOY'
+  jobs:
+  - deployment: NON_PROD_DEPLOY
+    environment: wfm-staff-scheduler-ui-dev
+    variables:
+      - group: "wfm-staff-scheduler-ui-dev"
+      - group: "wfm-ucp-np"
+      - name: APP_VERSION
+        value: $[ stageDependencies.WFMStaffSchedulerUIBuild.WFMStaffSchedulerUIBuild.outputs['set_version.APP_VERSION'] ]
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - bash: |
+              echo project_version=$APP_VERSION
+              AUTHTOKEN=$(curl -sk -d '{"username":"'${ucp_username}'", "password":"'${ucp_password}'"}' https://${ucp_domain}/auth/login | jq -r .auth_token)
+              curl -k -H "Authorization: Bearer $AUTHTOKEN" https://${ucp_domain}/api/clientbundle -o bundle.zip
+              unzip bundle.zip
+              eval "$(<env.sh)"
+              docker login -u ${ucp_username} -p ${ucp_password} ${registry_domain}
+              docker --host ${ucp_domain}:443 stack deploy -c pco-staff-scheduler-ui-stack.yml --with-registry-auth ${stack_name}
+            env:
+              JAVA_HOME: $(SYSTEM_JDK_11)
+              registry_domain: $(registry_domain)
+              registry_username: $(ucp_username)
+              registry_password: $(ucp_password)
+              ucp_domain: $(ucp_domain)
+              ucp_username: $(ucp_username)
+              ucp_password: $(ucp_password)
+              stack_file: $(stack_file)
+              stack_name: $(stack_name)
+              env: $(env)
+              registry_image: $(registry_image)
+              APP_VERSION: $(APP_VERSION)
+              active_profiles: $(active_profiles)
+              network_pcops: $(network_pcops)
+              jvm_options: $(jvm_options)
+              traefik_ntwk: $(traefik_ntwk)
+            workingDirectory: $(Pipeline.Workspace)/wfm_artifacts
+            displayName: NON PROD DEPLOY
