@@ -1,0 +1,34 @@
+.close {
+  outline: none;
+  padding: 6px;
+  color: white;
+}
+
+.discardChanges {
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #007994;
+  font: 400 13.3333px Arial;
+  font-weight: 500;
+  margin-left: 10px;
+  margin-right: 2px;
+  color: white;
+}
+
+.submitbutton {
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #007994;
+  font: 400 13.3333px Arial;
+  font-weight: 500;
+  margin-left: 2px;
+  margin-right: 2px;
+  color: white;
+}
+
+.popup-header{
+  background-color: #003B49;
+  color: #ffffff;
+  vertical-align: middle;
+  line-height: 3
+}

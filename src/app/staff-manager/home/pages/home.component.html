@@ -1,0 +1,381 @@
+<style> html {
+  display: none;
+} </style>
+<script>
+  if (top !== self) {
+    document.documentElement.style.display = 'none';
+  } // Attempt to escape frame
+  else {
+    document.documentElement.style.display = 'block';
+  } // If not in frame, make html visible
+</script>
+<div class="view-header-container">
+  <div class="view-header">
+      <span class="view-title">
+          <h2>Staff Manager</h2>
+      </span>
+    <div class="title-and-controls">
+      <table>
+        <tr>
+          <td class="widthAndIcon">
+            <mat-form-field class ="mat-form-pad">
+              <input type="text"
+                     id = "textbox"
+                     class="widthSet"
+                     placeholder="Select Corporation"
+                     aria-label = "Number"
+                     matInput
+                     [formControl]="myControl"
+                     [(ngModel)]="corpModel"
+                     [matAutocomplete]="auto">
+              <button *ngIf="corpModel" id = "cross"  (click)="clear()" class="buttonCss">x</button>
+              <i id = "drop" class="dropdown-toggle border-0"></i>
+              <mat-autocomplete [panelWidth]="225" #auto="matAutocomplete" class="selectBox"(optionSelected)="loadEntityDetailsForChange($event)" [(ngModel)]="selectedCorp" ngDefaultControl >
+              <mat-option  *ngFor="let corporation of corpSearch|async" [ngClass]="{ 'active' : corpModel === corporation.code +'-'+ corporation.name}"
+                      [value]="corporation.code +'-'+ corporation.name" [id]="corporation.id"><div class="dropdownName">{{corporation.name}}</div><div class="dropdownCode">{{corporation.code}}</div></mat-option>
+            </mat-autocomplete>
+            </mat-form-field>
+          </td>
+          <td width="200px">
+            <mat-form-field class ="mat-form-pad">
+              <input type="text"
+                     id = "textboxEnt"
+                     class="widthSet"
+                     placeholder="Select Entity"
+                     aria-label = "Number"
+                     matInput
+                     [formControl]="myControlEnt"
+                     [(ngModel)]="entityModel"
+                     [matAutocomplete]="autoEnt">
+              <button *ngIf="entityModel" id = "crossEnt"  (click)="clearEnt()" class="buttonCss">x</button>
+              <i id = "dropEnt" class="dropdown-toggle border-0"></i>
+              <mat-autocomplete [panelWidth]="225" #autoEnt="matAutocomplete" class="selectBox" (optionSelected)="loadDeptDetailsForChange($event)" [(ngModel)]="selectedEntity" ngDefaultControl >
+              <mat-option *ngFor="let entity of entitySearch|async" [ngClass]="{ 'active' : entityModel === entity.code +'-'+ entity.name}"  [value]="entity.code+'-'+entity.name" [id]="entity.id" ><div class="dropdownName">{{entity.name}}</div><div class="dropdownCode">{{entity.code}}</div></mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="card-container">
+  <div class="card-header">
+
+    <mat-card class="grid-score-card-container">
+      <div class="row">
+        <div class="col">
+          <div class="title">DEPTS. WITHOUT ACTIVE PLANS</div>
+          <div class="titleValue">{{staffVarianceDetails.length===0?'N/A':numberOfDepartmentsWithoutActivePlans}} <sub>of {{numberOfDepartments}}
+            {{numberOfDepartments===1?'department':'departments'}}</sub></div>
+        </div>
+        <mat-divider [vertical]="true"></mat-divider>
+        <div class="col">
+          <div class="title">DEPTS. NOT STARTED</div>
+          <div class="titleValue">{{staffVarianceDetails.length===0?'N/A':numberOfDepartmentsNotStarted}}<sub>of {{numberOfDepartmentsWithTarget}} {{numberOfDepartmentsWithTarget===1?'department':'departments'}}</sub></div>
+        </div>
+        <mat-divider [vertical]="true"></mat-divider>
+        <div class="col">
+          <div class="title">DEPTS. NOT MEETING TARGET</div>
+          <div class="titleValue">{{staffVarianceDetails.length===0?'N/A':numberOfDepartmentsNotMeetingTarget}}<sub>of {{numberOfDepartmentsWithTarget}} {{numberOfDepartmentsWithTarget===1?'department':'departments'}}</sub></div>
+        </div>
+        <mat-divider [vertical]="true"></mat-divider>
+        <div class="col">
+          <div class="title">TOTAL HOURS VARIANCE</div>
+          <div *ngIf="staffVarianceDetails.length===0" class="titleValue">N/A</div>
+          <div *ngIf="staffVarianceDetails.length!==0&&totalhoursVariance>=0" class="titleValue">{{totalhoursVariance.toFixed(1)}} <sub>hours</sub></div>
+          <div *ngIf="staffVarianceDetails.length!==0&&totalhoursVariance<0" class="titleValue">({{(-1)*totalhoursVariance.toFixed(1)}}) <sub>hours</sub></div>
+        </div>
+        <mat-divider [vertical]="true"></mat-divider>
+        <div class="col2">
+          <div class="title">PRODUCTIVITY INDEX</div>
+
+          <div  class="card-title-value left-fix">
+            <div *ngIf="staffVarianceDetails.length!==0" class="left-fix width-feather-header">
+              <app-svg-icon *ngIf="staffVarianceDetails.length!==0&&!isProductivityIndexpositive" name="x-circle" color="red"  size="20"></app-svg-icon>
+              <app-svg-icon *ngIf="staffVarianceDetails.length!==0&&isProductivityIndexpositive" name="check-circle" color="green" size="20"></app-svg-icon>
+            </div>
+            <div class="left-fix width-data-header">{{staffVarianceDetails.length===0?'N/A' : productivityIndex.toFixed(2)+'%'}}</div>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+
+    <div class="text-container"><span class="plan-table-header"><strong>Staffing Variance: </strong></span>
+      <app-svg-icon name="check-circle" color="green" size="18" class="subicon"></app-svg-icon>
+      <span class="subtext">On or Below Target</span>
+      <app-svg-icon name="x-circle" color="red" size="18" class="subicon"></app-svg-icon>
+      <span class="subtext">Above Target</span>
+      <app-svg-icon name="circle" size="18" class="subicon" color="#333333"></app-svg-icon>
+      <span class="subtext">Not Started / No Plan Available</span>
+      <app-svg-icon name="message-square" size="18" class="subicon" color="#333333"></app-svg-icon>
+      <span class="subtext">Comments</span>
+
+      <div class="date-picker"><span>Date:</span>
+        <span>
+          <mat-form-field>
+            <input matInput class="border-top-0" [matDatepicker]="dp" [min]="twoYearsBeforeCurrentDate"
+                   id="date-picker"[max]="todaysDate" [(ngModel)]="currentDate" readonly (ngModelChange)="getActivePlansForSelectedDate($event)">
+            <mat-datepicker-toggle class="mat-datepicker-toggle" matSuffix [for]="dp"></mat-datepicker-toggle>
+            <mat-datepicker #dp></mat-datepicker>
+          </mat-form-field>
+      </span>
+      </div>
+    </div>
+    <div *ngIf="staffVarianceDetails!=null && staffVarianceDetails.length>0">
+      <table mat-table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="dept_nm">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class=" leftAlign"> Department</th>
+          <td mat-cell *matCellDef="let row" class="leftAlign">
+            <div>
+              <div>
+                <tr *ngIf="featureToggleFlag">
+                  <a routerLink="/staff-manager" [class.disabled]="getActiveLink(row.recordStatusKey,row.recordDate) ? null : true"
+                     (click) = "loadScheduleForThePlan(row.planKey)" *ngIf="getActiveLink(row.recordStatusKey,row.recordDate)!=0;else diabledLink">{{row.departmentName}}</a>
+                  <ng-template #diabledLink>
+                    <a  disabled="true" class="disabled">{{row.departmentName}}</a>
+                  </ng-template>
+                </tr>
+                <tr *ngIf="!featureToggleFlag">
+                  <a routerLink="/staff-manager" [class.disabled]="getActiveLink(row.recordStatusKey,row.createdTime) ? null : true"
+                     (click) = "loadScheduleForThePlan(row.planKey)" *ngIf="getActiveLink(row.recordStatusKey,row.createdTime)!=0;else diabledLink">{{row.departmentName}}</a>
+                  <ng-template #diabledLink>
+                    <a  disabled="true" class="disabled">{{row.departmentName}}</a>
+                  </ng-template>
+                </tr>
+                <tr *ngIf="getPlanStatus(row.recordStatusKey,row.createdTime)" class="no-plan-available text-left">({{getPlanStatus(row.recordStatusKey,row.createdTime)}})</tr>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="dateUpdated">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class=" leftAlign">Date Updated</th>
+          <td mat-cell class="uploaded-date-by" *matCellDef="let row" class="leftAlign">
+            <label>{{(row.updatedTime) ? alertBox.getUpdatedTime(row.updatedTime) : '00:00:00'}}</label>
+            <label>{{(row.updatedTime) ? alertBox.getUpdatedDate(row.updatedTime) : '00/00/0000'}}</label>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="uploadedBy">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class=" leftAlign"> Updated By</th>
+          <td mat-cell class="uploaded-date-by leftAlign" *matCellDef="let row">{{row.updatedBy ? row.updatedBy : 'N/A'}}</td>
+        </ng-container>
+        <ng-container matColumnDef="actualHrs">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class=" rightAlign">
+            <tr>Actual Hours</tr>
+          </th>
+          <td mat-cell *matCellDef="let row" class="rightAlign"> {{row.actualHours | number}} </td>
+        </ng-container>
+        <ng-container matColumnDef="targetHrs">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class=" rightAlign">
+            <tr>Target Hours</tr>
+          </th>
+          <td mat-cell *matCellDef="let row" class="rightAlign">
+            <div>
+              <div *ngIf="row.targetHours<0">({{-1 * row.targetHours | number}})</div>
+              <div *ngIf="row.targetHours>=0">{{row.targetHours | number}}</div>
+            </div>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="dailyVariance">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="pad-right rightAlign">
+            <div class="table-header-daily-variance rightAlign">Daily Variance Hours</div>
+          </th>
+          <td mat-cell *matCellDef="let row rightAlign">
+            <div class="plan-status-outer-div">
+              <div class="plan-status-inner-div">
+                <div *ngIf="row.dailyVarianceHours<0">({{-1 * row.dailyVarianceHours.toFixed(1) | number}})</div>
+                <div *ngIf="row.dailyVarianceHours>=0">{{row.dailyVarianceHours.toFixed(1) | number}}</div>
+              </div>
+              <div class="hour-variance">
+                <app-svg-icon *ngIf="row.recordStatusKey>1 && row.recordStatusKey<5 && row.dailyVarianceHours>0" name="x-circle" color="red" size="18" class="subicon"></app-svg-icon>
+                <app-svg-icon *ngIf="row.recordStatusKey>1 && row.recordStatusKey<5 &&row.dailyVarianceHours<=0" name="check-circle" color="green" size="18" class="subicon"></app-svg-icon>
+                <app-svg-icon *ngIf="row.recordStatusKey===5 || row.recordStatusKey===6" name="circle"  size="18" class="subicon" color="#333333"></app-svg-icon>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="dailyVarianceicon">
+          <th mat-header-cell *matHeaderCellDef>
+          </th>
+          <td mat-cell *matCellDef="let row" class="rightAlign">
+            <app-svg-icon *ngIf="row.recordStatusKey>1 && row.recordStatusKey<5 && row.dailyVarianceHours>0" name="x-circle" size="18" color="red" class="subicon"></app-svg-icon>
+            <app-svg-icon *ngIf="row.recordStatusKey>1 && row.recordStatusKey<5 &&row.dailyVarianceHours<=0"  name="check-circle" color="green" size="18" class="subicon"></app-svg-icon>
+            <app-svg-icon *ngIf="row.recordStatusKey===5 || row.recordStatusKey===6" name="circle"  size="18" class="subicon" color="#333333"></app-svg-icon>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="priorCumulative">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class=" rightAlign">
+            <div class="table-header-prior-cumulative-hrs rightAlign">Prior Cumulative HRs. Var./Pay Period</div>
+          </th>
+          <td mat-cell *matCellDef="let row" class="rightAlign">
+            <div class="plan-status-outer-div">
+              <div class="plan-status-inner-div">
+                <div *ngIf="row.priorCumulativeHours<0">({{-1*row.priorCumulativeHours |  number : '1.1-1' }})</div>
+                <div *ngIf="row.priorCumulativeHours>=0">{{row.priorCumulativeHours |  number : '1.1-1' }}</div>
+              </div>
+              <div class="hour-variance">
+                <app-svg-icon *ngIf="row.recordStatusKey>1 && row.recordStatusKey<5 && row.priorCumulativeHours>0" name="x-circle" color="red" size="18" class="subicon"></app-svg-icon>
+                <app-svg-icon *ngIf="row.recordStatusKey>1 && row.recordStatusKey5 && row.priorCumulativeHours<=0" name="check-circle" color="green" size="18" class="subicon"></app-svg-icon>
+                <app-svg-icon *ngIf="row.recordStatusKey===5 || row.recordStatusKey===6" name="circle"  color="#333333" size="18" class="subicon"></app-svg-icon>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="priorCumulativeicon">
+          <th mat-header-cell *matHeaderCellDef>
+          </th>
+          <td mat-cell *matCellDef="let row" class="rightAlign">
+            <app-svg-icon *ngIf="row.recordStatusKey>1 && row.recordStatusKey<5 && row.priorCumulativeHours>0" name="x-circle" size="18" color="red" class="subicon"></app-svg-icon>
+            <app-svg-icon *ngIf="row.recordStatusKey>1 && row.recordStatusKey<5 && row.priorCumulativeHours<=0" name="check-circle" color="green" size="18" class="subicon"></app-svg-icon>
+            <app-svg-icon *ngIf="row.recordStatusKey===5 || row.recordStatusKey===6" name="circle" color="#333333" size="18" class="subicon"></app-svg-icon>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="comments">
+          <th mat-header-cell *matHeaderCellDef>
+            Comments
+          </th>
+          <td mat-cell *matCellDef="let row" >
+            <app-svg-icon [matTooltipPosition]="'below'" matTooltipClass="test" matTooltip={{getComments(row.shiftComments)}} *ngIf="checkComments(row.recordStatusKey,row.shiftComments);else fillcontent" name="message-square" color="#333333" size="18" class="subicon">
+            </app-svg-icon>
+            <ng-template #fillcontent> <app-svg-icon [matTooltipPosition]="'below'" matTooltipClass="test" matTooltip={{getComments(row.shiftComments)}} name="message-square" color="#333333" size="18" class="subicon"
+                                                         >
+            </app-svg-icon></ng-template>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns ;" class="hidden">
+        </tr>
+      </table>
+
+      <table mat-table class="border-top-0" [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="dept_nm">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="top-align-reset leftAlign"> Department</th>
+          <td mat-cell *matCellDef="let row" class="leftAlign">
+            <div>
+              <div>
+                <tr *ngIf="featureToggleFlag">
+                  <a routerLink="/staff-manager" [class.disabled]="getActiveLink(row.recordStatusKey,row.recordDate) ? null : true"
+                     (click) = "loadScheduleForThePlan(row.planKey)" *ngIf="getActiveLink(row.recordStatusKey,row.recordDate)!=0;else diabledLink">{{row.departmentName}}</a>
+                  <ng-template #diabledLink>
+                    <a  disabled="true" class="disabled">{{row.departmentName}}</a>
+                  </ng-template>
+                </tr>
+                <tr *ngIf="!featureToggleFlag">
+                  <a routerLink="/staff-manager" [class.disabled]="getActiveLink(row.recordStatusKey,row.createdTime) ? null : true"
+                     (click) = "loadScheduleForThePlan(row.planKey)" *ngIf="getActiveLink(row.recordStatusKey,row.createdTime)!=0;else diabledLink">{{row.departmentName}}</a>
+                  <ng-template #diabledLink>
+                    <a  disabled="true" class="disabled">{{row.departmentName}}</a>
+                  </ng-template>
+                </tr>
+                <tr *ngIf="getPlanStatus(row.recordStatusKey,row.createdTime)" class="no-plan-available text-left">({{getPlanStatus(row.recordStatusKey,row.createdTime)}})</tr>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="dateUpdated">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="top-align-reset leftAlign">Date Updated</th>
+          <td mat-cell class="uploaded-date-by leftAlign" *matCellDef="let row" >
+            <label>{{(row.updatedTime) ? alertBox.getUpdatedDate(row.updatedTime) : '00/00/0000'}}</label>
+            <label>{{(row.updatedTime) ? alertBox.getUpdatedTime(row.updatedTime) : '00:00:00'}}</label>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="uploadedBy">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="top-align-reset leftAlign"> Updated By</th>
+          <td mat-cell class="uploaded-date-by leftAlign" *matCellDef="let row">{{row.updatedBy ? row.updatedBy : 'N/A'}}</td>
+        </ng-container>
+        <ng-container matColumnDef="actualHrs" >
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="top-align-reset rightAlign">
+            <label>Actual Hours</label>
+          </th>
+          <td mat-cell *matCellDef="let row" class="rightAlign"> {{row.actualHours | number}}</td>
+        </ng-container>
+        <ng-container matColumnDef="targetHrs">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="top-align-reset rightAlign">
+            <label>Target</label>
+            <label>Hours/FTEs</label>
+          </th>
+          <td mat-cell *matCellDef="let row" class="rightAlign">
+            <div>
+              <div *ngIf="row.targetHours<0">({{-1 * row.targetHours | number}})</div>
+              <div *ngIf="row.targetHours>=0">{{row.targetHours | number}}</div>
+            </div>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="dailyVariance">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="pad-right top-align-reset rightAlign">
+            <div class="table-header-daily-variance">Daily Variance Hours/FTEs</div>
+          </th>
+          <td mat-cell *matCellDef="let row" class="rightAlign">
+            <div class="plan-status-outer-div">
+              <div class="plan-status-inner-div">
+                <div *ngIf="row.dailyVarianceHours<0">({{-1 * row.dailyVarianceHours.toFixed(1) | number}})</div>
+                <div *ngIf="row.dailyVarianceHours>=0">{{row.dailyVarianceHours.toFixed(1) | number}}</div>
+              </div>
+              <div class="hour-variance">
+                <app-svg-icon *ngIf="row.recordStatusKey>1 && row.recordStatusKey<5 && row.dailyVarianceHours>0" name="x-circle" color="red" size="18" class="subicon"></app-svg-icon>
+                <app-svg-icon *ngIf="row.recordStatusKey>1 && row.recordStatusKey<5 &&row.dailyVarianceHours<=0"  name="check-circle" color="green" size="18" class="subicon"></app-svg-icon>
+                <app-svg-icon *ngIf="row.recordStatusKey===5||row.recordStatusKey===6 " name="circle" color="#333333" size="18" class="subicon"></app-svg-icon>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="dailyVarianceicon">
+          <th mat-header-cell *matHeaderCellDef>
+          </th>
+          <td mat-cell *matCellDef="let row" class="rightAlign">
+            <app-svg-icon *ngIf="row.recordStatusKey>1 && row.recordStatusKey<5 && row.dailyVarianceHours>0" name="x-circle" size="18" color="red" class="subicon"></app-svg-icon>
+            <app-svg-icon *ngIf="row.recordStatusKey>1 && row.recordStatusKey<5 &&row.dailyVarianceHours<=0" name="check-circle" color="green" size="18" class="subicon"></app-svg-icon>
+            <app-svg-icon *ngIf="row.recordStatusKey===5||row.recordStatusKey===6" name="circle" color="#333333" size="18" class="subicon"></app-svg-icon>
+        </td>
+        </ng-container>
+        <ng-container matColumnDef="priorCumulative">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="top-align-reset rightAlign">
+            <div class="table-header-prior-cumulative-hrs">Prior Cumulative HRs. Var./Pay Period</div>
+          </th>
+          <td mat-cell *matCellDef="let row" class="rightAlign">
+            <div class="plan-status-outer-div">
+              <div class="plan-status-inner-div">
+                <div *ngIf="row.priorCumulativeHours<0">({{-1*row.priorCumulativeHours |  number : '1.1-1' }})</div>
+                <div *ngIf="row.priorCumulativeHours>=0">{{row.priorCumulativeHours |  number : '1.1-1' }}</div>
+              </div>
+              <div class="hour-variance">
+                <app-svg-icon *ngIf="row.recordStatusKey>1 && row.recordStatusKey<5 && row.priorCumulativeHours>0" name="x-circle" color="red" size="18" class="subicon"></app-svg-icon>
+                <app-svg-icon *ngIf="row.recordStatusKey>1 && row.recordStatusKey<5 &&row.priorCumulativeHours<=0"  name="check-circle" color="green" size="18" class="subicon"></app-svg-icon>
+                <app-svg-icon *ngIf="row.recordStatusKey==5 || row.recordStatusKey==6" name="circle" color="#333333" size="18" class="subicon"></app-svg-icon>
+              </div>
+            </div>
+          </td>
+         </ng-container>
+        <ng-container matColumnDef="priorCumulativeicon">
+          <th mat-header-cell *matHeaderCellDef>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <app-svg-icon *ngIf="row.recordStatusKey>1 && row.recordStatusKey<5 && row.priorCumulativeHours>0" name="x-circle" size="18" color="red" class="subicon"></app-svg-icon>
+            <app-svg-icon *ngIf="row.recordStatusKey>1 && row.recordStatusKey<5 &&row.priorCumulativeHours<=0" name="check-circle" color="green" size="18" class="subicon"></app-svg-icon>
+            <app-svg-icon *ngIf="row.recordStatusKey==5 || row.recordStatusKey==6" name="circle" color="#333333" size="18" class="subicon"></app-svg-icon>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="comments">
+          <th mat-header-cell *matHeaderCellDef>
+            Comments
+          </th>
+          <td mat-cell *matCellDef="let row" >
+
+            <app-svg-icon [matTooltipPosition]="'below'" matTooltipClass="test" matTooltip={{getComments(row.shiftComments)}} *ngIf="checkComments(row.recordStatusKey,row.shiftComments);else fillcontent" name="message-square" color="#333333" size="18" class="subicon">
+            </app-svg-icon>
+            <ng-template #fillcontent> <app-svg-icon [matTooltipPosition]="'below'" matTooltipClass="test" matTooltip={{getComments(row.shiftComments)}} name="message-square" color="#333333" size="18" class="subicon">
+            </app-svg-icon></ng-template>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" class="hidden"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+        </tr>
+      </table>
+      <mat-paginator [pageSize]=paginateValue [pageSizeOptions]="[5, 10, 25, 100]" (page)="onPaginateChange($event)"></mat-paginator>
+    </div>
+
+    <div *ngIf="staffVarianceDetails == null  || staffVarianceDetails.length == 0" class="no-plan-msg-block"><span>No active plans available for selected corporation, entity, and date.</span>
+    </div>
+
+  </div>
+</div>

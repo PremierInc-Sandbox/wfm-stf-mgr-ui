@@ -1,0 +1,54 @@
+.mat-card{
+  margin-top: 250px;
+  margin-left: 500px;
+  height: 180px;
+  width: 650px;
+}
+.app-title{
+  text-decoration:none;
+  float:left;
+  border:0 none;
+  padding-right:10px;
+
+  h2 {
+    font-weight:normal;
+    color:#003b49;
+    text-transform:uppercase;
+    font-size:20px;
+  }
+}
+.branding {
+  float: left;
+  padding-right: 15px;
+
+  .logo {
+    margin-top: 9px;
+    background-image: url('/src/app/shared/components/error-pages/no-access/assets/logo.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    height: 30px;
+    width: 30px;
+    vertical-align: middle;
+    border: 0 none;
+    display: block;
+  }
+}
+
+.mt-1{
+  margin-top: 70px !important;
+  color: dimgrey;
+  font-size: 15px;
+}
+.background, .foreground {
+  position: absolute;
+  width: 100%;
+}
+
+.background {
+  top: 40px;
+  z-index: 1;
+  font-size: 120px;
+  text-align: center;
+  color: orange;
+  opacity: 0.2;
+}

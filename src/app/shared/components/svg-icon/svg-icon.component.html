@@ -1,0 +1,24 @@
+<style> html {
+    display: none;
+  } </style>
+  <script>
+    if (top !== self) {
+      document.documentElement.style.display = 'none';
+    } // Attempt to escape frame
+    else {
+      document.documentElement.style.display = 'block';
+    } // If not in frame, make html visible
+  </script>
+  <svg
+  class="svg-class"
+  [ngStyle]="{
+    'stroke':color,
+    'color': color,
+    'width':size + 'px',
+    'height':size + 'px'
+  }"
+  viewBox="0 0 24 24"
+>
+  <use [attr.xlink:href]="'assets/images/feather-sprite.svg#' + name"></use>
+</svg>
+

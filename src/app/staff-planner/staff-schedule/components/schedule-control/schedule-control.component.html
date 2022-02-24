@@ -1,0 +1,107 @@
+<style> html {
+  display: none;
+} </style>
+<script>
+  if (top !== self) {
+    document.documentElement.style.display = 'none';
+  } // Attempt to escape frame
+  else {
+    document.documentElement.style.display = 'block';
+  } // If not in frame, make html visible
+</script>
+<div class="scheduleContainer">
+  <div class="schedule-header" *ngIf="!objSchedule.IsMaximized" (change)="onChange()">
+    <span>{{objSchedule.name}}</span>
+    <span class="iconContainer">
+      <app-svg-icon *ngIf="!planDetails1.planCompleted" (click)="removeSchedule(objSchedule)" matTooltip="Remove Grid Plan" class="pointer" name="trash-2" color="#ffffff" size="18"></app-svg-icon>
+      <app-svg-icon (click)="expandSchedule()"  matTooltip="Maximize Grid Plan" class="pointer" name="plus" color="#ffffff" size="22"></app-svg-icon>
+    </span>
+  </div>
+  <div class="schedule-header" *ngIf="objSchedule.IsMaximized" (change)="onChange()">
+    <span>
+      <label>GRID PLAN NAME:</label>
+      <input type="text" [disabled]="planDetails1.planCompleted" [(ngModel)]="objSchedule.name"
+             (keyup)="validateSchduleName(objSchedule);" placeholder="Type Grid name" [id]="id" appAutofocus />
+    </span>
+    <span class="iconContainer">
+      <app-svg-icon (click)="expandSchedule(objSchedule)" matTooltip="Minimize Grid Plan" class="pointer" name="minus" color="#ffffff" size="24"></app-svg-icon>
+    </span>
+  </div>
+  <div class="scheduleDetail" *ngIf="objSchedule.IsMaximized" (change)="onChange()">
+    <div>
+      <mat-error *ngIf="showError">{{error.errorMessage}}</mat-error>
+    </div>
+    <div class="labelContainer">
+      <label>CREATE DAILY PLAN <em matTooltip="Each plan will display as a tab in the Staffing Grid." class="tool-tip-margin"><sup><div class="round round-sm hollow blue">i</div></sup></em></label>
+      <span class="buttonContainer">
+          <button *ngIf="!planDetails1.planCompleted" [disabled]="addTimePeriodFlag" class="btn-add-another"
+                  (click)="addShift(false)" color="primary" target="secondary">Add Time Period</button>
+        </span>
+    </div>
+    <div class="daysOfWeek">
+      <div class="checkboxContainer">
+        <label>Days of Week to Include :</label>
+          <mat-checkbox [disabled]="planDetails1.planCompleted"
+                  [(ngModel)]="objSchedule.scheduleDays[7]"
+                  (change)="checkAllScheduledays(objSchedule)">All
+          </mat-checkbox>
+
+          <mat-checkbox [disabled]="planDetails1.planCompleted"
+                        [(ngModel)]="objSchedule.scheduleDays[0]"
+                        (change)="checkScheduledays(objSchedule,0)">Monday
+          </mat-checkbox>
+
+          <mat-checkbox [disabled]="planDetails1.planCompleted"
+                        [(ngModel)]="objSchedule.scheduleDays[1]"
+                        (change)="checkScheduledays(objSchedule,1)">Tuesday
+          </mat-checkbox>
+
+          <mat-checkbox [disabled]="planDetails1.planCompleted"
+                        [(ngModel)]="objSchedule.scheduleDays[2]"
+                        (change)="checkScheduledays(objSchedule,2)">Wednesday
+          </mat-checkbox>
+
+          <mat-checkbox [disabled]="planDetails1.planCompleted"
+                        [(ngModel)]="objSchedule.scheduleDays[3]"
+                        (change)="checkScheduledays(objSchedule,3)">Thursday
+          </mat-checkbox>
+
+          <mat-checkbox [disabled]="planDetails1.planCompleted"
+                        [(ngModel)]="objSchedule.scheduleDays[4]"
+                        (change)="checkScheduledays(objSchedule,4)">Friday
+          </mat-checkbox>
+
+          <mat-checkbox [disabled]="planDetails1.planCompleted"
+                        [(ngModel)]="objSchedule.scheduleDays[5]"
+                        (change)="checkScheduledays(objSchedule,5)">Saturday
+          </mat-checkbox>
+
+          <mat-checkbox [disabled]="planDetails1.planCompleted"
+                        [(ngModel)]="objSchedule.scheduleDays[6]"
+                        (change)="checkScheduledays(objSchedule,6)">Sunday
+          </mat-checkbox>
+      </div>
+    </div>
+    <hr>
+    <div class="labelContainer">
+      <label>CREATE STAFF PLANS FOR STAFFING GRID <em matTooltip="Each plan will include 1 or more time periods." class="tool-tip-margin"><sup><div class="round round-sm hollow blue">i</div></sup></em></label>
+
+    </div>
+    <div class="plan-shift-detail">
+      <div *ngFor="let objShift of objSchedule.planShiftList; let i = index;">
+        <div class="scheduleControl" *ngIf="planShiftListExpanse[objSchedule.name + i]">
+          <span>{{objShift.name}}</span>
+          <app-svg-icon  (click)="planShiftListExpanse[objSchedule.name + i]=false;" matTooltip="Maximize Time Period" class="pointer" name="chevron-up" color="#007994" size="18"></app-svg-icon>
+
+        </div>
+        <div class="scheduleMinimize" *ngIf="!planShiftListExpanse[objSchedule.name + i]">
+          <app-svg-icon *ngIf="objShift.name != '' && objShift.name != undefined && objShift.hours > 0" (click)="planShiftListExpanse[objSchedule.name + i]=true;" matTooltip="Minimize Time Period" class="pointer" name="chevron-down" color="#007994" size="18"></app-svg-icon>
+          <app-schedule-shift (onPlanShiftExpanse)="updatePlanShiftExpanse($event)" (onclick)="updatePlanEdited($event)" [objSchedule]="objSchedule" *ngIf="planDetails1 && !planShiftListExpanse[objSchedule.name + i]" [planDetails]="planDetails1" [objShift]="objShift"></app-schedule-shift>
+        </div>
+      </div>
+    </div>
+    <div>
+      <span *ngFor="let err of objSchedule.errormsg" class="Error">{{err}}<br/> </span>
+    </div>
+  </div>
+</div>

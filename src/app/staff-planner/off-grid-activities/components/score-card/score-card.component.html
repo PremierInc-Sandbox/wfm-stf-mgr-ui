@@ -1,0 +1,36 @@
+<style> html {
+  display: none;
+} </style>
+<script>
+  if (top !== self) {
+    document.documentElement.style.display = 'none';
+  } // Attempt to escape frame
+  else {
+    document.documentElement.style.display = 'block';
+  } // If not in frame, make html visible
+</script>
+<div class="container-fluid pd-15">
+    <mat-card class="grid-score-card-container" >
+      <div class="row grid-score-card-container-div" >
+        <div class="col1">
+          <div class="title">IN-HOUSE EDUCATION</div>
+          <div class="titleValue" [ngClass]="{'scoreCard-overlap': isScorecardOverlaps()}">{{this.totalInhousehrs.toFixed(0)}}<sub>({{check(((this.totalInhousehrs)/planDetails.fte))?((this.totalInhousehrs)/planDetails.fte).toFixed(2):'-'}} FTEs)</sub></div>
+        </div>
+        <mat-divider [vertical]="true"></mat-divider>
+        <div class="col2">
+          <div class="title">CERTIFICATION/OTHER COURSES</div>
+          <div class="titleValue" [ngClass]="{'scoreCard-overlap': isScorecardOverlaps()}">{{this.totalCertificationhrs.toFixed(0)}}<sub>({{check(((this.totalCertificationhrs)/planDetails.fte))?((this.totalCertificationhrs)/planDetails.fte).toFixed(2):'-'}} FTEs)</sub></div>
+        </div>
+        <mat-divider [vertical]="true"></mat-divider>
+        <div class="col3">
+          <div class="title">ORIENTATION</div>
+          <div class="titleValue"  [ngClass]="{'scoreCard-overlap': isScorecardOverlaps()}">{{this.totalOrientationhrs.toFixed(0)}}<sub>({{check(((this.totalOrientationhrs)/planDetails.fte))?((this.totalOrientationhrs)/planDetails.fte).toFixed(2):'-'}} FTEs)</sub></div>
+        </div>
+        <mat-divider [vertical]="true"></mat-divider>
+        <div class="col4">
+          <div class="title">OTHER ACTIVITIES<em matTooltip="Includes conferences, seminars, etc." class="mat-tool-tip tool-tip-margin" ><sup><div class="round round-sm hollow blue">i</div></sup></em></div>
+          <div class="titleValue" [ngClass]="{'scoreCard-overlap': isScorecardOverlaps()}">{{this.totalOtherhrs.toFixed(0)}}<sub>({{check(((this.totalOtherhrs)/planDetails.fte))?((this.totalOtherhrs)/planDetails.fte).toFixed(2):'-'}} FTEs)</sub></div>
+        </div>       
+      </div>
+    </mat-card>
+  </div>

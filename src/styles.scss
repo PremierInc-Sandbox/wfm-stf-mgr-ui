@@ -1,0 +1,503 @@
+@import '~@angular/material/theming';
+//@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import './variables';
+@import "~bootstrap/dist/css/bootstrap.css";
+@import '~material-icons/iconfont/material-icons.css';
+
+
+body {
+  overflow: hidden;
+  clear: both;
+  background: #e5eaeb;
+  color: #333;
+  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+  line-height: 1.42857143;
+  min-width: 300px;
+}
+
+h1 {
+  size: 3.75rem;
+  line-height: 4.6875rem;
+}
+
+h2 {
+  size: 2.625rem;
+  line-height: 3.28125rem;
+}
+
+h3 {
+  size: 2rem;
+  line-height: 2.5rem;
+}
+
+h4 {
+  size: 1.5rem;
+  line-height: 1.875rem;
+}
+
+h5 {
+  size: 1.125rem;
+  line-height: 1.40625rem;
+}
+
+table {
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.label {
+  font-size: .75rem;
+  color: #6f7479;
+  margin-top: 1rem;
+}
+
+.logo-white {
+  background-image: url('./assets/logo-white.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 30px;
+  width: 30px;
+  margin: .5rem;
+}
+input:active {
+  outline: #007994;
+  border:1px solid #007994!important;
+}
+
+input:hover {
+  outline: #007994;
+  border:1px solid #007994!important;
+}
+input:focus {
+  outline: #007994;
+  border:1px solid #007994!important;
+}
+textarea:hover {
+  outline: #007994;
+  border:1px solid #007994!important;
+}
+textarea:focus {
+  outline: #007994;
+  border:1px solid #007994!important;
+}
+textarea:active {
+  outline: #007994;
+  border:1px solid #007994!important;
+}
+input, textarea {
+  border: 1px solid $neutral-20;
+  border-radius: 2px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+  padding: 8px;
+  width: inherit;
+}
+
+button {
+  color: white;
+  background-color: $blue-50;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  font-size: .875rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #1c6d89;
+}
+
+::ng-deep.mat-form-field-infix {
+  margin: 0;
+  border: 0;
+  padding: 0;
+  width: inherit;
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Roboto Light'), local('Roboto-Light'), url(./assets/fonts/Roboto-Light-webfont.woff2) format('woff2'), url(./assets/fonts/Roboto-Light-webfont.woff) format('woff');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: local("Roboto"), local("Roboto-Regular"), url(./assets/fonts/Roboto-Regular-webfont.woff2) format("woff2"), url(./assets/fonts/Roboto-Regular-webfont.woff) format("woff");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  src: local("Roboto Medium"), local("Roboto-Medium"), url(./assets/fonts/Roboto-Medium-webfont.woff2) format("woff2"), url(./assets/fonts/Roboto-Medium-webfont.woff) format("woff");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 700;
+  src: local("Roboto Bold"), local("Roboto-Bold"), url(./assets/fonts/Roboto-Bold-webfont.woff2) format("woff2"), url(./assets/fonts/Roboto-Bold-webfont.woff) format("woff");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215
+}
+
+.ng-option-selected::after {
+  right: 7px !important;
+  font-family: FontAwesome;
+  content: "\f00c";
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  font-size: 14px;
+  line-height: 14px;
+  margin-top: -7px;
+  color: #666;
+}
+
+html, body {
+  height: 100%;
+  //min-height:1200px;
+ }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+.mat-dialog-container{
+  padding: 0px !important;
+}
+.rdcorn{
+  border-radius:5px;
+}
+.modbackclr{
+  background-color: #003B49;
+  color: #ffffff;
+  line-height:2.4em;
+}
+button[target="secondary"] {
+  color: #207D9D;
+  background-color: white;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  font-size: .875rem;
+  height: 2rem;
+  border: 1px solid #207D9D;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.btn-back {
+  color: #207D9D;
+  background-color: white;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  font-size: .875rem;
+  height: 2rem;
+  border: 1px solid #207D9D;
+  border-radius: 3px;
+  cursor: pointer;
+}
+select
+{
+  outline:none;
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+  font-family: Arial;
+  font-size: 13px;
+}
+select:active, select:hover,select:focus {
+  outline: #007994;
+  border:1px solid #007994;
+}
+input:checked
+{
+  background-color: #0091B3;
+  color: #0091B3;
+}
+
+.required{
+  color:red;
+}
+
+.text-no-wrap{
+  white-space: nowrap;
+}
+.mat-form-field-infix {
+  margin: 0;
+  border: 0;
+  padding: 0;
+  width: inherit;
+}
+
+.width{
+  width:100%;
+}
+
+//body.pr-modal-open {
+//  overflow: visible;
+//}
+
+mat-tab-header{
+  border-bottom: none !important;
+}
+
+::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background, .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+  background-color:	#0091B3 !important;
+}
+
+
+select::-ms-expand:hover {
+  outline: none;
+  background: #FFFFFF;
+  border:0px;
+}
+
+select::-ms-expand {
+  outline: none;
+  background: #FFFFFF;
+  border:0px;
+}
+
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  select {
+    border:1px solid #D0D0D0;
+  }
+}
+
+.test {
+  white-space: pre-line;
+  max-width: unset !important;
+}
+.mat-autocomplete-visible .mat-option {
+  height: 70px;
+  overflow: visible;
+  line-height: initial;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  border-bottom: 1px solid lightgray;
+  font-size: 15px !important;
+  i {
+    display: block;
+    font-size: 1.5rem;
+    opacity: 0.6;
+    margin-left: 0.5rem;
+  }
+}
+.cdk-global-scrollblock{
+  position: static !important;
+  width: initial !important;
+  overflow-y: inherit !important;
+}
+.mat-datepicker-toggle{
+  outline: none !important;
+  button:focus{
+    outline: none !important;
+  }
+}
+// .effective-start-date.mat-form-field-appearance-legacy.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label,
+// .effective-end-date.mat-form-field-appearance-legacy.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label
+// {
+//   display: none !important;
+// }
+
+// Over write prebuild theme color to premier color #0591b2
+.mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
+  color: #0591b2
+}
+.mat-primary .mat-pseudo-checkbox-checked,.mat-primary .mat-pseudo-checkbox-indeterminate {
+  background: #0591b2
+}
+.mat-badge-content {
+  background: #0591b2
+}
+.mat-button.mat-primary,.mat-icon-button.mat-primary,.mat-stroked-button.mat-primary {
+  color: #0591b2
+}
+.mat-button.mat-primary .mat-button-focus-overlay,.mat-icon-button.mat-primary .mat-button-focus-overlay,.mat-stroked-button.mat-primary .mat-button-focus-overlay {
+  background-color: #0591b2
+}
+.mat-flat-button.mat-primary,.mat-raised-button.mat-primary,.mat-fab.mat-primary,.mat-mini-fab.mat-primary {
+  background-color: #0591b2
+}
+.mat-checkbox-indeterminate.mat-primary .mat-checkbox-background,.mat-checkbox-checked.mat-primary .mat-checkbox-background {
+  background-color: #0591b2
+}
+.mat-checkbox-checked:not(.mat-checkbox-disabled).mat-primary .mat-ripple-element,.mat-checkbox:active:not(.mat-checkbox-disabled).mat-primary .mat-ripple-element {
+  background: #0591b2
+}
+.mat-chip.mat-standard-chip.mat-chip-selected.mat-primary {
+  background-color: #0591b2;
+}
+.mat-calendar-body-selected {
+  background-color: #0591b2;
+}
+.mat-datepicker-toggle-active {
+  color: #0591b2
+}
+.mat-form-field.mat-focused .mat-form-field-label {
+  color: #0591b2
+}
+.mat-form-field.mat-focused .mat-form-field-ripple {
+  background-color: #0591b2
+}
+.mat-form-field-type-mat-native-select.mat-focused:not(.mat-form-field-invalid) .mat-form-field-infix::after {
+  color: #0591b2
+}
+.mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  color: #0591b2
+}
+.mat-icon.mat-primary {
+  color: #0591b2
+}
+.mat-input-element {
+  caret-color: #0591b2
+}
+.mat-progress-bar-fill::after {
+  background-color: #0591b2
+}
+.mat-progress-spinner circle,.mat-spinner circle {
+  stroke: #0591b2
+}
+.mat-radio-button.mat-primary.mat-radio-checked .mat-radio-outer-circle {
+  border-color: #0591b2
+}
+.mat-radio-button.mat-primary .mat-radio-inner-circle,.mat-radio-button.mat-primary .mat-radio-ripple .mat-ripple-element:not(.mat-radio-persistent-ripple),.mat-radio-button.mat-primary.mat-radio-checked .mat-radio-persistent-ripple,.mat-radio-button.mat-primary:active .mat-radio-persistent-ripple {
+  background-color: #0591b2
+}
+.mat-form-field.mat-focused.mat-primary .mat-select-arrow {
+  color: #0591b2
+}
+.mat-slide-toggle.mat-primary.mat-checked .mat-slide-toggle-thumb {
+  background-color: #0591b2
+}
+.mat-slide-toggle.mat-primary.mat-checked .mat-ripple-element {
+  background-color: #0591b2
+}
+.mat-primary .mat-slider-track-fill,.mat-primary .mat-slider-thumb,.mat-primary .mat-slider-thumb-label {
+  background-color: #0591b2
+}
+.mat-step-header .mat-step-icon-selected,.mat-step-header .mat-step-icon-state-done,.mat-step-header .mat-step-icon-state-edit {
+  background-color: #0591b2;
+}
+.mat-tab-group.mat-primary .mat-ink-bar,.mat-tab-nav-bar.mat-primary .mat-ink-bar {
+  background-color: #0591b2
+}
+.mat-tab-group.mat-background-primary .mat-tab-header,.mat-tab-group.mat-background-primary .mat-tab-links,.mat-tab-group.mat-background-primary .mat-tab-header-pagination,.mat-tab-nav-bar.mat-background-primary .mat-tab-header,.mat-tab-nav-bar.mat-background-primary .mat-tab-links,.mat-tab-nav-bar.mat-background-primary .mat-tab-header-pagination {
+  background-color: #0591b2
+}
+.mat-toolbar.mat-primary {
+  background: #0591b2;
+}
+
+app-root:empty + .app-spinner {
+  display: block;
+}
+
+.app-spinner {
+  display: none;
+}
+
+#loader-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100002;
+  transform: translate3d(0px,0px,0px); // Fix for Safari
+}
+
+#loader {
+  display: block;
+  position: relative;
+  left: 50%;
+  top: 50%;
+  width: 150px;
+  height: 150px;
+  z-index: 100002;
+  margin-top: -75px;
+  margin-left: -75px;
+  background: transparent url(assets/images/logo-premier.png) center top repeat-x;
+  animation: premier-rotate 2s infinite ease-in-out;
+  transform-style: preserve-3d;
+}
+
+#loader-wrapper .loader-section {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99999;
+  transform: translateX(0);
+}
+
+#loader-wrapper .loader-section-cover {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: #FFFFFF;
+  opacity: 0.6;
+  z-index: 100001;
+}
+
+#loader-wrapper .loader-label {
+  display: block !important;
+  left: 50%;
+  top: 50%;
+  position: fixed;
+  width: 120px;
+  height: 50px;
+  margin-top: 84px;
+  margin-left: -60px;
+  z-index: 100001;
+  font-size: 13px;
+  line-height: 1.42857143;
+  color: #003b49;
+  text-align: center;
+  letter-spacing: 1.5px;
+}
+
+#loader-wrapper .loader-title {
+  display: block !important;
+  top: 50%;
+  position: fixed;
+  font-size: 23px;
+  font-weight: bold;
+  width: 100%;
+  text-align: center;
+  letter-spacing: 2px;
+  color: #003b49;
+  margin-top: -121px;
+  z-index: 100001;
+}
+
+#loader-wrapper .loader-section {
+  left: 0;
+}
+
+.loaded #loader {
+  opacity: 0;
+}
+
+.loaded #loader-wrapper {
+  visibility: hidden;
+  transform: translateY(-100%);
+}
+
+@keyframes premier-rotate {
+  from { transform: perspective(150px) rotateY(0deg); }
+  to { transform: perspective(150px) rotateY(360deg); }
+}

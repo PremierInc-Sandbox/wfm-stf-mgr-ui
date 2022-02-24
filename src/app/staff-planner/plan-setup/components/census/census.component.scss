@@ -1,0 +1,386 @@
+@import '../../../../../variables';
+
+table {
+  width: 100%;
+}
+
+table {}
+
+input {
+  width: 5rem;
+}
+.bottom-pad {
+  padding-bottom: 1.2% !important;
+}
+
+.input-numberbox-edit
+{
+  height:2%;
+  width: 60%;
+  border-radius: 2px;
+  border:1px solid #007994;
+  padding-left: 0.8rem;
+  padding-right: 0.8rem;
+  padding-top: 0rem;
+  padding-bottom: 0rem;
+}
+
+.input-numberbox{
+  border-color: #D1D4D5;
+  background-color: #dddddd
+}
+button {
+  font-weight: 500;
+  border-radius: 5px;
+}
+.pointer {
+  cursor: pointer;
+}
+.min-max {
+  width: 100%;
+  height: 360px;
+}
+.min-max-div {
+  width: 100%;
+  height: 500px;
+}
+.wrapper{
+  height: 90%;
+  width: 90%;
+  float:right;
+  border-bottom: solid 1px black;;
+}
+.occurrence-table {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  height: 19rem;
+
+  .ng-star-inserted {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    span {
+      padding: .25rem;
+    }
+    div {
+      div {
+       justify-content: space-around;
+        padding: .5rem;
+        display: flex;
+        flex-direction: row;
+      }
+
+    }
+  }
+}
+
+.pagination {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  button {
+      margin-left: .25rem;
+      margin-right: .25rem;
+      margin-bottom: 1rem;
+  }
+  div {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    margin-left: 2.5rem;
+    margin-right: 2.5rem;
+  }
+}
+
+.exit{
+  height: 2rem;
+  width:100px;
+  font-weight: 500;
+  border-radius: 5px;
+}
+
+.round {
+  display: inline-block;
+  height: 11px;
+  width: 10px;
+  line-height: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 18px;
+  border-color: #4183c4;
+  background-color: #f8f8ff;
+  color: #1e90ff;
+  text-align: center;
+}
+
+.round.round-sm {
+  height: 11px;
+  width: 10px;
+  line-height: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 18px;
+  border-color: #4183c4;
+  font-size: 0.6em;
+  font-family: "Bookman Old Style";
+  -webkit-box-shadow: 0px 0px 0px 1px #3EA6CE;
+  -moz-box-shadow: 0px 0px 0px 1px #3EA6CE;
+  box-shadow: 0px 0px 0px 1px #3EA6CE;
+}
+
+.input-minimum, .input-maximum{
+  border-color: #D1D4D5;
+}
+
+.button-apply{
+ color: #007994;
+}
+
+.margin-clear-form{
+  margin-left: 20%;
+}
+.text-no-wrap{
+  font-weight: 600;
+  color: black;
+  font-size: 11px;
+}
+.annual-census-div{
+  width:100%;
+  height: 100%;
+  float:left;
+}
+.vertical-grabber{
+  display: table;
+  clear: both;
+  padding: 0;
+  width: 100%;
+  & > div{
+    &.form-group{
+      float: left;
+      padding: 0 10px;
+    }    
+    &:first-child{
+      padding-left: 0;
+    }
+    & > label{
+      padding-right: 10px;
+      vertical-align: super;
+      margin-bottom: 0;
+    }
+    & > button{
+      margin : 0 10px;
+      &:last-child{
+        margin-right: 0;
+      }
+    }
+    
+  }
+}
+.full-width tr{
+  width: 100%;
+  display: flex;
+}
+.annual-census-div-label{
+  width:50%;
+  float:left;
+  vertical-align: middle;
+}
+.annual-census-label-text{
+  width: 100%;
+  display: block;
+}
+.annual-census-label-text span{
+  display: inline-block;
+}
+.annual-census-label-text span:first-child{
+  width: 47%;
+}
+.annual-census-label-text span:nth-child(2){
+  width: 53%;
+}
+
+.annual-census-div-label-data{
+  padding-left: 20%;
+  line-height: 30px;
+  width: 30px;
+}
+.input-minimum,
+.input-maximum, 
+#censusdays{
+  padding: 0;
+  line-height: 30px;
+  text-align: center;
+  height: 30px;
+}
+#censusdays{
+  height: 31px;
+}
+.input-minimum::-webkit-inner-spin-button, 
+.input-minimum::-webkit-outer-spin-button,
+.input-maximum::-webkit-inner-spin-button, 
+.input-maximum::-webkit-outer-spin-button {  
+  opacity: 1;
+}
+.annual-census-div-input{
+  width:50%;
+  float:left;
+  & > input{
+    width: 60px;
+    text-align: center;
+  }
+}
+.annual-census-column{
+  padding: 10px 10px 10px 0;
+  width: 10%;
+  &.hidden{
+    display: none;
+  }
+}
+.annual-census-div-input-data{
+  border-color: #D1D4D5;
+}
+.clear-form
+{
+  background: #ccc;
+  color: #000;
+}
+.clear-form:hover
+{
+  background: #e5eaeb;
+  cursor: pointer;
+}
+.accordControl{
+  float: right;
+  line-height: 27px;
+  text-align: center;
+}
+.vertical-grabber{
+  .form-group{
+    margin-bottom: 0;
+  }
+}
+.annual-occurence-div{
+}
+.errorMsgHolder{
+  position: relative;
+  width: 100%;
+  text-align: right;
+  padding-right: 10px;
+  .invalid-feedback{
+  }
+}
+@media (max-width: 1023px){
+  .vertical-grabber{
+    .minimum, .maximum, .censusDays{
+      input{
+        width: 50px;
+      }
+    }
+    button{
+      padding: 0 10px;
+    }
+  }
+  .errorMsgHolder{
+    .invalid-feedback{
+      position: relative;
+      padding-top: 0;
+      height: auto;
+      width: 100%;
+    }
+  }
+}
+@media (min-width: 1199px){
+  .annual-census-div-input{
+    & > input{
+      width: 60px;
+    }
+  }
+  .vertical-grabber{
+    .minimum{
+      padding-left: 10px !important;
+    } 
+    .maximum{
+      padding-left: 92px !important;
+    } 
+    .censusDays{
+      padding-left: 50px !important;
+    }
+  }
+  .annual-occurence-div{
+    //padding-left: 25px;
+  }
+}
+@media (min-width: 1024px){
+  .annual-occurence-div{
+    //padding-left: 35px;
+  }
+}
+@media(max-width: 1199px){
+  .annual-census-div-input{
+    & > input{
+      width: 100%;
+    }
+  }
+}
+@media (min-width: 1300px){
+  
+  .vertical-grabber{
+    .minimum{
+      padding-left: 34px !important;
+    } 
+    .maximum{
+      padding-left: 112px !important;
+    } 
+    .censusDays{
+      padding-left: 70px !important;
+    }
+  }
+}
+@media (min-width: 1500px){
+  .annual-census-column{
+    //width: 11%;
+  }
+  .vertical-grabber{
+    .minimum{
+      padding-left: 58px !important;
+    }
+    .maximum{
+      padding-left: 136px !important;
+    }
+    .censusDays{
+      padding-left: 96px !important;
+    }
+  }
+}
+@media (min-width: 1768px){
+  .annual-census-column{
+    //width: 11%;
+  }
+  .vertical-grabber{
+    .minimum{
+      padding-left: 87px !important;
+    }
+    .maximum{
+      padding-left: 170px !important;
+    }
+    .censusDays{
+      padding-left: 125px !important;
+    }
+  }
+}
+@media (min-width: 1920px){
+  .annual-census-column{
+    //width: 11%;
+  }
+  .vertical-grabber{
+    .minimum{
+      padding-left: 75px !important;
+    }
+    .maximum{
+      padding-left: 160px !important;
+    }
+    .censusDays{
+      padding-left: 115px !important;
+    }
+  }
+}

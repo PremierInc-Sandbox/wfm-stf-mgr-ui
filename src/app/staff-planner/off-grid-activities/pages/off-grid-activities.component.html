@@ -1,0 +1,192 @@
+<style> html {
+  display: none;
+} </style>
+<script>
+  if (top !== self) {
+    document.documentElement.style.display = 'none';
+  } // Attempt to escape frame
+  else {
+    document.documentElement.style.display = 'block';
+  } // If not in frame, make html visible
+</script>
+<div class="view-header-container">
+  <div class="view-header">
+    <div class="form-group clearfix pdt-20">
+      <div class="w-25">
+        <span class="view-title mtlbl">
+          <!--  <h2> Off Grid Activities<em matTooltip="Activities not related to core job responsibilities" class="tool-tip-margin"><sup><span class="round round-sm hollow blue">i</span></sup></em> </h2>
+          <br>-->
+          <h5 class="header">PLAN: {{planDetails.name}}</h5>
+        </span>
+      </div>
+      <div class="left-container w-75 align-right">
+        <span>
+          <mat-form-field class="entity-text">
+                  <input matInput class="headerinput" placeholder="ENTITY" [value]="entitydisplayval" disabled="true">
+              </mat-form-field>
+              <mat-form-field class="header-text">
+                  <input matInput class="headerinput" placeholder="DEPARTMENT" [value]="departmentdisplayval" disabled="true">
+              </mat-form-field>
+              <mat-form-field class="header-text">
+                  <input matInput class="headerinput" placeholder="ANNUAL BUDGETED VOLUME" [value]="annualBudgetdisplayval" disabled="true">
+              </mat-form-field>
+              <mat-form-field class="header-text">
+                  <input matInput class="headerinput" placeholder="PRIMARY TARGET WHpU/WHpD" [value]="primaryWHpUdisplayval" disabled="true">
+              </mat-form-field>
+        </span>
+        <br>
+        <div class="button-group" *ngIf="false&&btnExittxt">
+          <button id='plan-next' *ngIf="false"class="submitBtn rdcorn" color="primary" (click)="saveAndNextPlanDetails()">{{btnNexttxt}}</button>
+          <button [hidden]="planDetails.planCompleted" class="submitBtn btn-back"(click)="clickonbackbutton()" target="secondary">Cancel</button>&nbsp;&nbsp;
+          <button id='save-exit' class="submitBtn rdcorn"  (click)="saveAndExitPlanDetails()" target="secondary">{{btnExittxt}}</button>&nbsp;&nbsp;
+        </div>
+      </div>
+    </div>  
+    <!--div class="clearfix pdt-10">
+      <div class="off-grid-tab w-75">
+        <mat-tab-group (selectedTabChange)="checkTabChange()" #pageGroup  [selectedIndex]="previousIndex">
+          <mat-tab label="Staffing Plan Setup" [disabled]="false">
+          </mat-tab>
+          <mat-tab label="Off Grid Activities" [disabled]="false">
+          </mat-tab>
+          <mat-tab label="Grid Setup" [disabled]="false">
+          </mat-tab>
+          <mat-tab label="Staffing Grid" [disabled]="false">
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+      <div class="button-group w-25 align-right" *ngIf="btnExittxt">
+        <button id='plan-next' *ngIf="false"class="submitBtn rdcorn" color="primary" (click)="saveAndNextPlanDetails()">{{btnNexttxt}}</button>
+        <button [hidden]="planDetails.planCompleted" class="submitBtn btn-back"(click)="clickonbackbutton()" target="secondary">Cancel</button>&nbsp;&nbsp;
+        <button id='save-exit' class="submitBtn rdcorn"  (click)="saveAndExitPlanDetails()" target="secondary">{{btnExittxt}}</button>&nbsp;&nbsp;
+      </div>
+    </div-->
+  </div>
+</div>
+<div class="view-content">
+  <div class="clearfix headerTabContainer">
+    <div class="mat-group-tab div-align w70">
+      <mat-tab-group (selectedTabChange)="checkTabChange()" #pageGroup  [selectedIndex]="previousIndex">
+        <mat-tab label="Staffing Plan Setup" [disabled]="false">
+        </mat-tab>
+        <mat-tab label="Off Grid Activities" [disabled]="false">
+        </mat-tab>
+        <mat-tab label="Grid Setup" [disabled]="false">
+        </mat-tab>
+        <mat-tab label="Staffing Grid" [disabled]="false">
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+    <div *ngIf="btnExittxt" class="div-align w30 align-right">
+      <button class="rdcorn" (click)="openDialog()" target="secondary">Cancel</button>
+      <button id='save-exit' class="rdcorn" (click)="onSubmit('Save-Exit')" target="secondary">{{btnExittxt}}</button>
+      <button class="submitBtn pointer rdcorn margin-left" target="secondary" (click)="onSubmit('Save')"> Save
+      </button>
+    </div>
+  </div>
+  <div class="offGridContainer">
+    <table class="table-view-content" >
+      <br/>
+      <tr>
+        <td colspan="2" class="scheduleBody" >
+        <mat-tab-group #tabGroup (selectedTabChange)="loadsummary()" class="tab-group"  [selectedIndex]="prevSelectedIndex">
+          <mat-tab label="In-House Education">
+            <br>
+            <table class="inhouse-score-card-table" >
+              <tr>
+                <td class="inhouse-score-card-data">   <app-score-card [planDetails]="planDetails"></app-score-card></td>
+                <td class="inhouse-oga-data"> <app-oga-total-hours [planDetails]="planDetails"></app-oga-total-hours></td>
+              </tr>
+            </table>
+            <div class="activitygrid">
+              <label class="headerlbl">In-House Education</label>
+              <app-activity-grid *ngIf="planDetails.key&&tabGroup.selectedIndex===0" [planDetails]="planDetails" [ogaTypeKeyval]="1" [activityHeader]="strInhouseActivity" ></app-activity-grid>
+            </div>
+          </mat-tab>
+          <mat-tab label="Certification / Other">
+            <br>
+            <table class="inhouse-score-card-table" >
+              <tr>
+                <td class="inhouse-score-card-data">   <app-score-card [planDetails]="planDetails"></app-score-card></td>
+                <td class="inhouse-oga-data"> <app-oga-total-hours [planDetails]="planDetails"></app-oga-total-hours></td>
+              </tr>
+            </table>
+            <div class="activitygrid">
+            <label  class="headerlbl">Certification & Other Courses</label>
+            <app-activity-grid *ngIf="planDetails.key&&tabGroup.selectedIndex===1" [planDetails]="planDetails" [ogaTypeKeyval]="2" [activityHeader]="strCertificationActivity" ></app-activity-grid>
+          </div>
+          </mat-tab>
+          <mat-tab label="Orientation">
+            <br>
+            <table class="inhouse-score-card-table" >
+              <tr>
+                <td  class="inhouse-score-card-data">   <app-score-card [planDetails]="planDetails"></app-score-card></td>
+                <td  class="inhouse-oga-data"> <app-oga-total-hours [planDetails]="planDetails"></app-oga-total-hours></td>
+              </tr>
+            </table>
+            <div class="activitygrid">
+              <label  class="headerlbl">Orientation</label>
+              <app-activity-grid *ngIf="planDetails.key&&tabGroup.selectedIndex===2"  [planDetails]="planDetails" [ogaTypeKeyval]="3" [activityHeader]="strOrientationActivity" ></app-activity-grid>
+            </div>
+          </mat-tab>
+          <mat-tab label="Other Activities">
+            <br>
+            <table  class="inhouse-score-card-table">
+              <tr>
+                <td class="inhouse-score-card-data">   <app-score-card [planDetails]="planDetails"></app-score-card></td>
+                <td class="inhouse-oga-data"> <app-oga-total-hours [planDetails]="planDetails"></app-oga-total-hours></td>
+              </tr>
+            </table>
+            <div class="activitygrid">
+              <label  class="headerlbl">Other Activities</label>
+              <app-activity-grid *ngIf="planDetails.key&&tabGroup.selectedIndex===3"  [planDetails]="planDetails" [ogaTypeKeyval]="4" [activityHeader]="strOtherActivity" ></app-activity-grid>
+            </div>
+          </mat-tab>
+          <mat-tab label="Summary">
+            <br>
+            <table class="inhouse-score-card-table">
+              <tr>
+                <td class="inhouse-score-card-data">   <app-score-card [planDetails]="planDetails"></app-score-card></td>
+                <td class="inhouse-oga-data"> <app-oga-total-hours [planDetails]="planDetails"></app-oga-total-hours></td>
+              </tr>
+            </table>
+            <div class="activitygrid">
+            <label  class="headerlbl">Off Grid Activities Annual Hours Summary</label>
+                <table class="inhouse-score-card-table">
+                <tr>
+                <td colspan="10" class="annual-hour-summary">
+                </td>
+                <tr class="trow-bordered-hdr">
+                  <td class="border-left-fix">Variable Position</td>
+                  <td class="tcell leftAlign">Abbreviation</td>
+                  <td class="tcell rightAlign">In House Hrs</td>
+                  <td class="tcell rightAlign">Edu & Cert Hrs</td>
+                  <td class="tcell rightAlign">Orientation Hrs</td>
+                  <td class="tcell rightAlign">Other Activities Hrs</td>
+                  <td class="tcell border-right-fix rightAlign">Total Hrs</td>
+                </tr>
+                  <tr class="trow-bordered" *ngFor="let activity of listOGAsummary">
+                    <td class="border-left-fix">
+                    {{
+                      activity.variable_department_position_name
+                    }}
+                    </td>
+                    <td class="tcell leftAlign" matTooltip="{{activity.variablePositionDescription}}">{{activity.variable_department_abrv}}</td>
+                    <td class="tcell rightAlign">{{activity.InHouseEduHrs}}</td>
+                    <td class="tcell rightAlign">{{activity.EduAndCertHrs}}</td>
+                    <td class="tcell rightAlign">{{activity.OrientationHrs}}</td>
+                    <td class="tcell rightAlign">{{activity.OtherHrs}}</td>
+                    <td class="tcell border-right-fix rightAlign">{{activity.TotalnHrs}}</td>
+
+
+                  </tr>
+              </table>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+        </td>
+      </tr>
+
+      </table>
+      </div>
+</div>

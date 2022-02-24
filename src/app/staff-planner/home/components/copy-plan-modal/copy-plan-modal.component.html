@@ -1,0 +1,51 @@
+<style> html {
+  display: none;
+} </style>
+<script>
+  if (top !== self) {
+    document.documentElement.style.display = 'none';
+  } // Attempt to escape frame
+  else {
+    document.documentElement.style.display = 'block';
+  }
+  </script>
+  <div class="card">
+  <div class="card-header modbackclr header-alignment">
+    Copy Plan
+    <button class="close" data-dismiss="modal" aria-label="Close" (click) = "toggleModalHide()">
+      <span aria-hidden="false">&times;</span>
+    </button>
+  </div>
+  <div class="card-body">
+    <form #planModalForm="ngForm">
+     <p> Do you wish to make a copy of this plan.If OK Please enter the plan name.</p>
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label" >Plan Name:</label>
+        <div class="col-sm-7">
+          <input type="text" [class.is-invalid]="planName.invalid && planName.touched"
+                 placeholder="Type to name plan"
+                 [(ngModel)]="plan.name"
+                 pattern="^[a-zA-Z0-9 ]*$"
+                 #planName="ngModel"
+                 class="form-control"
+                 (ngModelChange) = "checkDuplicate(planName.value)"
+                 maxlength="300" required name="planName"  >
+        </div>
+      </div>
+      <div *ngIf="planName.errors && planName.invalid">
+        <mat-error *ngIf="planName.errors.required">Plan Name is required</mat-error>
+        <mat-error *ngIf="planName.errors.pattern">Use numbers and/or letters only in your Plan name - no spaces or special characters.</mat-error>
+      </div>
+      <div *ngFor="let plans of plansData"> <mat-error *ngIf="plan.name!==null && plan.name!== undefined &&!plans.isnewlycreated && plans.name.toUpperCase() === plan.name.trim().toUpperCase()">Plan is duplicate.Please use some other name to create plan.</mat-error></div>
+      <div *ngIf="showMsg">
+        <p class="alert alert-success">
+          <strong>Plan is Copied Successfully.</strong>
+        </p>
+      </div>
+    </form>
+  </div>
+  <div class="card-footer clr_footer" >
+    <span   class="hcolor" (click)="toggleModalHide()">Cancel</span>
+    <button type="button" data-dismiss="modal" class="rdcorn float-right" [mat-dialog-close]="true" *ngIf="isHide" [disabled]="!planModalForm.valid" (click)="saveCopyingPlan(this.plan.name);">Create</button>
+  </div>
+</div>

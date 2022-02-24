@@ -1,0 +1,34 @@
+<style> html {
+  display: none;
+} </style>
+<script>
+  if (top !== self) {
+    document.documentElement.style.display = 'none';
+  } // Attempt to escape frame
+  else {
+    document.documentElement.style.display = 'block';
+  } // If not in frame, make html visible
+</script>
+<div class="masthead-and-body">
+  <app-loader></app-loader>
+<app-header>
+  <a href="/" title>Operations Advisor</a>
+  <div class="main-menu-nav-bar-inner" navigation>
+    <mat-button-toggle-group [(value)] = "selectedValue">
+      <mat-button-toggle *ngIf="plannerFlag" value="StaffPlan" (click)="openDialogForplanner($event)">
+        <span class="nav-button-title branding">OA Staff Planner</span>
+      </mat-button-toggle>
+      <mat-button-toggle *ngIf="managerFlag" value="StaffMgmt" (click)="openDialog($event)">
+        <span class="nav-button-title branding">OA Staff Manager</span>
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+</app-header>
+  <div class="app-container">
+<router-outlet (activate)='onActivate($event)'
+(deactivate)='onDeactivate($event)'>
+</router-outlet>
+  </div>
+</div>
+<app-footer></app-footer>
+

@@ -1,0 +1,93 @@
+<style> html {
+  display: none;
+} </style>
+<script>
+  if (top !== self) {
+    document.documentElement.style.display = 'none';
+  } // Attempt to escape frame
+  else {
+    document.documentElement.style.display = 'block';
+  } // If not in frame, make html visible
+</script>
+<div class="table-responsive">
+  <table >
+    <thead>
+      <tr >
+        <th>Title</th>
+        <th>Shift Hours</th>
+        <th><div class="week-header">Days of Week</div></th>
+        <th ></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr class="content" *ngFor='let staff of plan.nonVariableDepartmentPositions; let i=index' >
+        <td style="font-size: .76rem;">
+          <input class="content-title-input" [disabled]="plan.planCompleted "  type="text" [(ngModel)]="staff.title" maxlength="120"
+              (keypress)="validateLength(staff.title)" (ngModelChange)="checkEmpty(plan.nonVariableDepartmentPositions)"    >
+
+        </td>
+        <td class="shift-hours" >
+          <input [disabled]="plan.planCompleted "  type="text"  [(ngModel)]="staff.shiftHours"
+             (keypress)="numberOnlyCheck($event);"
+             (change)="numberOnly($event,i);"
+              [maxlength]="5"
+              class="shift-hours-input"
+              (ngModelChange)="checkEmpty(plan.nonVariableDepartmentPositions)"
+             >
+        </td>
+        <td class='week-days' >
+          <div class="form-check check-weekdays" *ngFor="let d of staff.weekDays" id="weekdays" >
+            &nbsp;
+            <mat-checkbox [disabled]="plan.planCompleted " class="form-check-input"
+                        id="{{d.day}}_{{i}}"
+                        value="{{d.day}}"
+                        [(ngModel)]="d.selected"
+                        (change)="checkIfAllSelected(staff)"
+                        (ngModelChange)="checkEmpty(plan.nonVariableDepartmentPositions)"
+                        class="check-weekdays-input" >
+            </mat-checkbox>
+            <label class="form-check-label" >
+              {{d.day}}
+            </label>
+          </div>
+          <div class="form-check check-weekdays-all" >
+            &nbsp;&nbsp;
+            <mat-checkbox [disabled]="plan.planCompleted " class="form-check-input"
+                        id="SelectAll_{{i}}"
+                        [(ngModel)]="staff.allDaySelected"
+                        (change)="selectAll(staff)"
+                        class="check-weekdays-input"
+                        (ngModelChange)="checkEmpty(plan.nonVariableDepartmentPositions)"
+                        >
+            </mat-checkbox>
+            <label class="form-check-label">
+              All
+            </label>
+          </div>
+        </td>
+        <td class="abbreviation">
+          <app-svg-icon *ngIf='plan.nonVariableDepartmentPositions.length-1!==i && !plan.planCompleted' name="plus-circle"  color="#C0C0C0" size="20"></app-svg-icon>
+          <app-svg-icon *ngIf='plan.nonVariableDepartmentPositions.length-1==i && !plan.planCompleted' (click)="newNonVarpos(staff)" matTooltip="Add Non variable Department Position" class="pointer" name="plus-circle" color="#007994" size="20"></app-svg-icon>
+          <app-svg-icon *ngIf='plan.nonVariableDepartmentPositions.length>1 && !plan.planCompleted' (click)="deleteRow(staff)" matTooltip="Remove Non variable Department Position" class="pointer pl-1" name="trash-2" color="#007994" size="20"></app-svg-icon>
+          <app-svg-icon *ngIf='plan.nonVariableDepartmentPositions.length===1 && !plan.planCompleted' name="trash-2"  color="#C0C0C0" class="pl-1" size="20"></app-svg-icon>
+        </td>
+    </tr>
+
+    <tr class="invalid-error">
+      <td colspan="4">
+      <mat-error *ngIf="error.isError && isMaxIndex">{{error.errorMessage}}</mat-error>
+
+      <mat-error *ngIf="isShowError">
+        Complete all fields and selections for the current non-variable position, which includes those positions like admin roles that do not vary by shift.
+      </mat-error>
+      </td>
+    </tr>
+    <tr>
+      <td *ngIf="checkEmptyPosition()" colspan="4" class="warning-message">Saving empty fields will overwrite and replace the existing Non-Variable Department Position information previously saved.
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+

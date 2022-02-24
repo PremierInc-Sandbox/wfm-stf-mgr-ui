@@ -1,0 +1,18 @@
+.align
+{
+    text-align: center;
+}
+.svg-class {
+    display: inline-block;
+    justify-content: center;
+    align-items: center;
+    // Width and height below will be overwritten if user defined
+    width: 24px;
+    height: 24px;
+    // Default color
+    fill: none;
+    stroke: #0091b3;
+    stroke-width: 2px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }

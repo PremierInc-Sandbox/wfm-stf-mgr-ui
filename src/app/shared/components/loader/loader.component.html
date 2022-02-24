@@ -1,0 +1,15 @@
+<head></head>
+<style> html {
+  display: none;
+} </style>
+<script>
+  if (top !== self) {
+    document.documentElement.style.display = 'none';
+  }
+  else {
+    document.documentElement.style.display = 'block';
+  } // If not in frame, make html visible
+</script>
+<div class="loadWrapper" *ngIf="show">
+  <div class="loader"></div>
+</div>

@@ -1,0 +1,165 @@
+<style> html {
+  display: none;
+} </style>
+<script>
+  if (top !== self) {
+    document.documentElement.style.display = 'none';
+  } // Attempt to escape frame
+  else {
+    document.documentElement.style.display = 'block';
+  } // If not in frame, make html visible
+</script>
+<div class="container-fluid pd-15">
+  <div class="staffing-summary-contianer">
+    <div class="row summaryTitleRow">
+      <div class="col-sm-2 summaryTitle">Staffing Summary</div>
+      <div class="col-sm-3 matrixLegend align-self-end">
+          <div class="row">
+            <div class="col-sm-5 container">
+              <div class="row align-items-center">
+                <app-svg-icon name="check-circle" color="green" size="18"></app-svg-icon>
+                <span class="span-text">On or Below Target</span>
+              </div>
+            </div>
+            <div class="col-sm-5 container">
+              <div class="row align-items-center">
+                <app-svg-icon name="x-circle" color="red" size="18"></app-svg-icon>
+                <span class="span-text">Above Target</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      <div class="col-sm-4 container1 summaryBtnGroup justify-content-end">
+        <div class="row justify-content-end">
+          <button *ngIf="!planDetails.planCompleted" class ="submitBtn  pointer rdcorn top-align" color="primary" target="secondary" (click)="clickonAddSchedule()">Add&nbsp;&#47;&nbsp;Delete Schedule</button>
+          <button class ="submitBtn  pointer rdcorn top-align" color="primary" (click)="generatePdf()" target="secondary">Print to PDF</button>
+        </div>
+      </div>
+    </div>
+    <mat-table id="summary" [dataSource]="dataSource" class="mat-elevation-z1" matSort>
+
+      <ng-container [matColumnDef]="col.id" *ngFor="let col of colDefs">
+          <ng-container *ngIf="col.id==='census'">
+            <mat-header-cell *matHeaderCellDef mat-sort-header start="desc" class="top-align-reset rightAlign"> {{ col.value }} </mat-header-cell>
+              <mat-cell *matCellDef="let ele" class="rightAlign" [ngClass]="{'bestOption': ele['census']===roundAverage(this.planDetails.utilizedAverageVolume)}">{{ ele[col.id] }}</mat-cell>
+            </ng-container>
+        <ng-container *ngIf="col.id==='totalPlanDailyhrs'">
+          <mat-header-cell *matHeaderCellDef class="rightAlign">
+            <div class="left-fix">
+              <div class="width-data left-fix">
+                  {{ col.value }}
+              </div>
+              <div class="left-fix width-feather">
+                  <em matTooltip="Total Plan WHpU * Census" class="tool-tip-margin"><sup><div class="round round-sm hollow blue">i</div></sup></em>
+              </div>
+            </div>
+          </mat-header-cell>
+
+          <mat-cell *matCellDef="let ele" [ngClass]="{'bestOption': ele['census']===roundAverage(this.planDetails.utilizedAverageVolume)}" class="rightAlign">
+            <div *ngIf="ele[col.id]<0">({{-1* ele[col.id] | number: '2.2-2'}})</div>
+            <div *ngIf="ele[col.id]>=0">{{ ele[col.id] | number: '2.2-2'}}</div>
+          </mat-cell>
+        </ng-container>
+        <ng-container *ngIf="col.id==='productivity'">
+          <mat-header-cell *matHeaderCellDef class="rightAlign">
+             <div class="left-fix">
+                <div class="width-data left-fix">
+                    {{ col.value }}
+                </div>
+                <div class="left-fix width-feather">
+                    <em matTooltip="(Target WHpU * Census) – Total Plan Daily Hours" class="tool-tip-margin"><sup><div class="round round-sm hollow blue">i</div></sup></em>
+                </div>
+              </div>
+            </mat-header-cell>
+          <mat-cell *matCellDef="let ele" class="rightAlign"
+                    [ngClass]="{'bestOption': ele['census']===roundAverage(this.planDetails.utilizedAverageVolume)}">
+            <div class="width-data left-fix" *ngIf="check(ele[col.id]) && ele[col.id]<0">{{-1 * ele[col.id]*100 | number: '1.2-2'}}%</div>
+            <div class="width-data left-fix" *ngIf="check(ele[col.id]) && ele[col.id]>=0">{{ ele[col.id]*100 | number: '1.2-2'}}%</div>
+            <div class="width-data left-fix" *ngIf="!check(ele[col.id])">{{ 0 | number: '1.2-2'}}%</div>
+            <app-svg-icon *ngIf="!checkProductivityIndex(ele['productivity'])" name="x-circle" color="red"
+                              size="18"></app-svg-icon>
+            <app-svg-icon *ngIf="checkProductivityIndex(ele['productivity'])" name="check-circle" color="green"
+                              size="18"></app-svg-icon>
+
+          </mat-cell>
+        </ng-container>
+        <ng-container *ngIf="col.id==='totalPlanAnnualHrs'">
+          <mat-header-cell *matHeaderCellDef class="rightAlign">
+              <div class="left-fix">
+                  <div class="width-data left-fix">
+                      {{ col.value }}
+                  </div>
+                  <div class="left-fix width-feather">
+                      <em matTooltip="Total Plan Daily hours * Occurrence" class="tool-tip-margin"><sup><div class="round round-sm hollow blue">i</div></sup></em>
+                  </div>
+                </div>
+              </mat-header-cell>
+          <mat-cell *matCellDef="let ele" class="rightAlign" [ngClass]="{'bestOption': ele['census']===roundAverage(this.planDetails.utilizedAverageVolume)}">
+            <div *ngIf="ele[col.id]<0">({{-1* ele[col.id] | number: '2.2-2'}})</div>
+            <div *ngIf="ele[col.id]>=0">{{ ele[col.id] | number: '2.2-2'}}</div>
+          </mat-cell>
+        </ng-container>
+        <ng-container *ngIf="col.id==='annualHrsVarToTarget'">
+          <mat-header-cell *matHeaderCellDef class="rightAlign">
+              <div class="left-fix">
+                  <div class="width-data left-fix">
+                      {{ col.value }}
+                  </div>
+                  <div class="left-fix width-feather">
+                      <em matTooltip="Daily Hours Variance to Target * Occurrence" class="tool-tip-margin"><sup><div class="round round-sm hollow blue">i</div></sup></em>
+                  </div>
+                </div>
+              </mat-header-cell>
+          <mat-cell *matCellDef="let ele" class="rightAlign" [ngClass]="{'bestOption': ele['census']===roundAverage(this.planDetails.utilizedAverageVolume)}">
+            <div *ngIf="ele[col.id]<0">({{-1* ele[col.id] | number: '2.2-2'}})</div>
+            <div *ngIf="ele[col.id]>=0">{{ ele[col.id] | number: '2.2-2'}}</div>
+          </mat-cell>
+        </ng-container>
+        <mat-header-cell
+          *matHeaderCellDef class="rightAlign"
+          [ngClass]="{'verticalLineRight': col.id==='totalPlanWhpu' }" >{{ col.value }}</mat-header-cell>
+
+        <ng-container *ngIf="col.type==='integer'">
+          <mat-cell *matCellDef="let ele" class="rightAlign" [ngClass]="{'bestOption': ele['census']===roundAverage(this.planDetails.utilizedAverageVolume)}">{{ ele[col.id] }}</mat-cell>
+        </ng-container>
+
+        <ng-container *ngIf="col.type==='decimal'">
+            <mat-cell
+                    *matCellDef="let ele" class="rightAlign" [ngClass]="{'bestOption': ele['census']===roundAverage(this.planDetails.utilizedAverageVolume),'verticalLineRight': col.id==='totalPlanWhpu'}"
+            >
+                <div *ngIf="ele[col.id]<0 && (col.id==='varWHPU' || col.id==='totalPlanWhpu')">({{-1* ele[col.id] | number: '2.4-4'}})</div>
+                <div *ngIf="ele[col.id]>=0 && (col.id==='varWHPU' || col.id==='totalPlanWhpu')">{{ ele[col.id] | number: '2.4-4'}}</div>
+
+            <div *ngIf="ele[col.id]<0 && (col.id!=='varWHPU' && col.id!=='totalPlanWhpu')">({{-1* ele[col.id] | number: '2.2-2'}})</div>
+            <div *ngIf="ele[col.id]>=0 && (col.id!=='varWHPU' && col.id!=='totalPlanWhpu')">{{ ele[col.id] | number: '2.2-2'}}</div>
+            </mat-cell>
+        </ng-container>
+        <ng-container *ngIf="col.id==='dailyHrsVarToTarget'">
+          <mat-cell
+            *matCellDef="let ele" class="rightAlign"
+            [ngClass]="{'bestOption': ele['census']===roundAverage(this.planDetails.utilizedAverageVolume)}">
+            <div class="width left-fix-productivity-percent">
+              <div class="left-fix width-feather">
+                <!-- <app-svg-icon *ngIf="!checkProductivityIndex(ele[col.id])" name="x-circle" color="red"  size="18"></app-svg-icon>
+                 <app-svg-icon *ngIf="checkProductivityIndex(ele[col.id])" name="check-circle" color="green" size="18"></app-svg-icon>-->
+              </div>
+              <div class="width-data left-fix">
+                {{ (check(ele[col.id]) ? ele[col.id] : 0) | percent: '.2' }}
+              </div>
+            </div>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container *ngIf="col.type==='percent'">
+          <mat-cell *matCellDef="let ele" class="tableCell rightAlign" [ngClass]="{'bestOption': ele['census']===roundAverage(this.planDetails.utilizedAverageVolume)}">{{ ele[col.id] | percent: '.1-2' }}</mat-cell>
+        </ng-container>
+
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayCols; sticky: true"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayCols; let i = index;" ></mat-row>
+
+    </mat-table>
+  </div>
+
+</div>

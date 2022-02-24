@@ -1,0 +1,73 @@
+<style> html {
+  display: none;
+} </style>
+<script>
+  if (top !== self) {
+    document.documentElement.style.display = 'none';
+  } // Attempt to escape frame
+  else {
+    document.documentElement.style.display = 'block';
+  } // If not in frame, make html visible
+</script>
+<table class="tbl-bordered" class="width">
+  <tr>
+                <tr class="trow-bordered trow-bordered-size activity-grid-row-one " >
+                  <td class="trow-activity-header">{{activityHeader}}</td>
+                  <td class="activity-grid-row-label-center">Hrs. / Person Annual</td>
+                  <td *ngFor="let vardepart of lstVariableDepartmet" class="activity-grid-row-label-center-bgcolor" matTooltip="{{vardepart.categoryDescription}}">{{vardepart.categoryAbbreviation}}</td>
+                  <td class="activity-grid-row-label-center">Total Staff (population)</td>
+                  <td class="activity-grid-row-label-center" [style.border-right]="planDetails.planCompleted ? '1px solid' : 'none'">Total Hours (annual)</td>
+                  <td class="activity-grid-row-label-center border-fix" *ngIf="!planDetails.planCompleted">Action</td>
+                </tr>
+
+              <tr class="trow-bordered" *ngFor="let activity of Listoffgridactivity; let i=index">
+                <td class="trow-vertical-middle">
+                  <div class="dropdowndiv">
+                  <input
+                    [disabled]="planDetails.planCompleted "
+                    type="text"
+                    class="customInput"
+                    appAutofocus
+                    id="{{'census-'+i}}"
+                    pattern="^[a-zA-Z0-9]+[\sa-zA-Z0-9]*$"
+                    placeholder="Type Your Activity Name"
+                    aria-label="Activity List"
+                    #data
+                    [(ngModel)]="activity.name"
+                    (change)="activityTyped(i)"
+                    cdkFocusInitial
+                  >
+                    <button type="button" (click)="clear(i)" class="close background">
+                      <span class="closeSpan">×</span>
+                    </button>
+                  </div>
+
+
+                </td>
+                <td  class="trow-vertical-center">
+                    <input type="text" [disabled]="planDetails.planCompleted || planDetails.planBeingUpdated" (keypress)="numberOnly($event)" maxlength="6" class="input-numberbox" [(ngModel)]="activity.shiftHours" />
+                </td >
+                <td *ngFor="let vardepat of activity.variableDepartmentList" class="input-number-mgmt">
+                    <input type="text" [disabled]="planDetails.planCompleted || planDetails.planBeingUpdated" (keypress)="numberOnly($event)" maxlength="3" class="input-numberbox1" [(ngModel)]="vardepat.staffCount"/>
+                </td>
+
+                <td class="trow-vertical-center">
+                        {{getStaffCOunt(activity)}}
+                </td>
+                <td class="trow-vertical-center">
+                        {{getTotalHours(activity)}}
+                </td>
+                <td class="trow-vertical-center" *ngIf="!planDetails.planCompleted">
+                  <app-svg-icon *ngIf='Listoffgridactivity.length-1!==i && !planDetails.planCompleted' name="plus-circle"  color="#C0C0C0" size="20"></app-svg-icon>
+                  <app-svg-icon *ngIf="Listoffgridactivity.length-1==i  && !planDetails.planCompleted" (click)="addOffGridActivity(i)" matTooltip="Add new activity" class="pointer" name="plus-circle" color="#007994" size="20" ></app-svg-icon>
+                  <app-svg-icon *ngIf="Listoffgridactivity.length > 1 && !planDetails.planCompleted" (click)="removeOffGridActivity(activity)" matTooltip="Remove activity" class="pointer" name="trash-2" color="#007994" size="20" ></app-svg-icon>
+                  <app-svg-icon *ngIf='Listoffgridactivity.length===1 && !planDetails.planCompleted' name="trash-2"  color="#C0C0C0" class="pl-1" size="20"></app-svg-icon>
+                </td>
+
+              </tr>
+        <tr>
+          <div *ngIf="activityEmptyFlag">
+            <mat-error *ngIf="activityEmptyFlag">The first character cannot be a space.</mat-error>
+          </div>
+        </tr>
+              </table>

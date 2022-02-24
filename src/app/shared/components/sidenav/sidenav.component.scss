@@ -1,0 +1,89 @@
+$sidenav-width: 350px;
+
+.sidenav {
+  position: absolute;
+  width: $sidenav-width;
+  height: 100%;
+  background: white;
+  right: -$sidenav-width;
+  top: 0;
+  z-index: 10000000;
+  transition: right 0.2s;
+  transition-timing-function: ease-out;
+  overflow: hidden;
+
+  &.inactive {
+    right: -$sidenav-width;
+  }
+
+  &.active {
+    right: 0;
+  }
+
+  .main-menu-header {
+    padding: 20px;
+    background: #003b49;
+    overflow: hidden;
+  }
+
+  .slide-in-menu-close {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+    color: #f2f4f4;
+    font-size: 30px;
+    line-height: 30px;
+    display: inline-block;
+  }
+
+  .user-info {
+    font-size: 13px;
+    float: left;
+    color: #fff;
+    max-width: 250px;
+    word-wrap: break-word;
+  }
+
+  .dropdown-option i {
+    margin-right: 10px;
+    font-size: 18px;
+    color: #003b49;
+    top: 3px;
+    cursor: pointer;
+    height: 18px;
+    width: 18px;
+    display: inline-block;
+  }
+
+  .dropdown-option {
+    color: #333;
+    font-weight: 400;
+    display: block;
+    font-size: 14px;
+    cursor: pointer;
+    transition: transform .4s ease;
+    padding: 10px 30px 10px 40px;
+    margin-left: -10px;
+    text-decoration: none;
+  }
+
+  .dropdown-option:hover {
+    background-color: #8dc7d8;
+    color: #fff;
+
+    i {
+      color: #fff;
+    }
+  }
+
+  .dropdown-option:hover {
+    transform: translateX(5px);
+  }
+  .product-help {
+    cursor: pointer;
+    padding: 8px 15px ;
+
+  }
+
+}

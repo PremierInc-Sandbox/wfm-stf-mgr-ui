@@ -1,0 +1,85 @@
+.close {
+  outline: none;
+  margin-right: 15px;
+  color: white;
+}
+
+.submitplantable
+{
+  width: 100%;
+  height:100%;
+}
+
+.header
+{
+  width: 100%;
+  height: 40px;
+  background-color: #003B49;
+
+}
+
+.scollable
+{
+  height: 250px;
+  overflow-y:auto;
+}
+
+.footer
+{
+  text-align: right;
+}
+
+.submitplanModal
+{
+  width:600px;
+  height:500px;
+}
+
+.headerlabel
+{
+  color: white;
+  text-align: left;
+  margin-top: 10px;
+  margin-left: 20px;
+  font-size: medium;
+  font-weight: 300;
+}
+
+.submitbutton {
+  border-radius: 5px;
+  width: 80;
+  cursor: pointer;
+  background-color: #007994;
+  font: 400 13.3333px Arial;
+  font-weight: 500;
+  height: 25px;
+  margin-left: 2px;
+  margin-right: 2px;
+  color: white;
+}
+
+.cancelbutton {
+  border-radius: 3px;
+  width: 50px;
+  cursor: pointer;
+  background-color: #007994;
+  font: 400 13.3333px Arial;
+  font-weight: 500;
+  height: 25px;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+.Error
+{
+  color: red;
+  text-align: center;
+}
+.hcolor{
+  color: #007bff;
+  cursor: pointer;
+}
+.clr_footer{
+  background-color: #FFFFFF;
+  border-top: dotted 1px;
+}

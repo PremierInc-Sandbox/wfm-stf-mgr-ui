@@ -1,0 +1,44 @@
+<style> html {
+  display: none;
+} </style>
+<script>
+  if (top !== self) {
+    document.documentElement.style.display = 'none';
+  } // Attempt to escape frame
+  else {
+    document.documentElement.style.display = 'block';
+  } // If not in frame, make html visible
+</script>
+<div class="card ">
+  <div class="card-header modbackclr align-head" >
+    SUBMIT STAFFING PLAN
+    <button class="close" data-dismiss="modal" aria-label="Close" (click) = "toggleModalHide()">
+      <span aria-hidden="false">&times;</span>
+    </button>
+  </div>
+  <div class="card-body height">
+    Plan name: {{this.planDetails.name}} <br>
+    Date range: {{this.planDetails.effectiveStartDate | date:'yyyy-MM-dd'}} - {{this.planDetails.effectiveEndDate | date:'yyyy-MM-dd'}}<br>
+    Date modified: {{this.planDetails.updatedTimeStamp | date:'yyyy-MM-dd'}}<br>
+    <div class="form-group row">
+      <label class="col-sm-9 col-form-label" >Do you want to make this your active plan?</label>
+      <div class="col-sm-1">
+        <input type="checkbox" class="form-check-input" id="activeId" (change)="checkotherPlanStatusForActive()"
+               [(ngModel)]="this.isPlanActive">
+      </div>
+    </div>
+    <div *ngIf="isError" class="Error">
+      Either the planned count for any field of the census is zero or the “Include In Staff Patient Ratio”
+      is turned off on the Plan Setup page - Variable Department Position section.
+      To correct, click Cancel, make updates, save your changes, and re-submit the plan.
+    </div>
+    <div *ngIf="isActivePlanExistInsamePeriod" >{{activePlanWarningMsg}}</div>
+
+  </div>
+
+  <div class="card-footer text-right clr_footer">
+    <button type="button" class="submitbutton rdcorn"  id ="copyCancel" (click) = "toggleModalHide()">Cancel</button>
+    <button type="button" class="submitbutton rdcorn" *ngIf="!isError" (click) ="submitPlan()">Submit Plan</button>
+  </div>
+
+</div>

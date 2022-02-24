@@ -1,0 +1,47 @@
+[{
+  "id":1,
+  "Category": "Change Nurse",
+  "Abbreviation": "RN",
+  "Description": "Nursing RM"
+},
+  {
+    "id":2,
+    "Category": "Clinical Nurse Specialist",
+    "Abbreviation": "RN",
+    "Description": "Nursing RN"
+  },
+  {
+    "id":3,
+    "Category": "Registered Nurse",
+    "Abbreviation": "RN",
+    "Description": "Nursing RN"
+  },
+  {"id":4,
+    "Category": "Nurse Manager",
+    "Abbreviation": "Mgmt",
+    "Description": "Management"
+  },
+  {"id":5,
+    "Category": "Supervisor",
+    "Abbreviation": "Mgmt",
+    "Description": "Management"
+  },
+  {"id":6,
+    "Category": "Assistant Nurse Manager Supervisor",
+    "Abbreviation": "Mgmt",
+    "Description": "Management"
+  },
+  {"id":7,
+    "Category": "Director",
+    "Abbreviation": "Mgmt",
+    "Description": "Management"
+  },
+  {
+    "id":8,
+    "Category": "Other Nursing",
+    "Abbreviation": "PR-Nurse Oth",
+    "Description": "Management"
+  }
+
+
+]

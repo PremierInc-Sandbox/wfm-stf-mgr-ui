@@ -1,0 +1,530 @@
+.exit{
+  height: 2rem;width:100px; 
+  font-weight: 500;
+  border-radius: 5px;
+}
+.plan-next{
+  height: 2rem;width:130px;
+  font-weight: 500;
+  border-radius: 5px;
+}
+.headerinput:hover,.headerinput:focus
+{
+  outline: none !important;
+  border:none !important;
+}
+.btn-add-another{
+  height: 2rem;
+  font-weight: 500;
+  border-radius: 5px;
+  margin-bottom: .5rem;
+}
+.btn-add-another-shift{
+  color: #207D9D;
+  background-color: white;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  font-size: .875rem;
+  height: 2rem;
+  border: 1px solid #207D9D;
+  border-radius: 3px;
+  cursor: pointer;
+  width: 44px;
+}
+.view-content {
+  position: relative;
+  margin: 0 auto;
+  // width: 1199px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  box-shadow: inset 0 2px 3px -2px rgba(50,50,50,.25);
+}
+
+.round {
+  display: inline-block;
+  height: 11px;
+  width: 10px;
+  line-height: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 18px;
+  border-color: #4183c4;
+  background-color: #f8f8ff;
+  color: #1e90ff;
+  text-align: center;
+}
+
+.round.round-sm {
+  height: 11px;
+  width: 10px;
+  line-height: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 18px;
+  border-color: #4183c4;
+  font-size: 0.6em;
+  font-family: "Bookman Old Style";
+  -webkit-box-shadow: 0px 0px 0px 1px #3EA6CE;
+  -moz-box-shadow: 0px 0px 0px 1px #3EA6CE;
+  box-shadow: 0px 0px 0px 1px #3EA6CE;
+}
+.round {
+  display: inline-block;
+  height: 11px;
+  width: 10px;
+  line-height: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 18px;
+  border-color: #4183c4;
+  background-color: #f8f8ff;
+  color: #1e90ff;
+  text-align: center;
+}
+
+.round.round-sm {
+  height: 11px;
+  width: 10px;
+  line-height: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 18px;
+  border-color: #4183c4;
+  font-size: 0.6em;
+  font-family: "Bookman Old Style";
+  -webkit-box-shadow: 0px 0px 0px 1px #3EA6CE;
+  -moz-box-shadow: 0px 0px 0px 1px #3EA6CE;
+  box-shadow: 0px 0px 0px 1px #3EA6CE;
+}
+.tool-tip-margin
+{
+  margin-left: 5px;
+  margin-right: 1px;
+}
+.save-exit{
+  height: 2rem;width:120px;
+  font-weight: 500;
+  border-radius: 5px;
+}
+.staffScheduletable
+{
+  margin-left: 0%;
+  width: 100%;
+}
+
+.btn {
+  border: 1px solid black;
+  background-color: white;
+  color: black;
+  font-size: 16px;
+  width:15%;
+  line-height: 1px;
+  cursor: pointer;
+}
+
+.info {
+  border-color: #3EA6CE;
+  color: #3EA6CE
+}
+
+@media screen and (min-width:900px) {
+  .btnrft{
+    left: 8%;
+  }
+}
+@media screen and (min-width:1798px) {
+  .btnrft{
+    left: 9.4%;
+  }
+}
+@media screen and (max-width: 1444px) {
+  .btnrft{
+    left: 7.2%;
+  }
+}
+@media screen and (max-width: 980px) {
+  .btnrft{
+    left: 0.3%;
+  }
+}
+
+.view-header-container {
+
+  background: #ffffff;
+  border-bottom: 1px solid #aaaaaa;
+  .view-title {
+    min-height:36px;
+    position: relative;
+    overflow:hidden;
+    display: inline-block;
+    padding-bottom: 15px;
+
+    h2{
+      font-size:25px;
+      display:inline-block;
+      font-weight:400;
+      color:#003b49;
+      line-height: 35.7143px;
+    }
+  }
+
+  .view-title-subtitle {
+    clear:both;
+    display:block;
+    font-size:12px;
+    color:#666;
+    margin-top:0;
+  }
+
+  .view-header {
+    //width: 1199px;
+    position: relative;
+    margin: 0 auto;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+}
+
+@media screen and (min-width:900px) {
+  .mtlbl{
+    margin-left: 0.1%;
+  }
+}
+
+@media screen and (max-width: 1444px) {
+  .mtlbl{
+    margin-left: 0.1%;
+  }
+}
+@media screen and (max-width: 980px) {
+  .mtlbl{
+    margin-left: 3%;
+  }
+}
+@media screen and (max-width: 762px) {
+  .mtlbl{
+    margin-left: 3%;
+  }
+}
+
+@media screen and (min-width:900px) {
+  .mtrbl{
+    margin-right: 1.3%;
+  }
+}
+
+@media screen and (max-width: 1444px) {
+  .mtrbl{
+    margin-right: 1.3%;
+  }
+}
+@media screen and (max-width: 980px) {
+  .mtrbl{
+    margin-right:6%;
+  }
+}
+
+@media screen and (min-width:900px) {
+  .btnlft{
+    left: 0.6%;
+  }
+}
+@media screen and (min-width:1020px) {
+  .btnlft{
+    left: 2.3%;
+  }
+}
+@media screen and (min-width:1798px) {
+  .btnlft{
+    left: 4.5%;
+  }
+}
+@media screen and (min-width: 1920px) {
+  .btnlft {
+    left: 5.8%;
+  }
+}
+
+@media screen and (max-width: 1444px) {
+  .btnlft{
+    left: 0.5%;
+  }
+}
+@media screen and (max-width: 1200px) {
+  .btnlft{
+    left: 0.3%;
+  }
+}
+@media screen and (max-width: 980px) {
+  .btnlft{
+    left: 0%;
+  }
+}
+
+.staff-schedule-div{
+  margin-top: 1%;
+}
+
+.button-group{
+  position:relative;
+}
+.button-group-cancel-and-save{
+  position:relative;
+  min-width: 230px;
+}
+
+.align-left{
+  text-align: left;
+}
+
+.staff-matrix-setup{
+  color:#003b49;
+  font-size:16px;
+  font-weight: 500;
+}
+
+.left-padding{
+  padding-left:3px;
+}
+
+.add-another-schedule{
+  color:#003b49;
+  font-size:16px;
+  text-align:right
+}
+.header{
+  font-size: 18px;
+}
+
+.mat-group-tab{
+  width:82% !important;
+
+  ::ng-deep mat-tab-group {
+    width: 100% !important;
+  }
+
+  ::ng-deep .mat-ink-bar {
+    background-color: #1c6d89 !important;
+    height: 3px;
+    margin-bottom: 37px;
+  }
+  ::ng-deep .mat-tab-label
+  {
+    height: 40px;
+    padding: 0 25px;
+    background-color: #F2F4F4;
+  }
+}
+
+.mat-group-tab-cmp{
+  width:86% !important;
+
+  ::ng-deep mat-tab-group {
+    width: 100% !important;
+  }
+
+  ::ng-deep .mat-ink-bar {
+    background-color: #1c6d89 !important;
+    height: 3px;
+    margin-bottom: 37px;
+  }
+  ::ng-deep .mat-tab-label
+  {
+    height: 40px;
+    padding: 0 25px;
+    background-color: #F2F4F4;
+  }
+}
+
+::ng-deep .mat-tab-list .mat-tab-labels .mat-tab-label-active {
+  background-color: #ffffff;
+  border-top: 3px solid #1c6d89 !important;
+  border-bottom: 0px !important;
+}
+::ng-deep .mat-tab-header {
+  background-color: white;
+}
+
+.staff-schedule-tab{
+    display: flex;
+    width: 100%;
+    margin-top: 30px;
+    margin-bottom: -1px;
+    ::ng-deep .mat-tab-header{
+      background-color: transparent !important;
+    }
+    ::ng-deep .mat-tab-label{
+      border: 1px solid #aaaaaa;
+      opacity: 1;
+      border-right: 0px;
+      &:last-child{
+        border-right: 1px solid #aaaaaa;
+      }
+    }
+}
+.entity-text{
+  width: 180px;
+}
+
+.header-text {
+  margin-left: 18px;
+}
+button[target="secondary"] {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  font-size: .875rem;
+  height: 2rem;
+  border-radius: 0px;
+  cursor: pointer;
+  margin-left: 6px;
+  background-color: transparent; 
+  border: 2px solid #1c6d89;
+  color: #1c6d89;
+}
+// Redesign
+.w-25{
+  width: 25% !important;
+  float: left;
+}
+.w-75{
+  width: 75% !important;
+  float: left;
+}
+.staff-schedule-tab{
+  .w-25{
+    padding-right: 25px;
+  }
+}
+.clearfix{
+  display: table;
+  clear: both;
+  width: 100%;
+}
+.align-right{
+  text-align: right;
+}
+.pdt-10{
+  padding-top: 10px;
+}
+.pdt-20{
+  padding-top: 20px;
+}
+::ng-deep .mat-ink-bar{
+  display: none;
+}
+@media (min-width: 768px) and (max-width: 1023px){
+  .view-header, .view-content{
+    width: 100% !important;
+  }
+  .view-content{
+    .staffScheduletable{
+      width: 100%;
+      display: block;
+      tr{
+        width: 100%;
+        display: block;
+        td{
+          display: block;
+        }
+      }
+    }
+  }
+  .w-25, .w-75, .w-70, .w-60, .w-40, .w-30{
+    width: 100% !important;
+    text-align: center !important;
+    margin-bottom: 10px;
+  }
+  .staff-schedule-tab{
+    display: block !important;
+  }
+  ::ng-deep{
+    .mat-tab-labels{
+      display: block !important;
+    }
+  } 
+}
+@media (min-width: 1024px) {
+  // .view-header, .view-content{
+  //   width: 992px !important;
+  // }
+  
+  .container-fluid{
+    padding: 0 !important;
+  }
+  .mat-form-field-infix{
+    width: 170px !important;
+  }
+  
+}
+@media (min-width: 1199px) {
+  .view-header, .view-content{
+    //width: 1184px !important;
+  }
+  .view-header{
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+  .container-fluid{
+    padding: 0 !important;
+  }
+}
+@media (min-width: 1300px) {
+  .view-header, .view-content{
+    //width: 1285px !important;
+   
+  }
+  .view-header{
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+  .container-fluid{
+    padding: 0 !important;
+  }
+}
+@media (min-width : 1500px){
+  .view-header, .view-content{
+    //width: 1400px !important;
+  }
+  .view-header{
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+  .container-fluid{
+    padding: 0 !important;
+  }
+}
+@media (min-width : 1768px){
+  .view-header, .view-content{
+    //width: 1550px !important;
+  }
+  .view-header{
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+}
+.staffScheduleContainer{
+  background-color: #fff;
+  padding: 20px 25px;
+  border: 1px solid #aaaaaa;
+  border-right: none;
+  border-left: none;
+  .staff-planner-header{
+    h5{
+      display: inline-block;
+    }
+    .buttonContainer{
+      float: right;
+      display: inline-block;
+      button{
+        margin-left: 10px;
+        &.secondry{
+          background-color: #fff; 
+          border: 2px solid #1c6d89;
+          color: #1c6d89; 
+        }
+      }
+    }
+  }
+  .staffScheduleListContainer{
+    margin-top: 20px;
+    .SFlist{
+      margin-bottom: 20px;
+    }
+  }
+}

@@ -1,0 +1,86 @@
+<style> html {
+  display: none;
+} </style>
+<script>
+  if (top !== self) {
+    document.documentElement.style.display = 'none';
+  } // Attempt to escape frame
+  else {
+    document.documentElement.style.display = 'block';
+  } // If not in frame, make html visible
+</script>
+<div class="view-header-container">
+  <div class="view-header">
+    <div class="form-group clearfix pdt-20">
+      <div class="w-25">
+        <span class="view-title mtlbl">
+          <!--  <h2> Schedule Setup</h2>
+          <br>-->
+            <h5 class="header">PLAN: {{planDetails.name}}</h5>
+        </span>
+      </div>
+      <div  class="staff-schedule-div w-75 align-right" >
+        <span>
+           <mat-form-field class="entity-text">
+                <input matInput class="headerinput" placeholder="ENTITY" [value]="entitydisplayval" disabled="true">
+            </mat-form-field>
+            <mat-form-field class="header-text">
+                <input matInput class="headerinput" placeholder="DEPARTMENT" [value]="departmentdisplayval" disabled="true">
+            </mat-form-field>
+            <mat-form-field class="header-text">
+                <input matInput class="headerinput" placeholder="ANNUAL BUDGETED VOLUME" [value]="annualBudgetdisplayval" disabled="true">
+            </mat-form-field>
+            <mat-form-field class="header-text">
+                <input matInput class="headerinput" placeholder="PRIMARY TARGET WHpU/WHpD" [value]="primaryWHpUdisplayval" disabled="true">
+            </mat-form-field>
+        </span>
+        <br>
+
+        <div class="button-group" *ngIf="false&&btnExittxt">
+          <button class="submitBtn pointer rdcorn" (click)="clickonbackbutton()" target="secondary">Cancel</button>
+          <button id='save-exit' class="submitBtn pointer rdcorn" (click)="saveAndExitScheduleDetails()" target="secondary">{{btnExittxt}}</button>
+         <!-- <button id='plan-next' class="submitBtn pointer rdcorn" color="primary" (click)="saveAndNextScheduleDetails()">{{btnNexttxt}}</button>-->
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="filler" class="view-content">
+    <div class="clearfix">
+      <div class="staff-schedule-tab">
+        <div class="w-75" [ngClass]=" (planDetails.planCompleted) ? 'mat-group-tab-cmp' : 'mat-group-tab'">
+          <mat-tab-group (selectedTabChange)="checkTabChange()" #pageGroup  [selectedIndex]="previousIndex">
+            <mat-tab label="Staffing Plan Setup" [disabled]="false">
+            </mat-tab>
+            <mat-tab label="Off Grid Activities" *ngIf="!systemFlag" [disabled]="false">
+            </mat-tab>
+            <mat-tab label="Grid Setup" [disabled]="false">
+            </mat-tab>
+            <mat-tab label="Staffing Grid" [disabled]="false">
+            </mat-tab>
+          </mat-tab-group>
+        </div>
+        <div class="button-group-cancel-and-save w-25 align-right" *ngIf="btnExittxt">
+          <button [hidden]="planDetails.planCompleted"  class="submitBtn pointer rdcorn" (click)="clickonbackbutton()" target="secondary">Cancel</button>
+          <button  id='save-exit' class="submitBtn pointer rdcorn" (click)="saveAndExitScheduleDetails()" target="secondary">{{btnExittxt}}</button>
+          <!-- <button id='plan-next' class="submitBtn pointer rdcorn" color="primary" (click)="saveAndNextScheduleDetails()">{{btnNexttxt}}</button>-->
+        </div>
+      </div>
+    </div>
+    <div class="staffScheduleContainer">
+      <div class="staff-planner-header">
+        <h5>Grid Setup</h5>
+        <span class="buttonContainer">
+          <button *ngIf="!planDetails.planCompleted" id='plan-next' class="btn-add-another" (click)="addSchedule()" color="primary" target="secondary">Add Plan</button>
+        </span>
+      </div>
+      <div class="staffScheduleListContainer">
+        <div class="SFlist" *ngFor="let objSchedule of planDetails.staffScheduleList; let idx=index">
+          <app-schedule-control *ngIf="this.planDetails.staffScheduleList" (getScheduleData)="onSchedule($event)" (onclick)="removeschedule($event)" (onchange)="checkScheduledays($event)" [objSchedule]="objSchedule"  [planDetails]="planDetails" [id]=getId(idx)></app-schedule-control>
+        </div>
+      </div>
+    </div>
+</div>
+

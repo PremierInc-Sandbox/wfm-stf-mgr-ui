@@ -1,0 +1,31 @@
+.footer{
+  color:#fff;
+  font-size:12px;
+  padding:10px;
+  text-align:center;
+  background:#003b49;
+  left:0;
+  right:0;
+  height:35px;
+  display:block;
+  float: left;
+  width: 100%;
+
+  a {
+    color:#fff;
+  }
+
+  .footer-info{
+    margin:0 5px;
+
+    &:first-child{
+      margin:0
+    }
+  }
+}
+
+@media (max-width: 749px) {
+  .footer {
+    text-align: center;
+  }
+}

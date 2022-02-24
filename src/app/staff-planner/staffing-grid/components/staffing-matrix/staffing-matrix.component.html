@@ -1,0 +1,171 @@
+<style> html {
+  display: none;
+} </style>
+<script>
+  if (top !== self) {
+    document.documentElement.style.display = 'none';
+  } // Attempt to escape frame
+  else {
+    document.documentElement.style.display = 'block';
+  } // If not in frame, make html visible
+</script>
+<div class="container-fluid pd-15">
+  <div class="staffing-matrix-container">
+    <div class="row">
+      <div class="col-sm-2 matrixTitle">Staffing Grid</div>
+      <div class="col-sm-3 matrixLegend align-self-end">
+        <div class="row">
+          <div class="col-sm-5 container">
+            <div class="row align-items-center">
+              <app-svg-icon name="check-circle" color="green" size="18"></app-svg-icon>
+              <span class="span-text">On or Below Target</span>
+            </div>
+          </div>
+          <div class="col-sm-5 container">
+            <div class="row align-items-center">
+              <app-svg-icon name="x-circle" color="red" size="18"></app-svg-icon>
+              <span class="span-text">Above Target</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container1 matrixBtnGroup">
+        <div class="row justify-content-end">
+          <button class="submitBtn pointer rdcorn top-align top-align-reset" *ngIf="!planDetails.planCompleted" (click)="resetForm()" target="secondary">Reset to Original</button>
+          <button class="submitBtn pointer rdcorn top-align" (click)="captureStaffingScreen()" target="secondary">Print to PDF</button>
+        </div>
+      </div>
+    </div>
+    <div class="table matrixTable marBot">
+      <div class="table marBot" id="staffingSchedule">
+        <div class="thead sticky-top d-inline-flex">
+          <div class="stickyLeft">
+            <div class="census-prod stickyHead">
+              <table>
+                <tr class="tableHeaderRow ">
+                  <th scope="col" class="indexCol cap-bot" [ngClass]="this.scheduleData.planShiftList.length === 1? ' tap-bot': 'cap-bot' ">
+                    <div class="censusHeaderdivparent" >
+                      <div class="censusHeaderdivchild1">
+                        <a (click)="sortByCensus()" class="top-align-reset" > Census</a>
+                      </div>
+                      <div class="censusHeaderdivchild2">
+                        <app-svg-icon *ngIf='sortOrder==="ASC"' (click)="sortByCensus()" name="arrow-up" color="gray" size="16"></app-svg-icon>
+                        <app-svg-icon *ngIf='sortOrder==="DESC"' (click)="sortByCensus()" name="arrow-down" color="gray" size="16"></app-svg-icon>
+                      </div>
+                    </div>
+                  </th>
+                  <th scope="col" class="indexColPercentHeader cap">Productivity Index (%)
+                  </th>
+                  <th scope="col" class="indexColPercentHeader cap ">Daily hours Variance to Target
+                  </th>
+                </tr>
+              </table>
+            </div>
+
+            <div>
+              <table>
+                <tr>
+                  <td class="shiftCol bord-right" *ngFor="let shift of scheduleData.planShiftList; let i = index">
+                    <table>
+                      <tr *ngFor="let cen of shift.staffGridCensuses; let j = index" [ngClass]="{'bestOption': cen.censusIndex===roundAverage(this.planDetails.utilizedAverageVolume)}">
+                        <div class="b-bot">
+                          <table>
+                            <tr>
+                              <td class="indexCol contents" *ngIf="i===0">
+                                <div matTooltip ="Census">{{ cen.censusIndex }}</div></td>
+                              <td class="indexColPercent contents" *ngIf="i===0">
+                                <div class="left-fix-icon">
+                                  <app-svg-icon *ngIf="!checkProductivityIndex(cen.productivityIndex)" name="x-circle" color="red"  size="15"></app-svg-icon>
+                                  <app-svg-icon *ngIf="checkProductivityIndex(cen.productivityIndex)" name="check-circle" color="green" size="15"></app-svg-icon>
+                                </div>
+                                <div matTooltip ="Productivity Index (%)" class="left-fix-text">
+                                  {{ (check(cen.productivityIndex)?cen.productivityIndex:0) | percent: '.2'}}
+                                </div>
+                              </td>
+                              <td class="indexColPercent contents" *ngIf="i===0">
+                                <div matTooltip="Daily hours Variance to Target">
+                                {{getDailyVarianceHoursForCensus(cen.censusIndex)}}
+                                </div>
+                              </td>
+                            </tr>
+                          </table>
+                        </div>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div class=" bord-left table marBot">
+            <div class="stickyHead">
+              <table>
+                <tr>
+                  <th scope="col" class="shiftHeadCol" *ngFor="let shift of scheduleData.planShiftList; let rownum=index">
+                    <table>
+                      <tr>
+                        <td [colSpan]="getColSpan(shift)" style="padding: 0em;width: 100%;">
+                          <div class="shiftHeader">
+                          <div [ngClass]="shift.name.length >8 &&  (getColSpan(shift) === 1||getColSpan(shift) === 2) ? 'shiftName-shrink' : 'shiftName'">
+                            {{ shift.name }}
+                          </div>
+                          <div class="copyShift back-color">
+                            <select class="selectBox"  [compareWith]="compareObjects" [(ngModel)]="this.copyToShiftKey" (change)="duplicateTimePeriod(shift, $event)" [disabled]="this.planDetails.planCompleted" >
+                              <option value='default' disabled hidden>Duplicate period to</option>
+                              <ng-container *ngFor="let timePeriod of scheduleData.planShiftList">
+                                <option *ngIf="timePeriod.key !== shift.key" [ngClass]="{'option-disabled': checkPatientToStaffEnabled(shift, timePeriod)}" class="select-option" [disabled]="checkPatientToStaffEnabled(shift, timePeriod)" [value]="timePeriod.key">{{timePeriod.name}}</option>
+                              </ng-container>
+                            </select>
+                          </div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td [ngClass]="getColSpan(shift) == 1 || getColSpan(shift) == 2 ? 'singleShift' : ''" [colSpan]="getColSpan(shift)" class="shiftPeriod">{{getShiftTimeString(rownum)}}</td>
+                      </tr>
+                      <tr>
+                        <td  *ngFor="let stpTitle of shift.staffToPatientList" [ngClass]="stpTitle.activeFlag? 'staffTitle' : 'hide'">
+                          <div *ngIf="stpTitle.activeFlag"   matTooltip="{{stpTitle.variablePositionCategoryDescription}}">{{stpTitle.variablePositionCategoryAbbreviation}}
+                          </div>
+                        </td>
+                        <td *ngIf="shift.activeFlag" class="staffTitle">Patient to Staff</td>
+                      </tr>
+                    </table>
+                  </th>
+                </tr>
+              </table>
+            </div>
+            <div >
+              <table>
+                <tr>
+                  <td class="shiftCol" *ngFor="let shift of scheduleData.planShiftList; let i = index">
+                    <table [ngClass]="getColSpan(shift) == 1 || getColSpan(shift) == 2 ? 'singleShift2' : ''">
+                    <tr *ngFor="let cen of shift.staffGridCensuses; let j = index" [ngClass]="{'bestOption': cen.censusIndex===roundAverage(this.planDetails.utilizedAverageVolume)}">
+                      <div class="shiftColRow"[ngClass]="getColSpan(shift) == 1  || getColSpan(shift) == 2? 'singleShiftRow' : ''">
+                        <table>
+                          <tr>
+                            <td class="shiftColCell" *ngFor="let stp of cen.staffToPatientList; let k = index" [ngClass]="{'hide':!stp.activeFlag,'singleShiftRowBorderBottom':getColSpan(shift) == 1 || getColSpan(shift) == 2}">
+                              <div  *ngIf="stp.activeFlag" matTooltip="{{planDetails.variableDepartmentPositions[k].categoryDescription}}">
+                              <input [disabled]="planDetails.planCompleted" type="number" pattern="[0-9]" (keypress)="numberOnly($event);" maxlength="2" placeholder="0" [(ngModel)]="stp.staffCount" class="staffNoInputBox"
+                                    id="{{'grid-'+i+j+k}}" appAutofocus #inputs  />
+                              </div>
+                            </td>
+                            <td *ngIf="shift.activeFlag" class="b-right shiftColCell" [ngClass]="getColSpan(shift) == 2? 'singleShiftRowBorderBottom' : ''">
+                              <div matTooltip="Patient to Staff">{{getAverage(cen)}}</div>
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                    </tr>
+                  </table>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

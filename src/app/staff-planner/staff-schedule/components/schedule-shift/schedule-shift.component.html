@@ -1,0 +1,66 @@
+<style> html {
+  display: none;
+} </style>
+<script>
+  if (top !== self) {
+    document.documentElement.style.display = 'none';
+  } // Attempt to escape frame
+  else {
+    document.documentElement.style.display = 'block';
+  } // If not in frame, make html visible
+</script>
+<div class="schedule-shift">
+  <div class="shiftContainer">
+    <div class="shiftDetails">
+      <div class="shiftName">
+        <label for="">Time Period Name</label>
+        <input [disabled]="planDetails.planCompleted" type="text" class="shift-name" placeholder="Period Name" (change)="validateShiftName(objShift);" [(ngModel)]="objShift.name" />
+      </div>
+      <div class="shiftHours">
+        <label for="">Hours</label>
+        <input class="shift-hours" [disabled]="planDetails.planCompleted"  type="number" (keypress)="validateShiftLength($event)" (change)="validatehour(objShift);" min="1" max="24"
+               [(ngModel)]="objShift.hours"/>
+      </div>
+      <div class="shiftStartTime">
+        <label for="">Start Time</label>
+        <!-- <input [disabled]="planDetails.planCompleted" maxlength="5" type="time" (change)="ValidateShifttime(objShift)" class="less-padding" [ngClass]="{ 'hasError' : shiftTimeError }"  (keydown)="numberOnlyForTime($event)" (keypress)="numberOnlyForTime($event)" [(ngModel)]="objShift.startTime"> -->
+        <ngx-timepicker-field [disabled]="planDetails.planCompleted" [buttonAlign]="'left'" [format]="24" (timeChanged)="ValidateShifttime(objShift) " [(ngModel)]="objShift.startTime" ></ngx-timepicker-field>
+        <div class="Error text-left">{{shiftTimeError}}</div>
+      </div>
+      <div class="shiftTimeFormat">
+        <label for="" class="blockElm">Include in Patients to Staff on Staffing Grid?</label>
+        <label class="switch">
+          <input [disabled]="planDetails.planCompleted" class="switch-input"
+                 [(ngModel)]="objShift.activeFlag" type="checkbox" checked />
+          <span class="switch-label" data-on="YES" data-off="NO"></span>
+          <span class="switch-handle"></span>
+        </label>
+      </div>
+      <div class="shiftIcons">
+        <app-svg-icon (click)="duplicateShift()" *ngIf="!planDetails.planCompleted" matTooltip="Copy Time Period" class="pointer" name="copy" color="#666666" size="20"></app-svg-icon>
+        <app-svg-icon (click)="removeShift(objShift)" *ngIf="objSchedule.planShiftList.length>1&&!planDetails.planCompleted" matTooltip="Remove Time Period" class="pointer" name="trash-2" color="#007994" size="20"></app-svg-icon>
+        <app-svg-icon *ngIf="objSchedule.planShiftList.length===1&&!planDetails.planCompleted" matTooltip="Remove Time Period" class="pointer" name="trash-2" color="lightgrey" size="20"></app-svg-icon>
+
+      </div>
+      <div>
+        <span *ngFor="let err of objShift.errormsg" class="Error">{{err}}</span>
+      </div>
+    </div>
+    <div class="shiftInfo">
+      <div>Pre-Populate Patients to Staff on Grid<em matTooltip="For every x number of patients, a staff member is required" class="tool-tip-margin"><sup><div class="round round-sm hollow blue">i</div></sup></em></div>
+      <div class="infoDetails">
+        <div class="info" *ngFor="let patient of objShift.staffToPatientList; let i = index;">
+          <div class="checkbox">
+            <mat-checkbox [disabled]="planDetails.planCompleted" [(ngModel)]="patient.activeFlag"  [checked]="patient.activeFlag" (change)="togglePatient(i)"> {{patient.variablePositionCategoryAbbreviation}}
+            </mat-checkbox>
+          </div>
+          <div>
+            <label for="">From 1 to:</label>
+            <input type="number" (keypress)="validateShiftLength($event)" min="0" [disabled]="!patient.activeFlag || planDetails.planCompleted" [(ngModel)]="patient.staffCount" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

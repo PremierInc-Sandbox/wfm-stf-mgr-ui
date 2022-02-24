@@ -1,0 +1,55 @@
+@mixin dialog-modal($height, $header-height, $margin, $footer-height: 0px) {
+
+  $content-height: $height - ($header-height + 2*$margin + $footer-height);
+
+  .modal-header {
+    background: #003b49;
+    height: $header-height;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+    vertical-align: middle;
+  }
+
+  .mat-dialog {
+    &-title {
+      padding-left: 24px;
+      margin: 0;
+      align-self: center;
+    }
+    &-content {
+
+      max-height: $content-height;
+      height: $content-height;
+
+      margin: $margin 0;
+    }
+
+    &-actions {
+      @if $footer-height > 0 { height: $footer-height; }
+      margin: 0 $margin;
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+
+  .close-modal {
+    font-size: 24px;
+    display: flex;
+    padding-right: 24px;
+
+    &-button {
+      align-self: center;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+@mixin under-ie() {
+  @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    @content
+  }
+}

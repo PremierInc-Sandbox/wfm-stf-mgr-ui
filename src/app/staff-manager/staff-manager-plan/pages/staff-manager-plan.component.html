@@ -1,0 +1,101 @@
+<style> html {
+  display: none;
+} </style>
+<script>
+  if (top !== self) {
+    document.documentElement.style.display = 'none';
+  } // Attempt to escape frame
+  else {
+    document.documentElement.style.display = 'block';
+  } // If not in frame, make html visible
+</script>
+<div class="view-header-container" xmlns:number="http://www.w3.org/1999/xhtml">
+  <div class="view-header">
+      <span class="view-title">
+          <h2>Staff Manager</h2>
+      </span>
+    <div class="title-and-controls">
+      <div class="display-inline-right">
+        <mat-form-field class="entity-text">
+          <input matInput class="headerinput" [disabled]="staffVariance.recordStatusKey>0 || staffVariance.planAlreadyInUse" placeholder="ENTITY"[value]="entitydisplayval" disabled="true">
+        </mat-form-field>
+      </div>
+      <div class="display-inline">
+        <mat-form-field class="entity-text">
+          <input matInput class="headerinput" [disabled]="staffVariance.recordStatusKey>0 || staffVariance.planAlreadyInUse" placeholder="DEPARTMENT"[value]="departmentdisplayval" disabled="true">
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="view-body-container">
+  <div class="view-body">
+    <span class="view-plan">Plan: <span>{{this.planDetails.name}}</span>
+                <p class="elementToFadeInAndOut" *ngIf="this.autoSavedStatus!==''">
+          {{autoSavedStatus}}
+      </p>
+       <p class="timerToFadeInAndOut" *ngIf="this.countDownStatus!==''">
+          {{countDownStatus}}
+      </p>
+  </span>
+    <div class="body-date-controls">
+      <div class="display-inline-right">
+        <mat-form-field class="matforminput">
+          <input matInput class="headerinput" [disabled]="staffVariance.recordStatusKey===4 || staffVariance.planAlreadyInUse" placeholder="DATE" [value]="todayDate" readonly>
+        </mat-form-field>
+      </div>
+      <div class="display-inline">
+        <mat-form-field class="matforminput">
+          <input matInput class = "headerinput" [disabled]="staffVariance.recordStatusKey===4 || staffVariance.planAlreadyInUse" placeholder ="TIME"[value]="todayTime.toLocaleString()"readonly>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+</div>
+<app-staff-manager-plan-score-card #scorecard *ngIf="staffVariance && planDetails.oAStaffingMetric" [staffVariance]='staffVariance' [planDetails]='planDetails'></app-staff-manager-plan-score-card>
+<div class="card-container-rep">
+  <div class="card-header" *ngIf="!futureFlag && !staffVariance.planAlreadyInUse">Staffing Calculator
+  <span *ngIf="featureToggleFlag" class="view-day f-weight">View Day:
+    <select (change)="openDialogForDates()" [(ngModel)]="this.modelDate">
+      <option *ngFor="let date of dates" [value]="date" [disabled]="date=='---------------'">{{date}}</option>
+    </select>
+  </span>
+  </div>
+  <div class="card-header" *ngIf="!futureFlag && staffVariance.planAlreadyInUse">Staffing Calculator
+    <span *ngIf="featureToggleFlag" class="view-day f-weight">View Day:
+    <select (change)="openDialogForDates()" [(ngModel)]="this.modelDate">
+      <option *ngFor="let date of dates" [value]="date" [disabled]="date">{{date}}</option>
+    </select>
+  </span>
+  </div>
+
+  <div class="card-header" *ngIf=futureFlag>Future Staffing Calculator
+    <span *ngIf="featureToggleFlag" class="view-day f-weight">View Day:
+    <select (change)="openDialogForDates()" [(ngModel)]="this.modelDate">
+      <option *ngFor="let date of dates" [value]="date" [disabled]="date=='---------------'">{{date}}</option>
+    </select>
+  </span>
+  </div>
+  <div class="card-header2">
+    <button *ngIf="!staffVariance.planAlreadyInUse && !staffVariance.disableFlag " class="pointer top-align-reset" [ngClass]="(staffVariance.recordStatusKey===4)?'hoverDisabled': 'pointer' "
+            (click)="resetForm()" [disabled]="staffVariance.recordStatusKey===4" target="secondary">Reset Form
+    </button>
+    <button class=" submitBtn rdcorn margin-left" target="secondary" (click)="openDialog()">EXIT</button>
+    <button *ngIf="!staffVariance.planAlreadyInUse && !staffVariance.disableFlag"  class="submitBtn pointer rdcorn margin-left" target="secondary" (click)="saveAndExitStaffingDetails(false)"> Save & Exit
+    </button>
+    <button *ngIf="!staffVariance.planAlreadyInUse && !staffVariance.disableFlag" class="submitBtn pointer rdcorn margin-left" (click)="saveStaffingDetails()"> Save
+    </button>
+  </div>
+</div>
+
+<app-staff-manager-plan-calculator #calculator *ngIf="staffVariance && planDetails" [staffVariance]='staffVariance' [predictedValues]='predictedValues' [planDetails]='planDetails'></app-staff-manager-plan-calculator>
+
+
+
+
+
+
+
+
+
+
