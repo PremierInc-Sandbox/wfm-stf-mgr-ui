@@ -1,0 +1,37 @@
+<style> html {
+  display: none;
+} </style>
+<script>
+  if (top !== self) {
+    document.documentElement.style.display = 'none';
+  } // Attempt to escape frame
+  else {
+    document.documentElement.style.display = 'block';
+  } // If not in frame, make html visible
+</script>
+<div class="card" role="document">
+  <!--Content-->
+
+    <div class="card-header popup-header">
+      Save Plan Confirmation
+
+      <button class="close" data-dismiss="modal" aria-label="Close" (click) = "toggleModalHide()">
+        <span aria-hidden="false">&times;</span>
+      </button>
+    </div>
+    <div class="card-body">
+      <h4>Enter Required Information</h4>
+      <p class="card-text">
+        Required fields are missing.<br>
+        Click <strong>Return to Plan</strong> to add the required information and save your changes. <br>
+        Click <strong>Discard Changes</strong> to exit the plan without saving.
+      </p>
+    </div>
+
+    <div class="card-footer  text-right">
+      <button type="button" data-dismiss="modal" class="submitbutton" (click) = "toggleModalHide()" [routerLink]="['/plan-setup']">Return to Plan</button>
+      <button  type="button" data-dismiss="modal" class="discardChanges" id ="save-exit" (click) = "toggleModalHide()" [routerLink]="['/home']">Discard Changes</button>
+    </div>
+
+
+</div>

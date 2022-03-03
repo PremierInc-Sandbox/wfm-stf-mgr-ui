@@ -1,0 +1,317 @@
+<div class="staffing-matrix-container">
+  <table class="table-color table table-bordered table-responsive table-top">
+    <th scope="col">
+      <div *ngIf="featureToggleFlag" class="row small header-style row-height">
+        <div class="col mr-bot">SHIFT</div>
+      </div>
+      <div *ngIf="featureToggleFlag" class="row small header-style row-height">
+        <div class="col mr-bot">CENSUS</div>
+      </div>
+      <div class="row header-height header-width">
+        <div class="col align-center">
+          ROLES
+        </div>
+      </div>
+    </th>
+    <th scope="col" *ngFor="let staffSummary of staffVariance.staffVarianceSummaries; let i=index">
+      <div class="row small header-style row-height">
+        <div class="col mr-bot">{{staffSummary.shiftTimeRange}}</div>
+        <div *ngIf="!featureToggleFlag" class = "col pr-0"> Census:</div>
+        <div *ngIf="!featureToggleFlag" class = "col centre-align pl-0">
+          <div class="census-input">
+            <input type="text" [tabindex]="getTabIndex(i)" [disabled]="staffVariance.recordStatusKey===4 || staffVariance.planAlreadyInUse"
+                   name="{{'census-'+i}}" appAutofocus id="{{'census-'+i}}" (keypress)="numberOnlyForCensus($event)"
+                   class="actual-text-box-m width-census input-cancel"
+                   (keyup)="censusDialog(i,staffSummary.censusValue)" [value]=staffSummary.censusValue
+                   [(ngModel)]=staffSummary.censusValue maxlength="2" data-clear-btn="true">
+            <button *ngIf="staffSummary.censusValue&&staffVariance.recordStatusKey!==4" [disabled]="staffVariance.planAlreadyInUse" (click)="clear(i)" class="button-cancel-margin">x</button>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="featureToggleFlag" class="row small header-style row-height">
+        <div class = "col centre-align pl-0 m-topBox">
+          <div class="census-input mar-lft">
+            <input type="text" [tabindex]="getTabIndex(i)" [disabled]="staffVariance.recordStatusKey===4|| staffVariance.planAlreadyInUse || staffVariance.disableFlag"
+                   [ngClass]="staffVariance.recordStatusKey===4 || staffVariance.planAlreadyInUse || staffVariance.disableFlag?'black':''"
+                   name="{{'census-'+i}}" appAutofocus id="{{'census-'+i}}" (keypress)="numberOnlyForCensus($event)"
+                   class="actual-text-box-m input-cancel"
+                   (keyup)="censusDialog(i,staffSummary.censusValue)" [value]=staffSummary.censusValue
+                   [(ngModel)]=staffSummary.censusValue maxlength="2" data-clear-btn="true">
+            <button *ngIf="staffSummary.censusValue&&staffVariance.recordStatusKey!==4" [disabled]="staffVariance.planAlreadyInUse" (click)="clear(i)" class="button-cancel-margin">x</button>
+          </div>
+        </div>
+        <div class ="m-top"><span class="col f-size">Predicted:</span><span class ="m-right">{{staffSummary.predictedCount?staffSummary.predictedCount:'N/A'}}</span><em *ngIf="!staffSummary.predictedCount" matTooltip="Insufficient history to get the prediction"><sup>
+          <div class="round round-sm hollow blue">i</div></sup></em><br/></div>
+      </div>
+      <div class = "row small width-actual">
+        <div class = "col">{{actualValue}}</div>
+        <div class = "col">{{plannedValue}}</div>
+        <div class = "col">Variance</div>
+      </div>
+    </th>
+
+    <th scope="col">
+      <div [ngClass]="featureToggleFlag ? 'total-hours' : 'total-hours-Feature'"class = "row mar-right small header-style ">
+        <div [ngClass]="featureToggleFlag ? 'margin-bottom' : 'margin-bottom-Feature'"class="col">TOTAL HOURS</div>
+      </div>
+      <div class = "row mr-0 small width-actual ">
+        <div class="total-hour-col-0">Daily</div>
+        <div class="pd-right total-hour-col-1">Planned</div>
+        <div class="total-hour-feather-icon">Variance</div>
+      </div>
+    </th>
+
+    <tr class="vert-align" *ngFor="let varPosition of planDetails.variableDepartmentPositions; let i=index">
+      <td><div matTooltip="{{varPosition.categoryDescription}}" class="tool-tip-margin">{{varPosition.categoryAbbreviation}}</div></td>
+
+      <td *ngFor="let staffSummary of staffVariance.staffVarianceSummaries;let summaryIndex=index" class="flex-column">
+        <div class="row">
+          <div class="col"*ngIf="!dateCheck">
+            <input type="text" [tabindex]="getTabIndex(summaryIndex)" [disabled]="!staffSummary.isCensusvalid || staffVariance.recordStatusKey===4 || staffVariance.planAlreadyInUse" (keypress)="numberOnly($event,i,summaryIndex)" class="actual-text-box" [(ngModel)] = "staffSummary.staffVarianceDetails[i].actualCount" maxlength="5">
+          </div>
+          <div class="col" *ngIf="dateCheck">
+            <input type="text" [tabindex]="getTabIndex(summaryIndex)" [disabled]="!staffSummary.isCensusvalid || staffVariance.recordStatusKey===4|| staffVariance.planAlreadyInUse" (keypress)="numberOnlyforSchedCount($event,i,summaryIndex)" class="actual-text-box" [(ngModel)] = "staffSummary.staffVarianceDetails[i].scheduleCount" maxlength="5">
+          </div>
+          <div class="col">
+            {{this.alertBox.getPlannedhoursForCensus(staffVariance,summaryIndex,staffSummary.censusValue,i,planDetails.censusRange.minimumCensus,planDetails.censusRange.maximumCensus)}}
+          </div>
+          <div class="col left-fix" *ngIf="!dateCheck">
+            <div class="width-data-m left-fix highlight-red" *ngIf="this.alertBox.getVariancehoursForCensus(staffVariance,summaryIndex,staffSummary.censusValue,i,staffSummary.staffVarianceDetails[i].actualCount)>0">
+              {{this.alertBox.getVariancehoursForCensus(staffVariance,summaryIndex,staffSummary.censusValue,i,staffSummary.staffVarianceDetails[i].actualCount)}}
+            </div>
+            <div class="width-data-m left-fix" *ngIf="this.alertBox.getVariancehoursForCensus(staffVariance,summaryIndex,staffSummary.censusValue,i,staffSummary.staffVarianceDetails[i].actualCount) == 0 || this.alertBox.getVariancehoursForCensus(staffVariance,summaryIndex,staffSummary.censusValue,i,staffSummary.staffVarianceDetails[i].actualCount) ==='-'">
+              {{this.alertBox.getVariancehoursForCensus(staffVariance,summaryIndex,staffSummary.censusValue,i,staffSummary.staffVarianceDetails[i].actualCount)}}
+            </div>
+            <div class="width-data left-fix" *ngIf="this.alertBox.getVariancehoursForCensus(staffVariance,summaryIndex,staffSummary.censusValue,i,staffSummary.staffVarianceDetails[i].actualCount)<0">
+              ({{-1*this.alertBox.getVariancehoursForCensus(staffVariance,summaryIndex,staffSummary.censusValue,i,staffSummary.staffVarianceDetails[i].actualCount)}})
+            </div>
+          </div>
+
+          <div class="col left-fix" *ngIf="dateCheck">
+            <div class="width-data-m left-fix highlight-red" *ngIf="this.alertBox.getVariancehoursForCensus(staffVariance,summaryIndex,staffSummary.censusValue,i,staffSummary.staffVarianceDetails[i].scheduleCount)>0">
+              {{this.alertBox.getVariancehoursForCensus(staffVariance,summaryIndex,staffSummary.censusValue,i,staffSummary.staffVarianceDetails[i].scheduleCount)}}
+            </div>
+            <div class="width-data-m left-fix" *ngIf="this.alertBox.getVariancehoursForCensus(staffVariance,summaryIndex,staffSummary.censusValue,i,staffSummary.staffVarianceDetails[i].scheduleCount) == 0 || this.alertBox.getVariancehoursForCensus(staffVariance,summaryIndex,staffSummary.censusValue,i,staffSummary.staffVarianceDetails[i].scheduleCount) ==='-'">
+              {{this.alertBox.getVariancehoursForCensus(staffVariance,summaryIndex,staffSummary.censusValue,i,staffSummary.staffVarianceDetails[i].scheduleCount)}}
+            </div>
+            <div class="width-data left-fix" *ngIf="this.alertBox.getVariancehoursForCensus(staffVariance,summaryIndex,staffSummary.censusValue,i,staffSummary.staffVarianceDetails[i].scheduleCount)<0">
+              ({{-1*this.alertBox.getVariancehoursForCensus(staffVariance,summaryIndex,staffSummary.censusValue,i,staffSummary.staffVarianceDetails[i].scheduleCount)}})
+            </div>
+          </div>
+
+        </div>
+      </td>
+      <td>
+        <div class = "row">
+          <div class = "total-hour-daily-align pl-0 pr-0 total-hour-col-0">
+            {{getActualTotalForVariablePosition(i) | number: '0.1'}}
+          </div>
+          <div class = " pl-0 pr-0 total-hour-col-1" >
+            {{getPlannedTotalForVariablePosition(i) | number: '0.1'}}
+          </div>
+          <div class = " pl-0 pr-0 inherit-feather total-hour-feather-align total-hour-val-0" *ngIf="getTotalVarianceForVariablePosition(i)===0">
+            <div>{{getTotalVarianceForVariablePosition(i) | number: '0.1'}}</div>
+          </div>
+          <div class = " highlight-red inherit-feather pl-0 pr-0 total-hour-feather-align total-hour-feather-icon"  *ngIf="getTotalVarianceForVariablePosition(i)<0">
+            <div class ="width-fit">{{-1 * getTotalVarianceForVariablePosition(i) | number: '0.1'}}</div>
+            <div class="right-fix"><app-svg-icon name="x-circle" color="red"  size="16" class="subicon"></app-svg-icon></div>
+          </div>
+          <div class = "inherit-feather left-width pr-0" *ngIf="getTotalVarianceForVariablePosition(i)>0">
+            <div></div> <div>{{getTotalVarianceForVariablePosition(i) | number: '0.1'}}</div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr class="vert-align">
+      <td><div>Additional Staff</div></td>
+      <td *ngFor="let staffSummary of staffVariance.staffVarianceSummaries; let add=index" class="flex-column">
+        <div class="row">
+          <div class = "col">
+            <input type="text" [tabindex]="getTabIndex(add)" [disabled]="!staffSummary.isCensusvalid || staffVariance.recordStatusKey===4 ||  staffVariance.planAlreadyInUse" (keypress)="numberAndDecOnly($event,add)"  class="actual-text-box" [(ngModel)] = "staffSummary.additionalStaffHours" [value]= staffSummary.additionalStaffHours maxlength="5">
+          </div>
+          <div class = "col">
+            0.00
+          </div>
+
+          <div class="col left-fix">
+            <!--<div class="width-data left-fix" *ngIf="staffSummary.additionalStaffHours==0">-->
+            <!--{{staffSummary.additionalStaffHours | number: '0.2-2'}}-->
+            <!--</div>-->
+            <div class="width-data highlight-red" *ngIf="staffSummary.additionalStaffHours>0">
+              {{staffSummary.additionalStaffHours| number: '0.2-2'}}
+            </div>
+            <div class="width-data" *ngIf="staffSummary.additionalStaffHours==0">
+              {{staffSummary.additionalStaffHours| number: '0.2-2'}}
+            </div>
+            <div class="width-data" *ngIf="staffSummary.additionalStaffHours == null || staffSummary.additionalStaffHours == undefined ">
+              -
+            </div>
+          </div>
+        </div>
+      </td>
+      <td>
+        <div class = "row width-actual">
+          <div class = "total-hour-daily-align total-hour-col-0 pl-0 pr-0">{{getAdditionalStaffTotalhours()| number: '0.1'}}</div>
+          <div class = "total-hour-col-1 pl-0 pr-0">0.0</div>
+          <div class = "total-hour-val-0 pl-0 pr-0 inherit-feather total-hour-feather-align" *ngIf="getAdditionalStaffTotalhours()===0">
+            <div>{{getAdditionalStaffTotalhours() | number: '0.1'}}</div>
+          </div>
+          <div class = "total-hour-feather-icon inherit-feather pl-0 pr-0 total-hour-feather-align" *ngIf="getAdditionalStaffTotalhours()>0">
+            <div class="width-fit">{{ getAdditionalStaffTotalhours() | number: '0.1'}}</div>
+            <!--<div class="right-fix"><app-svg-icon name="x-circle" color="red"  size="16" class="subicon"></app-svg-icon></div>-->
+          </div>
+        </div>
+      </td>
+    </tr>
+
+
+    <tr class="vert-align gray-bg">
+      <td class="gray-bg"><div>TOTALS</div></td>
+      <td *ngFor="let staffSummary of staffVariance.staffVarianceSummaries;let summaryIndex=index" class="flex-column">
+        <div class="row">
+          <div class = "col">{{this.alertBox.getActualTotal(staffVariance, summaryIndex)}}</div>
+          <div class = "col">{{getPlannedTotal(summaryIndex)}}</div>
+
+          <div class="col left-fix">
+            <div class="width-data-m left-fix highlight-red" *ngIf="getVarianceTotal(summaryIndex)>0">
+              {{getVarianceTotal(summaryIndex)}}
+            </div>
+            <div class="width-data-m left-fix" *ngIf="getVarianceTotal(summaryIndex)==='-' || getVarianceTotal(summaryIndex)==0">
+              {{getVarianceTotal(summaryIndex)}}
+            </div>
+
+            <div class="width-data left-fix" *ngIf="getVarianceTotal(summaryIndex)<0">
+              ({{-1*getVarianceTotal(summaryIndex)}})
+            </div>
+          </div>
+        </div>
+      </td>
+      <td>
+        <div class = "row width-actual">
+          <div class = "total-hour-daily-align total-hour-col-0 pl-0 pr-0">{{getActualTotalForAllVariablePosition() | number: '0.1'}}</div>
+          <div class = "total-hour-col-1 pl-0 pr-0">{{getPlannedTotalForAllVariablePosition() | number: '0.1'}}</div>
+          <div class = "total-hour-feather-icon total-hour-feather-align pl-0 pr-0 highlight-red inherit-feather" *ngIf="getTotalVarianceForAllVariablePosition()<0">
+            <div class="width-fit">{{-1 * getTotalVarianceForAllVariablePosition() | number: '0.1'}}</div>
+            <div class="right-fix"><app-svg-icon name="x-circle" color="red"  size="16" class="subicon"></app-svg-icon></div>
+
+          </div>
+          <div class = "pr-0 left-width inherit-feather" *ngIf="getTotalVarianceForAllVariablePosition()>0">
+            <div>{{getTotalVarianceForAllVariablePosition() | number: '0.1'}}</div>
+          </div>
+          <div class = "total-hour-val-0 total-hour-feather-align pl-0 pr-0 inherit-feather" *ngIf="getTotalVarianceForAllVariablePosition()===0">
+            <div>{{-1 * getTotalVarianceForAllVariablePosition() | number: '0.1'}}</div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr class = "vert-align"></tr>
+    <tr class = "vert-align" *ngIf="!excludeEducationOrientationFlag">
+      <td><div>OGA Hours</div></td>
+      <td *ngFor="let staffSummary of staffVariance.staffVarianceSummaries; let summaryIndex = index" class="flex-column">
+        <div class="row">
+          <div class="col">
+            <input type="text" [tabindex]="getTabIndex(summaryIndex)" [disabled]="staffVariance.recordStatusKey===4|| staffVariance.planAlreadyInUse || staffVariance.disableFlag" (keypress)="numberAndDecimalOnly($event,summaryIndex)" class="oga-text-box" maxlength="5" [(ngModel)] = "staffSummary.offGridActivitiesHour">
+          </div>
+        </div>
+      </td>
+      <td>
+        <div class = "row width-actual">
+          <div class = "hide">{{getOGAPlanhours()}}</div>
+          <div class = "col">{{getOGATotalhours() | number: '0.1'}}</div>
+          <div class = "col">{{ogatotalhours.toFixed(2) | number: '0.1'}}</div>
+          <div class = "col"></div>
+        </div>
+      </td>
+    </tr>
+    <tr class="vert-align">
+      <td><div>Non Var. Hours</div></td>
+      <td *ngFor="let staffSummary of staffVariance.staffVarianceSummaries" class="flex-column">
+        <div class="row">
+        </div>
+      </td>
+      <td>
+        <div class = "row width-actual">
+          <div class = "hide">{{getNonvarTotalhours()}}</div>
+          <div class = "col">{{nonVarTotalhours.toFixed(1) | number: '0.1'}}</div>
+          <div class = "col">{{nonVarTotalhours.toFixed(1) | number: '0.1'}}</div>
+          <div class = "col"></div>
+        </div>
+      </td>
+    </tr>
+    <tr class = "vert-align"></tr>
+    <tr class="vert-align comment-height">
+      <td>
+        <div class="row">
+          <div class="col pr-0 comments">Comments</div>
+          <div  class="col pl-0"[ngClass]="featureToggleFlag ? 'comments-icon':''">
+            <app-svg-icon name="message-square" size="18" class="subicon pad-left" color="#333333" ></app-svg-icon>
+          </div>
+        </div>
+      </td>
+      <td *ngFor="let staffSummary of staffVariance.staffVarianceSummaries;let summaryIndex = index" class="flex-column vertical-align">
+        <div class="row">
+          <div class="col">
+            <div *ngIf="!staffVariance.planAlreadyInUse && !staffVariance.disableFlag" #commentDiv contenteditable="true" [tabindex]="getTabIndex(summaryIndex)" name="comments" data-text="Type to add or edit comment"
+                 [textContent]="staffSummary.comments===undefined || staffSummary.comments===null?'':staffSummary.comments"
+                 class="autodiv" id="{{'txtDiv-'+summaryIndex}}" onfocus="this.tex = this.value;" (keyup)="checkLength($event.target.id,$event.target.textContent,summaryIndex)">
+            </div>
+            <div *ngIf="staffVariance.planAlreadyInUse || staffVariance.disableFlag" #commentDiv contenteditable="false"
+                 [textContent]="staffSummary.comments===undefined || staffSummary.comments===null?'':staffSummary.comments"
+                 class="autodiv1">
+            </div>
+          </div>
+        </div>
+        <div class = "row" *ngIf="checkCommentsLength(summaryIndex)">
+          <div class="col">
+            <mat-error class ="invalid-feedback" >
+              Comments should be less than 500 characters
+            </mat-error>
+          </div>
+        </div>
+      </td>
+      <td class="vertical-align">
+        <div class = "row">
+          <div class = "col">
+            <div *ngIf="!staffVariance.planAlreadyInUse && !staffVariance.disableFlag " contenteditable="true" name="comments" [tabindex]="getTabIndexForTotal(staffVariance.staffVarianceSummaries)" data-text="Type overall comments"
+                 [textContent]="staffVariance.comments===undefined || staffVariance.comments===null?'':staffVariance.comments"
+                 class="autodiv"
+                 id="txtDiv" (keyup)="checkLength($event.target.id,$event.target.textContent,-1)">
+            </div>
+            <div *ngIf="staffVariance.planAlreadyInUse|| staffVariance.disableFlag" #commentDiv contenteditable="false"
+                 [textContent]="staffVariance.comments===undefined || staffVariance.comments===null?'':staffVariance.comments"
+                 class="autodiv1">
+            </div>
+
+          </div>
+        </div>
+        <div class = "row" *ngIf="checkCommentsLength(-1)">
+          <div class="col">
+            <mat-error class ="invalid-feedback" >
+              Comments should be less than 500 characters
+            </mat-error>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr class = "vert-align">
+      <td><div>Updated By:</div></td>
+      <td *ngFor="let staffSummary of staffVariance.staffVarianceSummaries;let summaryIndex = index" class="flex-column vertical-align">
+        <div class = "row">
+          <div class = "col">
+            <div class="autodiv1">{{staffSummary.commentsUpdatedBy}}
+            </div>
+          </div>
+        </div>
+      </td>
+      <td class="flex-column vertical-align">
+        <div class = "row">
+          <div class = "col">
+            <div class="autodiv1">{{staffVariance.commentsUpdatedBy}}
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+</div>

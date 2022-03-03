@@ -1,0 +1,34 @@
+.masthead-and-body {
+  width: 100%;
+  min-height: 98%;
+  float: left;
+
+  .app-container {
+    border-top: 4px solid #0591b2;
+  }
+
+  app-header {
+    a, a:hover {
+      text-decoration: none;
+      color: #ffffff;
+    }
+  }
+
+
+
+  &::ng-deep  .mat-button-toggle-button{
+    height:51px !important;
+  }
+
+}
+@media screen and (max-width: 1920px) and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  .masthead-and-body{
+    min-height: 98% !important;
+  }
+}
+::ng-deep{
+  .cdk-overlay-container .mat-simple-snackbar-action, .cdk-overlay-container .mat-simple-snackbar-action button.mat-focus-indicator{
+    outline: none !important;
+  }
+  
+} 

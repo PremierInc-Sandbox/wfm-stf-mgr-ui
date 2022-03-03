@@ -1,0 +1,44 @@
+<style> html {
+  display: none;
+} </style>
+<script>
+  if (top !== self) {
+    document.documentElement.style.display = 'none';
+  } // Attempt to escape frame
+  else {
+    document.documentElement.style.display = 'block';
+  } // If not in frame, make html visible
+</script>
+<div class="card">
+  <div class="card-header modbackclr" >{{headerText}}
+<button class="close" data-dismiss="modal" aria-label="Close" (click) = "toggleModalHide()">
+  <span aria-hidden="false">&times;</span>
+</button>
+
+  </div>
+  <div class="card-body">
+    <p *ngIf="confirmWinodw  && isAlertMessageExist()" class="card-text">{{alertMessgae}}</p>
+    <p *ngIf="confirmWinodw" class="card-text">{{"Updates are not automatically saved."}}</p>
+    <p *ngIf="confirmWinodw" class="card-text">
+      Click
+      <span class="font-bold">Save</span>
+      to save your updates or
+      <span class="font-bold">Exit</span>
+       to go back without saving changes.
+    </p>
+    <p *ngIf="!confirmWinodw" class="card-text">
+     Error: Updates are not saved due to validation Errors and will be back to the existing page with displayed errors
+    </p>
+  </div>
+  <div *ngIf="confirmWinodw" class="card-footer clr_footer">
+    <span   class="hcolor" (click)="toggleModalHide()">Cancel</span>
+    <div class="float-right">
+    <button mat-button class="submitbutton-exit" [mat-dialog-close]="1">Exit</button>
+    <button mat-button class="submitbutton" [mat-dialog-close]="2" cdkFocusInitial>Save</button>
+    </div>
+  </div>
+  <div *ngIf="!confirmWinodw" class="card-footer text-center">
+    <button mat-button class="submitbutton"  cdkFocusInitial (click)="toggleModalHide()">OK</button>
+  </div>
+</div>
+

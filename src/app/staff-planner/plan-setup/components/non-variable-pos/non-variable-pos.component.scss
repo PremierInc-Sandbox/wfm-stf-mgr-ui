@@ -1,0 +1,197 @@
+mat-form-field {
+  width: 90%;
+}
+
+mat-checkbox {
+  margin: .5rem;
+}
+
+.positions {
+  display: flex;
+  flex-direction: column;
+}
+.week-header
+{
+  margin-left:32px;
+}
+.abbreviation{
+  text-align:right;
+}
+.description{
+  text-align: center;
+}
+
+.new-button
+{
+  font-weight: 500;
+  border-radius: 5px;
+}
+
+table {
+  width: 100%;
+  text-align: left;
+
+  .header {
+    border-collapse: collapse;
+    border-bottom: 1px solid black;
+  }
+
+  .content  {
+    border-bottom: 1px solid black;
+    height:60px;
+    width: 35%;
+
+  }
+
+  .category {
+    width: 25%;
+  }
+
+  .abbreviation {
+    position:relative;
+    display:flex;
+    top:45px;
+    width: 10%;
+  }
+
+  .description {
+    width: 35%;
+
+    input {
+      width: 90%;
+    }
+  }
+
+  .new-button
+  {
+    font-weight: 500;
+    border-radius: 5px;
+  }
+  .ratio {
+    width: 10%;
+  }
+
+  .new_delete {
+    width: 10%
+  }
+}
+.pointer {
+  cursor: pointer;
+}
+.icon-add-nonvarpos {
+  font-size: 25px;
+  color: #007994;
+}
+.icon-remove {
+  font-size: 25px;
+  color: #007994;
+}
+
+.content-title{
+  font-size: .76rem;
+  width: 20%;
+}
+
+.content-title-input{
+  width: 80%;
+  border-color:#D1D4D5;
+}
+
+.shift-hours{
+  width:19%;
+}
+
+.shift-hours-input{
+  height:35px;
+  width: 70px;
+  border-color: #D1D4D5 ;
+}
+
+.week-days{
+  width: 66.8%
+
+
+}
+
+.check-weekdays{
+  display: inline-block;
+  width: 15%;
+  min-width: 144px;
+}
+.check-weekdays-all{
+  display: inline-block;
+  width: 15%;
+  min-width: 85px;
+  margin-left: -3px;
+}
+.check-weekdays-input{
+  display: inline-block;
+  border-color: #3EA6CE;
+}
+// overwrite the checkbox background
+::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background, .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+  background-color:	#0091B3 !important;
+}
+.warning-message{
+  color: #9F6000;
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 80%;
+}
+
+.invalid-error{
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 80%;
+  color: #dc3545;
+}
+tr.content{
+  td{
+    &:first-child{
+      width: 27%;
+    }
+  }
+}
+.week-days{
+  .check-weekdays{
+    label{
+      vertical-align: super;
+    }
+  }
+}
+@media (min-width: 1768px){
+  .week-header{
+    margin-left: 4.5%;
+  }
+  .form-check.check-weekdays{
+    padding-left: 3%;
+  }
+  .abbreviation{
+    //padding-right: 35px;
+  }
+  tr.content{
+    td{
+      &:first-child{
+        width: 26%;
+      }
+    }
+  }
+}
+@media (min-width: 1920px){
+  tr.content{
+    td:first-child{
+      width: 25%;
+    }
+  }
+  .abbreviation{
+    //padding-right: 45px
+  }
+  .week-header{
+    margin-left: 34px;
+  } 
+  .week-days{
+    .form-check.check-weekdays{
+      padding-left: 1.4rem;
+    }
+  }
+}

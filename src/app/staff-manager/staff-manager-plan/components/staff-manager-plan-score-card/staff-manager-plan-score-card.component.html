@@ -1,0 +1,121 @@
+<div class="card-container">
+  <div class="card-header">
+    <mat-card class="mat-card">
+      <div class="row">
+        <div  class = "col border-right-0">
+          <div class ="card-title">PRODUCTIVITY INDEX</div>
+          <div  class="card-title-value left-fix"*ngIf="staffVariance.staffVarianceSummaries&&staffVariance.staffVarianceSummaries.length!=0; else productivityIndexNull">
+            <div class="pdr-5">
+              <app-svg-icon *ngIf="!isProductivityIndexpositive" name="x-circle" color="red"  size="20"></app-svg-icon>
+              <app-svg-icon *ngIf="isProductivityIndexpositive" name="check-circle" color="green" size="20"></app-svg-icon>
+            </div>
+            <div>{{getProductivityIndex().toFixed(2)}}%</div>
+            <span class="pad">based<br>on target</span>
+          </div>
+          <ng-template #productivityIndexNull><div class="card-title-value">N/A</div></ng-template>
+        </div>
+        <mat-divider [vertical]="true"></mat-divider>
+        <div  class = "col-custom">
+          <div class ="card-title">{{toggleTarget}}</div>
+          <div class="card-title-value" >{{staffVariance.staffVarianceSummaries&&staffVariance.staffVarianceSummaries.length!==0 && oASuggestedData !=null
+          && oASuggestedData != undefined?check(oASuggestedData.workHourPerUnitPrimary)?oASuggestedData.workHourPerUnitPrimary.toFixed(4):'-':'N/A'}}</div>
+        </div>
+        <mat-divider [vertical]="true"></mat-divider>
+        <div  class = "col-custom">
+          <div class = "card-title">{{toggleWhpu}}</div>
+          <div class = "card-title-value" id="actual-hours">{{staffVariance.staffVarianceSummaries&&staffVariance.staffVarianceSummaries.length==0?'N/A':getActualWHpU().toFixed(4) | number: '0.4-4'}}</div>
+        </div>
+        <!--<mat-divider [vertical]="true"></mat-divider>-->
+        <!--<div class = "col-custom">-->
+          <!--<div class = "card-title">Planned Target WHpU</div>-->
+          <!--<div class = "card-title-value">{{staffVariance.staffVarianceSummaries&&staffVariance.staffVarianceSummaries.length==0?'N/A':getPlannedWHpU().toFixed(4) | number: '0.4-4'}}</div>-->
+        <!--</div>-->
+        <mat-divider [vertical]="true"></mat-divider>
+
+
+
+        <div class = "col-custom">
+          <div class="card-title">HRS./DAY VAR.</div>
+          <!--{{staffVariance.staffVarianceSummaries.length===0?'N/A':-->
+          <!--<div *ngIf="staffVarianceDetails.length===0" class="titleValue">N/A</div>-->
+          <div class="card-title-value"
+               *ngIf="staffVariance.staffVarianceSummaries&&staffVariance.staffVarianceSummaries.length===0">N/A
+          </div>
+
+          <div class="card-title-value"
+               *ngIf="(staffVariance.staffVarianceSummaries&&staffVariance.staffVarianceSummaries.length!= 0 && oASuggestedData !=null
+               && oASuggestedData != undefined && getOGATotalhours()<getOGAPlanhours())">
+            <div *ngIf="(oASuggestedData.workHourPerUnitPrimary * getAverageCensus()) - (getOGAPlanhours() -
+              getOGATotalhours()) - getActualHour()<0">
+              <app-svg-icon name="check-circle" color="green" size="20"></app-svg-icon>
+              ({{-1 * (((oASuggestedData.workHourPerUnitPrimary * getAverageCensus()) - (getOGAPlanhours() -
+              getOGATotalhours()) - getActualHour()).toFixed(1) | number)}})
+            </div>
+            <div *ngIf="(oASuggestedData.workHourPerUnitPrimary * getAverageCensus()) - (getOGAPlanhours() -
+              getOGATotalhours()) - getActualHour()>=0">
+              <app-svg-icon name="x-circle" color="red" size="20"></app-svg-icon>
+                {{(((oASuggestedData.workHourPerUnitPrimary * getAverageCensus()) - (getOGAPlanhours() -
+              getOGATotalhours()) - getActualHour()).toFixed(1) | number)}}
+            </div>
+          </div>
+
+
+          <div class="card-title-value"
+               *ngIf="(staffVariance.staffVarianceSummaries&&staffVariance.staffVarianceSummaries.length!= 0 && oASuggestedData !=null
+               && oASuggestedData != undefined && getOGATotalhours() >= getOGAPlanhours())">
+            <div *ngIf="(oASuggestedData.workHourPerUnitPrimary * getAverageCensus()) - getActualHour() < 0">
+              <app-svg-icon name="check-circle" color="green" size="20"></app-svg-icon>
+              ({{-1 *((((oASuggestedData.workHourPerUnitPrimary  * getAverageCensus()) - getActualHour()).toFixed(1) | number))}})
+            </div>
+            <div *ngIf="(oASuggestedData.workHourPerUnitPrimary * getAverageCensus()) - getActualHour() >= 0">
+              <app-svg-icon name="x-circle" color="red" size="20"></app-svg-icon>
+              {{((((oASuggestedData.workHourPerUnitPrimary * getAverageCensus()) - getActualHour()).toFixed(1) | number))}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+  <div class="card-header2">
+    <mat-card class="mat-card">
+      <div class="row scorecard-right-header">
+        <div class = "col border-right-0">
+          <div class = "card-title">CUMULATIVE HRS VARIANCE/PAY PERIOD</div>
+
+          <!--{{staffVariance.staffVarianceSummaries.length!==0?check(oASuggestedData.workHourPerUnitPrimary)?oASuggestedData.workHourPerUnitPrimary.toFixed(2):'-':'N/A'}}</div>             -->
+          <div  class="card-title-value scorecard-right-body" *ngIf="staffVariance.staffVarianceSummaries&&staffVariance.staffVarianceSummaries&&staffVariance.staffVarianceSummaries.length===0">N/A</div>
+          <div  class="card-title-value scorecard-right-body"
+                *ngIf="staffVariance.staffVarianceSummaries&&staffVariance.staffVarianceSummaries&&staffVariance.staffVarianceSummaries.length!=0 && oASuggestedData !=null
+               && oASuggestedData != undefined && oASuggestedData.cumulativeHoursVariance != null && oASuggestedData.cumulativeHoursVariance != undefined
+              && oASuggestedData.cumulativeHoursVariance>=0">{{oASuggestedData.cumulativeHoursVariance.toFixed(2)}}</div>
+          <div  class="card-title-value scorecard-right-body"
+                *ngIf="staffVariance.staffVarianceSummaries&&staffVariance.staffVarianceSummaries&&staffVariance.staffVarianceSummaries.length!=0 && oASuggestedData !=null
+               && oASuggestedData != undefined && oASuggestedData.cumulativeHoursVariance != null && oASuggestedData.cumulativeHoursVariance != undefined
+              && oASuggestedData.cumulativeHoursVariance<0">({{-1 * (oASuggestedData.cumulativeHoursVariance.toFixed(2))}})</div>
+          <div  class="card-title-value scorecard-right-body"
+                *ngIf="staffVariance.staffVarianceSummaries&&staffVariance.staffVarianceSummaries&&staffVariance.staffVarianceSummaries.length!=0 && oASuggestedData !=null
+               && oASuggestedData != undefined && (oASuggestedData.cumulativeHoursVariance == null || oASuggestedData.cumulativeHoursVariance == undefined)">
+            N/A</div>
+          <ng-template #cumhrsnotnull><div class="card-title-value">N/A</div></ng-template>
+        </div>
+        <mat-divider [vertical]="true"></mat-divider>
+        <div class = "col border-right-0">
+          <div class = "card-title">CUMULATIVE HRS VARIANCE/FYTD</div>
+          <div  class="card-title-value scorecard-body-right"
+                *ngIf="staffVariance.staffVarianceSummaries&&staffVariance.staffVarianceSummaries&&staffVariance.staffVarianceSummaries.length!=0 && oASuggestedData !=null
+               && oASuggestedData != undefined && oASuggestedData.cumulativeHoursVarianceFiscal != null && oASuggestedData.cumulativeHoursVarianceFiscal != undefined
+              && oASuggestedData.cumulativeHoursVarianceFiscal>=0">{{oASuggestedData.cumulativeHoursVarianceFiscal.toFixed(2)}}</div>
+          <div  class="card-title-value scorecard-body-right"
+                *ngIf="staffVariance.staffVarianceSummaries&&staffVariance.staffVarianceSummaries&&staffVariance.staffVarianceSummaries.length!=0 && oASuggestedData !=null
+               && oASuggestedData != undefined && oASuggestedData.cumulativeHoursVarianceFiscal != null && oASuggestedData.cumulativeHoursVarianceFiscal != undefined
+              && oASuggestedData.cumulativeHoursVarianceFiscal<0">({{-1 * (oASuggestedData.cumulativeHoursVarianceFiscal.toFixed(2))}})</div>
+          <div  class="card-title-value scorecard-right-body"
+                *ngIf="staffVariance.staffVarianceSummaries&&staffVariance.staffVarianceSummaries&&staffVariance.staffVarianceSummaries.length!=0 && oASuggestedData !=null
+               && oASuggestedData != undefined && (oASuggestedData.cumulativeHoursVarianceFiscal == null || oASuggestedData.cumulativeHoursVarianceFiscal == undefined)">
+            N/A</div>
+          <ng-template #cumHrVarNull><div class="card-title-value">N/A</div></ng-template>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+</div>

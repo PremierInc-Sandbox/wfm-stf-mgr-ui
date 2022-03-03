@@ -1,0 +1,106 @@
+<style> html {
+  display: none;
+} </style>
+<script>
+  if (top !== self) {
+    document.documentElement.style.display = 'none';
+  } // Attempt to escape frame
+  else {
+    document.documentElement.style.display = 'block';
+  } // If not in frame, make html visible
+</script>
+  <div class="view-header-container">
+    <div class="view-header">
+      <div class="form-group clearfix pdt-30">
+        <div class="w-25">
+          <span class="view-title mtlbl">
+            <!-- <h2> Staffing Grid</h2>
+            <br>-->
+            <h5 class="header">PLAN: {{planDetails.name}}</h5>
+            <!--  -->
+            <p class="elementToFadeInAndOut" *ngIf="!planDetails.planCompleted && this.autoSavedStatus!==''">
+                {{autoSavedStatus}}
+            </p>
+          </span>
+        </div>
+        <div class="plan-details align-right w-75">
+          <span>
+            <span>
+              <mat-form-field class=" entity-text">
+                <input matInput class="headerinput" placeholder="ENTITY" [value]="entitydisplayval" disabled="true">
+              </mat-form-field>
+            </span>
+            <mat-form-field class="header-text">
+              <input matInput class="headerinput" placeholder="DEPARTMENT" [value]="departmentdisplayval" disabled="true">
+            </mat-form-field>
+            <mat-form-field class="header-text">
+              <input matInput class="headerinput" placeholder="ANNUAL BUDGETED VOLUME" [value]="annualBudgetdisplayval" disabled="true">
+            </mat-form-field>
+            <mat-form-field class="header-text">
+              <input matInput class="headerinput" placeholder="PRIMARY TARGET WHpU/WHpD" [value]="primaryWHpUdisplayval" disabled="true">
+            </mat-form-field>
+          </span>
+          <br>
+          <div class="button-group" [ngClass]=" (planDetails.planCompleted) ? 'mlhead' : 'mrhead'">
+            <button class="submitBtn pointer rdcorn" *ngIf="false" (click)="clickonbackbutton()"target="secondary">Cancel</button><span></span>
+            <button id='save-exit' class="submitBtn pointer rdcorn" (click)="saveAndExitStaffGridDetails()" *ngIf="false&&planDetails.planCompleted">{{btnExittxt}}</button><span *ngIf="planDetails.planCompleted"></span>
+            <button id='save-exit' class="submitBtn pointer rdcorn" (click)="saveAndExitStaffGridDetails()" *ngIf="false&&!planDetails.planCompleted" target="secondary">{{btnExittxt}}</button><span *ngIf="!planDetails.planCompleted"></span>
+            <!--<button *ngIf="!planDetails.planCompleted" class="submitBtn pointer rdcorn" color="primary " (click)="submitPlan()">Submit</button>-->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<div class="container-fluid">
+  <div class="staffing-grid-container">
+    <div class="clearfix headerTabContainer">
+      <div class="mat-group-tab div-align w-70" [ngClass]=" (planDetails.planCompleted) ? 'mat-group-tab-cmp ' : 'mat-group-tab'">
+        <mat-tab-group  (selectedTabChange)="checkTabChange()" #pageGroup  [selectedIndex]="previousIndex">
+          <mat-tab label="Staffing Plan Setup" [disabled]="false">
+          </mat-tab>
+          <mat-tab label="Off Grid Activities" *ngIf="!excludeEducationAndOrientationFlag" [disabled]="false">
+          </mat-tab>
+          <mat-tab label="Grid Setup" [disabled]="false">
+          </mat-tab>
+          <mat-tab label="Staffing Grid" [disabled]="false">
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+      <div class="button-group align-right w-30">
+        <button [hidden]="planDetails.planCompleted" class="submitBtn pointer rdcorn" (click)="clickonbackbutton()" target="secondary">Cancel</button>
+        <span></span>
+        <button id='save-exit' class="submitBtn pointer rdcorn" (click)="saveAndExitStaffGridDetails()"
+                *ngIf="planDetails.planCompleted">{{btnExittxt}}</button>
+        <span *ngIf="planDetails.planCompleted"></span>
+        <button id='save-exit' class="submitBtn pointer rdcorn" (click)="saveAndExitStaffGridDetails()"
+                *ngIf="!planDetails.planCompleted" target="secondary">{{btnExittxt}}</button>
+        <span *ngIf="!planDetails.planCompleted"></span>
+        <button *ngIf="!planDetails.planCompleted" class="submitBtn pointer rdcorn" color="primary " (click)="submitPlan()">Submit</button>
+      </div>
+    </div>
+    <div *ngIf="planDetails.staffScheduleList" class="scheduleBody">
+      <mat-tab-group #tabGroup [selectedIndex]="tabIndex" (selectedTabChange)="checkIfSummaryTabIsActive()" class="mat-tab-group">
+        <mat-tab *ngFor="let objSchedule of planDetails.staffScheduleList; let i = index" [label]="objSchedule.name">
+              <div class="row scoreCard">
+                <app-grid-score-card *ngIf="planDetails" [planDetails]="planDetails"></app-grid-score-card>
+              </div>
+          <app-staffing-matrix
+            [scheduleData]="objSchedule"
+            [planDetails]="planDetails"
+          ></app-staffing-matrix>
+        </mat-tab>
+        <mat-tab label="Summary" *ngIf="showMatrixSummary" >
+              <div class="row scoreCard">
+                  <br/>
+                <app-grid-score-card *ngIf="planDetails" [planDetails]="planDetails"></app-grid-score-card>
+              </div>
+          <app-staffing-matrix-summary #summaryTab *ngIf="planDetails.staffingSummaryData" [planEdited]="isPlanEdited" [planDetails]="planDetails" [excludeEducationAndOrientationFlag] = "excludeEducationAndOrientationFlag"></app-staffing-matrix-summary>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+    <!--<button *ngIf="!planDetails.planCompleted" class="submitBtn pointer rdcorn" color="primary " (click)="submitPlan()">Submit</button>-->
+  </div>
+
+</div>

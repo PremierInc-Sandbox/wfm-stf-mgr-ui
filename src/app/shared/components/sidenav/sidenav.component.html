@@ -1,0 +1,29 @@
+<style> html {
+  display: none;
+} </style>
+<script>
+  if (top !== self) {
+    document.documentElement.style.display = 'none';
+  } // Attempt to escape frame
+  else {
+    document.documentElement.style.display = 'block';
+  } // If not in frame, make html visible
+</script>
+<div class="sidenav" [ngClass]="state" (click)="clickedInside($event)">
+  <div class="main-menu-header">
+    <span class="slide-in-menu-close" title="Close" (click)="toggle()">×</span>
+    <div class="user-info">
+      <span class="main-menu-name">{{user.formattedName}}</span>
+      <div>{{user.email}}</div>
+      <div class="product-help" (click)="productDocumentationHelp()">
+        <strong>Product Help?</strong>
+      </div>
+      <span></span>
+    </div>
+  </div>
+  <div class="main-menu-options" data-attach-point="mainMenuOptions">
+    <a class="dropdown-option" (click)="logout();">
+      <em class="fa fa-sign-out"></em>Log Out
+    </a>
+  </div>
+</div>

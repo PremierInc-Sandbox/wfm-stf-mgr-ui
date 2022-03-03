@@ -1,0 +1,63 @@
+<style> html {
+  display: none;
+} </style>
+<script>
+  if (top !== self) {
+    document.documentElement.style.display = 'none';
+  } // Attempt to escape frame
+  else {
+    document.documentElement.style.display = 'block';
+  } // If not in frame, make html visible
+</script>
+<table class="productivity-ralowerEndTargetnge">
+  <tr>
+    <div class="form-group">
+      <td>
+        <div class='label disable-div'>Lower End<label class="required"></label></div>
+
+        <input [disabled]=true type="number"
+               required
+               name="targetLowerEnd"
+               #targetLowerEnd="ngModel"
+               [ngClass]="{ 'is-invalid': targetLowerEnd.invalid && targetUpperEnd.touched }"
+               [(ngModel)]="lowerEnd"
+               (change)="onLowerBoundTextBoxChanges(plan.lowerEndTarget)"
+               min="50"
+               max="200"
+               maxlength="3"
+               (keypress)="validateLowerLength(lowerEnd)"
+               [class.is-invalid]="targetLowerEnd.invalid && targetLowerEnd.touched"label
+               class="lower-end">
+      </td>
+      <td>
+        <div class='label disable-div'>Upper End<label class="required"></label></div>
+        <input [disabled]=true type="number"
+               required
+               name="targetUpperEnd"
+               #targetUpperEnd="ngModel"
+               required
+               [ngClass]="{ 'is-invalid': targetUpperEnd.invalid && targetUpperEnd.touched}"
+               [(ngModel)]="upperEnd"
+               (change)="onUpperBoundTextboxChangeMethod(upperEnd)"
+               min="50"
+               max="200"
+               maxlength="3"
+               (keypress)="validateUpperLength($event)"
+               [class.is-invalid]="targetUpperEnd.invalid && targetUpperEnd.touched"
+               class="lower-end">
+      </td>
+      <div *ngIf="isSaveNextBtnSubmit && targetLowerEnd.invalid" class="invalid-feedback d-block">
+        <div *ngIf="targetLowerEnd.errors.required">User is unable to proceed without entering an input into lower end field that is greater than or equal to 50%</div>
+        <div *ngIf="targetLowerEnd.errors.min">User is unable to proceed without entering an input into lower end field that is greater than or equal to 50%</div>
+      </div>
+      <div *ngIf="isSaveNextBtnSubmit && targetUpperEnd.invalid" class="invalid-feedback d-block">
+        <div *ngIf="targetUpperEnd.errors.required">User is unable to proceed without entering an input into upper end field that is lesser than or equal to 200%</div>
+        <div *ngIf="targetUpperEnd.errors.max">User is unable to proceed without entering an input into upper end field that is lesser than or equal to 200%</div>
+      </div>
+      <div *ngIf="isSaveNextBtnSubmit &&checkTargetChanges(targetLowerEnd.touched,targetLowerEnd.dirty,targetUpperEnd.touched,targetUpperEnd.dirty)" class="invalid-feedback d-block">
+        <div *ngIf="checktargetUpperEnd(targetUpperEnd.value,targetLowerEnd.value)">User is unable to proceed without entering an input in the upper target field is greater than lower target field.</div>
+      </div>
+    </div>
+  </tr>
+</table>
+

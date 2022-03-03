@@ -1,0 +1,118 @@
+<style> html {
+  display: none;
+} </style>
+<script>
+  if (top !== self) {
+    document.documentElement.style.display = 'none';
+  } // Attempt to escape frame
+  else {
+    document.documentElement.style.display = 'block';
+  } // If not in frame, make html visible
+</script>
+<div class="row ">
+  <div class="col-xl-12 col-sm-12 col-lg-12">
+    <form class="vertical-grabber">
+      <div  class="form-group"><b><label>CENSUS</label></b></div>
+      <div class="minimum form-group" >
+        <label>
+          Minimum<span class="required"></span>
+        </label>
+        <input type="number"
+              [disabled]="plan.planCompleted" class="input-minimum"
+               name="censusRangeMin"
+               #censusRangeMin="ngModel"
+               [ngClass]="{ 'is-invalid':objSavePlanParams.isSaveNextBtnSubmitForCensus && censusRangeMin.invalid }"
+               [class.is-invalid]="censusRangeMin.invalid && censusRangeMin.touched"
+               required
+               maxlength="2"
+               min="1"
+               max="100"
+               value="1"
+               (keypress)="validateMinLength($event)"
+               [(ngModel)]="plan.censusRange.minimumCensus"
+               (ngModelChange) = "checkCensusValues(plan.censusRange.minimumCensus);"
+               >
+
+      </div>
+      <div class="maximum form-group">
+        <label>
+          Maximum<span class="required"></span>
+        </label>
+        <input type="number" class="input-maximum"
+              [disabled]="plan.planCompleted"
+               name="censusRangeMax"
+               #censusRangeMax="ngModel"
+               [ngClass]="{ 'is-invalid': objSavePlanParams.isSaveNextBtnSubmitForCensus && censusRangeMax.invalid }"
+               required
+               maxlength="3"
+               min="2"
+               value="2"
+               max="100"
+               (keypress)="validateMaxLength($event)"
+               [(ngModel)]="plan.censusRange.maximumCensus"
+               [class.is-invalid]="censusRangeMax.invalid && censusRangeMax.touched"
+        (ngModelChange)="checkCensusValues(plan.censusRange.maximumCensus);">
+      </div>
+      <div class="censusDays form-group">
+        <label for="censusdays" >Zero Census Days: </label>
+        <label><b>{{getCensusVal()}}</b> of {{staffGridCalculator.getCurrentCalendarYearTotalDays(plan.effectiveEndDate)}}</label>
+      </div>
+      <div class="pull-right">
+        <button (click)='applyCensus()' *ngIf="!plan.planCompleted" class='pointer'>Apply</button>
+        <button *ngIf="!plan.planCompleted" class="clear-form" (click)="resetCensusBox($event)">
+         Clear Form
+        </button>
+        <div class="accordControl">
+          <app-svg-icon matTooltip="Minimize the Census" (click)="isMaximise()" *ngIf="censusToggle" class="pointer" name="minus" color="#007994" size="24"></app-svg-icon>
+          <app-svg-icon matTooltip="Maximize the Census" (click)="isMaximise()" *ngIf="!censusToggle" class="pointer" name="plus" color="#007994" size="24"></app-svg-icon>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="errorMsgHolder" *ngIf="censusToggle">
+    <div *ngIf="this.objSavePlanParams.isCensusApplied" class="invalid-feedback d-block">
+      <mat-error *ngFor="let errMessage of this.objSavePlanParams.validationErrorMessages">
+        {{errMessage}}
+      </mat-error>
+    </div>
+    <div *ngIf="this.objSavePlanParams.isSaveNextBtnSubmitForCensus"  class="invalid-feedback d-block">
+      <mat-error *ngFor="let errMessage of this.objSavePlanParams.saveNextErrorMessages">
+        {{errMessage}}
+      </mat-error>
+    </div>
+  </div>
+  <div class="col-xl-12 col-sm-12 col-lg-12 annual-occurence-div" *ngIf="censusToggle">
+    Annual Occurrence of Each Census <em matTooltip="Number of days a year you see the census number of patient"><sup>
+    <div class="round round-sm hollow blue">i</div>
+  </sup></em>
+    <table class="table table-responsive bottom-pad full-width" >
+      <tr>
+        <th class="annual-census-column" *ngFor="let proj of numberOfCols">
+          <span class="text-no-wrap annual-census-label-text"><span>Census</span> <span>Occurrence</span><label class="required" ></label></span>
+        </th>
+      </tr>
+      <tr *ngFor="let proj of numberOfRows;let i= index">
+        <td class="annual-census-column" *ngFor="let row of numberOfCols;let j = index" [ngClass]="{ 'hidden':(i*10)+j+1 > 60 && (i*10)+j+1 > applyValMax }" >
+          <div class="annual-census-div" *ngIf="(i*10)+j+1 <= 60 || (i*10)+j+1 <= applyValMax">
+            <div class="annual-census-div-label" >
+              <label class="annual-census-div-label-data">{{(i*10)+j+1}}</label></div>
+            <div class="annual-census-div-input">
+              <input  class="annual-census-div-input-data" type="text"
+                        (keypress)="numberOnly($event);"
+                        (keyup)="getCensusVal();"
+                        maxlength="3"
+                        [disabled]="(((i*10)+j+1)<minCensus ||((i*10)+j+1)>maxCensus||((i*10)+j+1)>applyValMax && maxCensus>100||censusRangeMax.value>999 || isApplyButton ==false)||plan.planCompleted "
+                        required
+                        name="occurValue"
+                        #occurValue="ngModel"
+                        name="i +1 + getVal(j)"
+                        [(ngModel)]="plan.censusRange.occurrenceNumber[(i*10)+j]"
+                        (change)="onOccuranceChange();"
+                        (ngModelChange)="checkOccurance(plan.censusRange.occurrenceNumber[(i*10)+j])">
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>

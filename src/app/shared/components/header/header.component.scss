@@ -1,0 +1,214 @@
+.masthead-container-wrapper {
+  background: #003b49;
+}
+
+.masthead-container {
+  position: relative;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  padding-left: 25px;
+  padding-right: 25px;
+
+  .masthead {
+    height: 47.9px;
+    display: flex;
+    justify-content: space-between;
+
+    .branding-and-title, .main-menu-container {
+      padding: 10px 0;
+    }
+
+    .main-menu-container {
+      cursor: pointer;
+      min-width: 34px;
+    }
+
+    .branding-and-title {
+      flex: 1;
+      display: flex;
+      min-width: 190px;
+
+      .branding {
+        float: left;
+        padding-right: 15px;
+
+        .logo {
+          background-image: url('./assets/logo.png');
+          background-size: contain;
+          background-repeat: no-repeat;
+          height: 30px;
+          width: 30px;
+          vertical-align: middle;
+          border: 0 none;
+          display: block;
+        }
+      }
+    }
+
+    .main-menu-nav-bar {
+      margin-right: 15px;
+
+      ::ng-deep.nav-button-icon {
+        font-size: 18px;
+        margin-right: 10px;
+        position: relative;
+      }
+
+      ::ng-deep.mat-button-toggle {
+        background-color: transparent;
+        color: white;
+        overflow: hidden;
+        border-left: 1px solid #527880;
+      }
+
+      ::ng-deep.mat-button-toggle-checked {
+        background-color: #0591b2;
+      }
+
+      ::ng-deep.mat-button-toggle-group {
+        box-shadow: none;
+        border-radius: 0;
+        border: none;
+      }
+
+      ::ng-deep.mat-button-toggle:after {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        content: "";
+        background: #8dc7d8;
+        transition: transform .35s ease;
+        transform: translateX(-100%);
+      }
+
+      ::ng-deep.mat-button-toggle:hover:after {
+        transform: translateX(0);
+      }
+
+      ::ng-deep.mat-button-toggle-checked .mat-button-toggle-focus-overlay {
+        border-bottom: solid 50px;
+      }
+    }
+
+    .user-image-container {
+      position: relative;
+      float: left;
+      width: 30px;
+      height: 30px;
+    }
+
+    .backup-user-image {
+      background-image:url('./assets/user.png');
+      z-index: 1;
+    }
+
+    .user-image {
+      z-index: 2;
+    }
+
+    .user-image, .backup-user-image {
+      position: absolute;
+      background-size: contain;
+      background-repeat: no-repeat;
+      border-radius: 5px;
+      width: 30px;
+      height: 30px;
+      top: 0;
+      left: 0;
+    }
+
+    .fa-chevron-left {
+      color: white;
+      margin-top: 10px;
+      margin-right: 10px;
+      float: left;
+    }
+
+    .app-title{
+      text-decoration:none;
+      float:left;
+      border:0 none;
+      padding-right:10px;
+      vertical-align: middle;
+      h2 {
+        font-weight:normal;
+        color:#fff;
+        text-transform:uppercase;
+        font-size:20px;
+        margin-top:-11px;
+      }
+    }
+  }
+}
+
+@media(max-width:620px) {
+  .main-menu-nav-bar {
+    margin-right: 0 !important;
+  }
+  .masthead-container {
+    padding-left:12px;
+    padding-right:12px;
+
+    .masthead {
+      height:40.1px;
+
+      .branding{
+        border-right:0 none;
+        padding-right: 0 !important;
+
+        .logo {
+          height:20px !important;
+          width:20px !important;
+        }
+      }
+
+      .app-title h2 {
+        top: 12px;
+        font-size: 15px;
+        font-weight: normal;
+        font-style: initial;
+        margin-left: 5px;
+      }
+
+      .user-image, .backup-user-image{
+        border-radius:3px !important;
+        width:21px !important;
+        height:21px !important;
+        margin-right:5px;
+        margin-left:10px
+      }
+
+      .fa-chevron-left {
+        margin-top: 7px;
+        margin-right: -4px;
+        font-size: 11px;
+      }
+
+      .main-menu-nav-bar {
+        ::ng-deep.mat-button-toggle {
+          padding: 3px 0 !important;
+        }
+      }
+    }
+  }
+}
+
+@media(min-width:750px) and (max-width:1035px) {
+  .masthead-container {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+}
+
+@media (max-width: 950px) {
+  ::ng-deep.nav-button-icon {
+    margin-right: 0px !important;
+  }
+
+  // ::ng-deep.nav-button-title {
+  //   display: none !important;
+  // }
+}

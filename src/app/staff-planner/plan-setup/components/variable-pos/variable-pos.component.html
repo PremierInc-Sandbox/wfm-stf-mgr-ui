@@ -1,0 +1,84 @@
+<style> html {
+  display: none;
+} </style>
+<script>
+  if (top !== self) {
+    document.documentElement.style.display = 'none';
+  } // Attempt to escape frame
+  else {
+    document.documentElement.style.display = 'block';
+  } // If not in frame, make html visible
+</script>
+<div >
+  <table *ngIf="jobCatgData" class="grid-align bottom-pad variablePosition">
+    <thead>
+    <tr>
+
+       <th scope="col">Category<label class="required"></label></th>
+      <th scope="col">Abbreviation<label class="required"></label></th>
+      <th scope="col">Description<label class="required"></label></th>
+      <th scope="col pdl-10"><p class="text-nowrap pdl-10 includeFlagWrap">Include in Patients to Staff ratio? <span class="required"></span>
+        <span matTooltip="Select whether you want included in calculation or not">
+          <sup>
+            <span class="round round-sm hollow blue">i</span>
+          </sup>
+        </span>
+      </p>
+        </th>
+
+      <th scope="col"></th>
+
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr class='content' *ngFor='let staff of plan.variableDepartmentPositions; let i=index'>
+      <td  class="category-selector">
+        <select class="selectBox" [disabled]="plan.planCompleted "
+                [(ngModel)]="staff.categoryKey"
+                name="jobCategory"
+                required
+                #jobCategory="ngModel"
+                (change) ="changeCategory($event, i,staff)">
+          <option [value]="category" [selected]="selected" [disabled]="true" class="category-selector-option">Select Category</option>
+          <option *ngFor="let jobCat of jobCatgData" [value]="jobCat.key">{{jobCat.name}}</option>
+        </select>
+      </td>
+      <td class="category-abbrevation" >
+        <input type="text" [disabled]="plan.planCompleted "  id="abbrvmessage" appearance="outline"  [(ngModel)]="staff.categoryAbbreviation"  placeholder="Abbreviation"   readonly
+               class="category-abbrevation-input" >
+      </td>
+      <td class="category-description" >
+        <input type="text" [disabled]="plan.planCompleted " (keyup)="checkDuplicate($event,staff)" id="descmessage" appearance="outline"  [(ngModel)]="staff.categoryDescription"  placeholder="Description" class="category-description-input" >
+      </td>
+      <td class="include-flag pdl-10">
+          <label class="switch">
+            <input [disabled]="plan.planCompleted " class="switch-input" [(ngModel)]="staff.includedInNursingHoursFlag" type="checkbox" checked/>
+            <span class="switch-label" data-on="Yes" data-off="No"></span>
+            <span class="switch-handle"></span>
+          </label>
+      </td>
+
+      <td class="icon-add-del" >
+        <app-svg-icon *ngIf='this.plan.variableDepartmentPositions.length-1!==i && !plan.planCompleted' name="plus-circle"  color="#C0C0C0" size="20"></app-svg-icon>
+        <app-svg-icon *ngIf='this.plan.variableDepartmentPositions.length-1===i && !plan.planCompleted' (click)="newStaff(staff)" matTooltip="Add variable Department Position" class="pointer " name="plus-circle" color="#007994" size="20"></app-svg-icon>
+        <app-svg-icon *ngIf='this.plan.variableDepartmentPositions.length>1 && !plan.planCompleted' (click)="deleteRow(staff)" matTooltip="Remove variable Department Position" class="pointer pl-1" name="trash-2" color="#007994" size="20"></app-svg-icon>
+        <app-svg-icon *ngIf='this.plan.variableDepartmentPositions.length===1 && !plan.planCompleted' name="trash-2"  color="#C0C0C0" class="pl-1" size="20"></app-svg-icon>
+      </td>
+    </tr>
+
+    <tr *ngIf="(isSaveNextBtnSubmit || isSaveExitBtnSubmit) && !isSaveBtn && !this.plan.variableDepartmentPositions[0].categoryAbbreviation">
+      <td colspan="5"><mat-error class="invalid-feedback d-block">Add at least one variable position, which includes all positions (nurses, assistants, etc.) that vary depending on patient activity.</mat-error></td>
+    </tr>
+
+    <tr class="invalid-error">
+      <td colspan="5">
+      <mat-error *ngIf="error.isError && isMaxIndex">{{error.errorMessage}}</mat-error>
+      <mat-error *ngIf="showError">Select a Category for the current variable position</mat-error>
+      <td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+

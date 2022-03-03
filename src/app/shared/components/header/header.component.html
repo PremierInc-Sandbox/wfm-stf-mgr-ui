@@ -1,0 +1,38 @@
+<style> html {
+  display: none;
+} </style>
+<script>
+  if (top !== self) {
+    document.documentElement.style.display = 'none';
+  } // Attempt to escape frame
+  else {
+    document.documentElement.style.display = 'block';
+  } // If not in frame, make html visible
+</script>
+<div class="masthead-container-wrapper">
+  <div class="masthead-container">
+    <div class="masthead">
+      <div class="branding-and-title">
+        <div class="branding">
+          <a class="logo" href="https://premierconnect.premierinc.com" title="PremierConnect" rel="noopener"></a>
+        </div>
+        <div class="app-title">
+          <h2 class="app-title-text"><ng-content select="[title]"></ng-content></h2>
+        </div>
+      </div>
+      <div class="main-menu-nav-bar">
+        <ng-content select="[navigation]"></ng-content>
+      </div>
+      <div class="main-menu-container" (click)="onProfileClick()">
+        <div class="main-menu-button">
+          <em class="fa fa-chevron-left"></em>
+          <div class="user-image-container">
+            <div class="backup-user-image"></div>
+            <div class="user-image" id="userImage" [style.background-image]="userImageLocationStyle"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-sidenav #sideNav></app-sidenav>

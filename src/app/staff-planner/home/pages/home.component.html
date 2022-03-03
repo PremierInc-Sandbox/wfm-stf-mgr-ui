@@ -1,0 +1,311 @@
+<style> html {
+  display: none;
+} </style>
+<script>
+  if (top !== self) {
+    document.documentElement.style.display = 'none';
+  } // Attempt to escape frame
+  else {
+    document.documentElement.style.display = 'block';
+  } // If not in frame, make html visible
+</script>
+<div class="view-header-container">
+  <div class="view-header">
+    <span class="view-title">
+      <h2> Staff Planner</h2>
+    </span>
+    <div class="title-and-controls mtrbl" >
+      <table>
+        <tr>
+          <td>
+            <mat-form-field class ="mat-form-pad">
+              <input type="text"
+                     id = "textbox"
+                     class="widthSet"
+                     placeholder="Select Corporation"
+                     aria-label = "Number"
+                     matInput
+                     [formControl]="myControl"
+                     [(ngModel)]="corpModel"
+                     [matAutocomplete]="auto">
+              <button *ngIf="corpModel" id = "cross"  (click)="clear()" class="buttonCss">x</button>
+              <i id = "drop" class="dropdown-toggle border-0"></i>
+              <mat-autocomplete [panelWidth]="225" #auto="matAutocomplete" required class="selectBox" [(ngModel)]="corpValue" ngDefaultControl
+                 name="corporation"
+                (optionSelected)= "loadFacilityDetailsForChange($event)">
+              <mat-option *ngFor="let corporation of corpSearch|async" [ngClass]="{ 'active' : corpModel === corporation.code +'-'+ corporation.name}" [value]="corporation.code +'-'+ corporation.name" [id]="corporation.id" ><div class="dropdownName">{{corporation.name}}</div><div class="dropdownCode">{{corporation.code}}</div></mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+      <span class="select-spacing"></span>
+          <td width="200px">
+          <mat-form-field class ="mat-form-pad">
+              <input type="text"
+                     id = "textboxEnt"
+                     class="widthSet"
+                     placeholder="Select Entity"
+                     aria-label = "Number"
+                     matInput
+                     [formControl]="myControlEnt"
+                     [(ngModel)]="entityModel"
+                     [matAutocomplete]="autoEnt">
+              <button *ngIf="entityModel" id = "crossEnt"   (click)="clearEnt()" class="buttonCss">x</button>
+              <i id = "dropEnt" class="dropdown-toggle border-0"></i>
+              <mat-autocomplete [panelWidth]="225" #autoEnt="matAutocomplete" class="selectBox" [(ngModel)]="selectedentityValue" ngDefaultControl
+                name="entity"
+                (optionSelected)="loadDeptDetailsForChange($event)">
+              <mat-option *ngFor="let facility of entitySearch|async" [ngClass]="{ 'active' : entityModel === facility.code +'-'+ facility.name}" [value]="facility.code +'-'+ facility.name" [id] = "facility.id" ><div class="dropdownName">{{facility.name}}</div><div class="dropdownCode">{{facility.code}}</div></mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div content>
+  <div class='card-container'>
+    <div class="card-header">
+      <table class="plan-table">
+        <div class="plan-table-division">
+          <span class="plan-table-header"><strong>Staffing Plans: {{selectPlan}} </strong></span>
+          <app-svg-icon name="check-circle" color="green" size="18" class="subicon"></app-svg-icon><span class="subtext">On or Below Target</span>
+          <app-svg-icon name="x-circle" color="red"  size="18" class="subicon"></app-svg-icon><span class="subtext">Above Target</span>
+          <app-svg-icon name="circle" size="18" class="subicon" color="#333333"></app-svg-icon><span class="subtext">Not Complete</span>
+          <app-svg-icon name="copy" size="18" class="subicon" color="#333333"></app-svg-icon><span class="subtext">Copy</span>
+          <app-svg-icon name="trash-2" size="18" class="subicon" color="#333333"></app-svg-icon><span class="subtext">Delete</span>
+          <app-svg-icon name="archive" size="18" class="subicon" color="#333333"></app-svg-icon><span class="subtext">Archive</span>
+          <app-svg-icon name="refresh-ccw" size="18" class="subicon" color="#333333"></app-svg-icon><span class="subtext">Restore</span>
+
+          <div class="view-comp-status-ctrl">
+            <mat-form-field class="widthSetForPlan">
+              <input type="text"
+                     id = "textboxView"
+                     class="widthSet"
+                     placeholder="View"
+                     aria-label = "Number"
+                     matInput
+                     [formControl]="myControlView"
+                     [(ngModel)]="selectPlan"
+                     (keypress)="checkVal($event)"
+                     [matAutocomplete]="status">
+              <i id = "dropView" class="dropdown-toggle border-0"></i>
+              <mat-autocomplete [panelWidth]="70" #status="matAutocomplete"
+                [(ngModel)]="selectePlanValue" ngDefaultControl name="entity" (optionSelected)="displayPlans(selectPlan)">
+                <mat-option *ngFor="let plan of selectPlanOptions" [value]="plan">{{plan}}</mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+            <!-- <select #status class="view-comp-status" [(ngModel)]="selectPlan" name="entity" (change)= "displayPlans(selectPlan)">
+              <option value="Active">Active</option>
+              <option value="All">All</option>
+              <option value="Archived">Archived</option>
+            </select> -->
+          </div>
+          <div class="view-comp-status-ctrl departmentHeight">
+            <mat-form-field>
+              <input type="text"
+                     id = "textboxDept"
+                     class="widthSet widthSetForDept"
+                     placeholder="Select Department"
+                     aria-label = "Number"
+                     matInput
+                     [formControl]="myControlDept"
+                     [(ngModel)]="deptModel"
+                     [matAutocomplete]="autoDept">
+              <button *ngIf="deptModel" id = "crossDept"  (click)="clearDept()" class="buttonCss">x</button>
+              <i id = "dropDept" class="dropdown-toggle border-0"></i>
+            <mat-autocomplete [panelWidth]="200" #autoDept="matAutocomplete" class="department"
+            [ngClass]="{'department-all':status.value==='All','department-active':status.value==='Active','department-archive':status.value==='Archived'}"
+            [(ngModel)]="selecteddepartmentValue" ngDefaultControl
+                     name="department"
+                    (optionSelected)="displayPlansForChange(selectPlan,$event)">
+              <mat-option [ngClass]="{'d-none':searchActivated, 'active': deptModel === 'All Departments'}" [id] =allDeptId value="All Departments">All Departments</mat-option>
+              <mat-option [ngClass]="{ 'active' : deptModel === department.code +'-'+ department.name}" *ngFor="let department of deptSearch|async" [value]="department.code+'-'+department.name" [id]="department.key"><div class="dropdownName">{{department.name}}</div><div class="dropdownCode">{{department.code}}</div></mat-option>
+            </mat-autocomplete>
+            </mat-form-field>
+          </div>
+
+          <span><button id='create-pln' class="plan-list-headerBtnRow pointer" color="primary" (click)="storevalues()">Create New Plan</button></span>
+        </div>  </table>
+
+      <div *ngIf="plansData != null  && plansData.length > 0">
+        <table mat-table [dataSource]="dataSource" matSort (matSortChange)="sortChange($event)">
+          <ng-container matColumnDef="departmentName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="leftAlign"> Department </th>
+            <td mat-cell *matCellDef="let row" class="leftAlign"> {{row.departmentName}} </td>
+          </ng-container>
+          <ng-container matColumnDef="defaultPlanFlag">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="">Active</th>
+            <td mat-cell *matCellDef="let row">
+              <mat-checkbox [(ngModel)]="row.defaultPlanFlag"
+                            (change)="updatePlanActvStts(row, $event, selectPlan)" [disabled]="checkPlanDisabled(row)">
+              </mat-checkbox>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="planName">
+            <th mat-header-cell *matHeaderCellDef  mat-sort-header class="leftAlign"> Plan </th>
+            <td mat-cell *matCellDef="let row" class="leftAlign">
+              <div *ngIf="row.action !== null && row.status !== 'Completed'">
+                <a routerLink='./'
+                   (click)="sendUserSelections(row.displayPlanStatus,row.key,0)"> {{row.name}} </a>
+              </div>
+              <div *ngIf="row.action !== null && row.status === 'Completed'">
+                <a routerLink='./'
+                   (click)="sendUserSelections(row.displayPlanStatus,row.key,1)"> {{row.name}} </a>
+              </div>
+              <div *ngIf="checkDisplayPlanStatus(displayPlanStatus,selectPlan)">
+                <sup>({{row.displayPlanStatus}})</sup>
+              </div>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="dateUpdated">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="leftAlign"> Date Updated </th>
+            <td mat-cell *matCellDef="let row" class="leftAlign">
+              <label>{{(row.updatedTimeStamp) ? alertBox.getUpdatedDate(row.updatedTimeStamp) : '00/00/0000'}}</label>
+              <label>{{(row.updatedTimeStamp) ? alertBox.getUpdatedTime(row.updatedTimeStamp) : '00:00:00'}}</label>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="updatedBy">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="leftAlign"> Updated by </th>
+            <td mat-cell *matCellDef="let row" class="leftAlign">{{row.updatedBy ? row.updatedBy : 'N/A'}}</td>
+          </ng-container>
+          <ng-container matColumnDef="dateRange">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="leftAlign"> Date Range </th>
+            <td mat-cell *matCellDef="let row" class="leftAlign"> <tr>{{row.effectiveStartDate | date:'yyyy-MM-dd'}}</tr> <tr>{{row.effectiveEndDate | date:'yyyy-MM-dd'}}</tr> </td>
+          </ng-container>
+          <ng-container matColumnDef="volume">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class=" rightAlign">Annual Daily Volume </th>
+            <td mat-cell *matCellDef="let row" class="rightAlign"> {{limitDecimals( (row.utilizedAverageVolume* (row.dailyFlag ? findLeapYear(row.effectiveEndDate) : 1)))}} ({{ limitDecimals( row.utilizedAverageVolume / (row.dailyFlag ? 1 : findLeapYear(row.effectiveEndDate))) }}/day) </td>
+          </ng-container>
+          <ng-container matColumnDef="hours">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class=" rightAlign"> Annual Hours/FTEs </th>
+            <td mat-cell *matCellDef="let row" class="rightAlign">  {{roundOf(row.totalAnnualHours) | number}} / {{ row.fte === 0 || row.fte == null ? '0.00':(row.totalAnnualHours/row.fte) |  number: '0.2-2'}}</td>
+          </ng-container>
+          <ng-container matColumnDef="planStatus">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="row-align-header rightAlign">
+              <label class="mb-0 rightAlign">Plan Status</label> <label class="mb-0 rightAlign">(work hrs. balance)</label>
+            </th>
+            <td mat-cell *matCellDef="let row" class="rightAlign">
+              <div class="plan-status-outer-div rightAlign">
+                <div class="plan-status-inner-div">
+                  <div *ngIf="row.totalAnnualHoursVariance > 0">{{roundOf(row.totalAnnualHoursVariance) | number}}</div>
+                  <div *ngIf="row.totalAnnualHoursVariance === 0">{{roundOf(row.totalAnnualHoursVariance) | number}}</div>
+                  <div *ngIf="row.totalAnnualHoursVariance < 0">({{-1 * roundOf(row.totalAnnualHoursVariance) | number}})</div>
+                </div>
+                <div class="hour-variance">
+                  <app-svg-icon *ngIf="row.totalAnnualHoursVariance == 0" name="circle" color="#333333" size="20"></app-svg-icon>
+                  <app-svg-icon *ngIf="row.totalAnnualHoursVariance < 0" name="x-circle" color="red"  size="20"></app-svg-icon>
+                  <app-svg-icon *ngIf="row.totalAnnualHoursVariance > 0" name="check-circle" color="green" size="20"></app-svg-icon>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef > Action </th>
+            <td mat-cell *matCellDef="let row">
+              <app-svg-icon class=" pointer" title="Copy" name="copy" color="#007994" size="20" (click)="createCopyPlan(row, selectPlan)"></app-svg-icon>
+              <app-svg-icon class="pointer" title="Delete" name="trash-2" color="#007994" size="20" (click)="deleteRow(row, selectPlan)"></app-svg-icon>
+              <app-svg-icon class="pointer" title="Archive" name="archive" color="#007994" size="20" *ngIf="row.action == 'Inactive'" (click)="updatePlanStatus(row, selectPlan)"></app-svg-icon>
+              <app-svg-icon class="disabled-archived" name="archive"  color="#C0C0C0" size="20" *ngIf="row.action=='Active'"></app-svg-icon>
+              <app-svg-icon class="pointer" title="Restore" name="refresh-ccw" color="#007994" size="20" *ngIf="row.action == 'Archived'" (click)="updatePlanStatus(row, selectPlan)"></app-svg-icon>
+
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hidden" >
+          </tr>
+        </table>
+        <!--data in below mat-table,Header in above mat-table-->
+
+        <table mat-table class="border-top-0 table-block" [dataSource]="dataSource" matSort (matSortChange)="sortChange($event)">
+          <ng-container matColumnDef="departmentName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="top-align-reset leftAlign"> Department </th>
+            <td mat-cell *matCellDef="let row" class="leftAlign"> {{row.departmentName}} </td>
+          </ng-container>
+          <ng-container matColumnDef="defaultPlanFlag">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="top-align-reset">Active</th>
+            <td mat-cell *matCellDef="let row">
+              <mat-checkbox [(ngModel)]="row.defaultPlanFlag"
+                            (change)="updatePlanActvStts(row, $event, selectPlan)" [disabled]="checkPlanDisabled(row)">
+              </mat-checkbox>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="planName">
+            <th mat-header-cell *matHeaderCellDef  mat-sort-header class="top-align-reset"> Plan </th>
+            <td mat-cell *matCellDef="let row" class="leftAlign pdl-10">
+              <div *ngIf="row.action !== null && row.status !== 'Completed'">
+                <a routerLink='./'
+                   (click)="sendUserSelections(row.displayPlanStatus,row.key,0)"> {{row.name}} </a>
+              </div>
+              <div *ngIf="row.action !== null && row.status === 'Completed'">
+                <a routerLink='./'
+                   (click)="sendUserSelections(row.displayPlanStatus,row.key,1)"> {{row.name}} </a>
+              </div>
+              <div *ngIf="checkDisplayPlanStatus(displayPlanStatus,selectPlan)">
+                <sup>({{row.displayPlanStatus}})</sup>
+              </div>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="dateUpdated">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="top-align-reset leftAlign"> Date Updated </th>
+            <td mat-cell *matCellDef="let row" class="leftAlign pdl-10">
+              <label>{{(row.updatedTimeStamp) ? alertBox.getUpdatedDate(row.updatedTimeStamp) : '00/00/0000'}}</label>
+              <label>{{(row.updatedTimeStamp) ? alertBox.getUpdatedTime(row.updatedTimeStamp) : '00:00:00'}}</label>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="updatedBy">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="top-align-reset leftAlign"> Updated by </th>
+            <td mat-cell *matCellDef="let row" class="leftAlign pdl-10">{{row.updatedBy ? row.updatedBy : 'N/A'}}</td>
+          </ng-container>
+          <ng-container matColumnDef="dateRange">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="top-align-reset leftAlign"> Date Range </th>
+            <td mat-cell *matCellDef="let row" class="leftAlign pdl-10"> <tr>{{row.effectiveStartDate | date:'yyyy-MM-dd'}}</tr> <tr>{{row.effectiveEndDate | date:'yyyy-MM-dd'}}</tr> </td>
+          </ng-container>
+          <ng-container matColumnDef="volume">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="top-align-reset rightAlign">Annual Daily Volume </th>
+            <td mat-cell *matCellDef="let row" class="rightAlign pdr-10">{{limitDecimals( (row.utilizedAverageVolume* (row.dailyFlag ? findLeapYear(row.effectiveEndDate) : 1)))}} ({{ limitDecimals( row.utilizedAverageVolume / (row.dailyFlag ? 1 : findLeapYear(row.effectiveEndDate))) }}/day)</td>
+          </ng-container>
+          <ng-container matColumnDef="hours">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="top-align-reset rightAlign"> Annual Hours/FTEs </th>
+            <td mat-cell *matCellDef="let row" class="rightAlign">  {{roundOf(row.totalAnnualHours) | number}} / {{ row.fte === 0 || row.fte == null ? '0.00':(row.totalAnnualHours/row.fte) |  number: '0.2-2' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="planStatus">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class=" row-align-header top-align-reset rightAlign">
+              <label class="mb-0 rightAlign">Plan Status</label><label class="mb-0 rightAlign">(work hrs. balance)</label>
+            </th>
+            <td mat-cell *matCellDef="let row">
+              <div class="plan-status-outer-div rightAlign">
+                <div class="plan-status-inner-div">
+                  <div *ngIf="row.totalAnnualHoursVariance > 0">{{roundOf(row.totalAnnualHoursVariance) | number}}</div>
+                  <div *ngIf="row.totalAnnualHoursVariance === 0">{{roundOf(row.totalAnnualHoursVariance) | number}}</div>
+                  <div *ngIf="row.totalAnnualHoursVariance < 0">({{-1 * roundOf(row.totalAnnualHoursVariance) | number}})</div>
+                </div>
+                <div class="hour-variance">
+                  <app-svg-icon *ngIf="row.totalAnnualHoursVariance == 0" name="circle" color="#333333" size="20"></app-svg-icon>
+                  <app-svg-icon *ngIf="row.totalAnnualHoursVariance < 0" name="x-circle" color="red"  size="20"></app-svg-icon>
+                  <app-svg-icon *ngIf="row.totalAnnualHoursVariance > 0" name="check-circle" color="green" size="20"></app-svg-icon>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef class="top-align-reset"> Action </th>
+            <td mat-cell *matCellDef="let row">
+              <app-svg-icon class=" pointer" title="Copy" name="copy" color="#007994" size="20" (click)="createCopyPlan(row, selectPlan)"></app-svg-icon>
+              <app-svg-icon class="pointer" title="Delete" name="trash-2" color="#007994" size="20" (click)="deleteRow(row, selectPlan)"></app-svg-icon>
+              <app-svg-icon class="pointer" title="Archive" name="archive" color="#007994" size="20" *ngIf="row.action == 'Inactive'" (click)="updatePlanStatus(row, selectPlan)"></app-svg-icon>
+              <app-svg-icon class="disabled-archived" name="archive"  color="#C0C0C0" size="20" *ngIf="row.action=='Active'"></app-svg-icon>
+              <app-svg-icon class="pointer" title="Restore" name="refresh-ccw" color="#007994" size="20" *ngIf="row.action == 'Archived'" (click)="updatePlanStatus(row, selectPlan)"></app-svg-icon>
+
+            </td>
+          </ng-container>
+          <tr mat-header-row hidden *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" >
+          </tr>
+        </table>
+        <mat-paginator [pageSize]=paginateValue [pageSizeOptions]="[5, 10, 25, 100]"
+                       (page)="onPaginateChange($event)"></mat-paginator>
+      </div>
+      <div *ngIf="plansData == null  || plansData.length == 0" class="no-plan-msg-block"><span>No plans available. Create New Plan by clicking on the respective button on the right or update your filters.</span></div>
+    </div></div></div>
+

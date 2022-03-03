@@ -1,0 +1,1090 @@
+@import '../../../../variables';
+
+mat-card {
+  margin-bottom: 1rem;
+  border-radius: 0;
+  border-top: .25rem solid $blue-50;
+}
+.ng-plan-vol{
+  left: 968px;
+  top: 125px;
+  width: 60px;
+  height: 15px;
+  font-size: 12px;
+  border-color: grey;
+  background-color: whitesmoke;
+}
+.badge-info {
+  background-color: black;
+}
+.nursing-grid {
+  margin: 0px 120px 0px 25px;
+  color: #333333;
+  font-size: small
+}
+.round {
+  display: inline-block;
+  height: 11px;
+  width: 10px;
+  line-height: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 18px;
+  border-color: #4183c4;
+  background-color: #f8f8ff;
+  color: #1e90ff;
+  text-align: center;
+}
+
+.round.round-sm {
+  height: 11px;
+  width: 10px;
+  line-height: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 18px;
+  border-color: #4183c4;
+  font-size: 0.6em;
+  font-family: "Bookman Old Style";
+  -webkit-box-shadow: 0px 0px 0px 1px #3EA6CE;
+  -moz-box-shadow: 0px 0px 0px 1px #3EA6CE;
+  box-shadow: 0px 0px 0px 1px #3EA6CE;
+}
+.headerinput:hover,.headerinput:focus
+{
+  outline: none !important;
+  border:none !important;
+}
+.badge-ilink {
+  background-color: #e5eaeb;
+}
+h3 {
+  margin: 0;
+  padding: 0;
+}
+.min-max {
+  width: 100%;
+  height: 360px;
+}
+
+#save-valid {
+
+  margin-right: 10px;
+}
+
+tr {
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+}
+
+::ng-deep.mat-date {
+  width: 7rem;
+}
+
+.notes {
+  width: 90%;
+}
+
+.vol-budget {
+  span {
+    margin-left: 1rem;
+}
+}
+
+.pointer {
+  cursor: pointer;
+}
+#plan-setup-header {
+  display: flex;
+  flex-direction: row;
+
+  padding-left: .5rem;
+  padding-right: .5rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  margin-top: 0rem;
+}
+
+#plan-setup-container {
+  margin: 20px auto 0;
+  width: 1199px;
+
+  #left-container {
+    width: 100%;
+    height: fit-content;
+
+    .entity-dept {
+      display: table;
+      clear: both;
+      width: 100%;
+      & > div{
+        float: left;
+        .mat-form-field{
+          width: 100%;
+          .mat-form-field-infix{
+            width: 100% !important;
+          }
+        }
+      }
+
+  }
+
+    .date {
+      display: table;
+      justify-content: space-between;
+      width: 100%;
+      padding-top: .5rem;
+
+      span {
+        flex-grow: 1;
+        align-self: center;
+      }
+      .mat-form-field{
+        width: 50%;
+      }
+      & > div {
+        width: 40%;
+        float: left;
+    }
+  }
+}
+
+  #right-container {
+    display: inherit;
+    flex-direction: column;
+    height: 50%;
+
+    mat-card,
+    app-variable-pos,
+    app-non-variable-pos,
+    app-census {
+      width: 100%;
+  }
+}
+
+}
+
+
+
+
+
+
+@media screen and (min-width:600px) {
+  .hnml{
+    margin-left: 9% ;
+  }
+}
+@media screen and (max-width: 1444px) {
+  .hnml{
+    margin-left: 11.5%;
+  }
+}
+@media screen and (max-width: 1250px) {
+  .hnml{
+    margin-left: 15%;
+  }
+}
+@media screen and (max-width: 1100px) {
+  .hnml{
+    margin-left: 18%;
+  }
+}
+@media screen and (max-width: 1350px) {
+  .hnml{
+    margin-left: 18%;
+  }
+}
+@media screen and (max-width: 980px) {
+  .hnml {
+    margin-left: 29%;
+  }
+}
+
+.lbs{
+  color:#003b49;
+  font-size: 24px;
+  font-weight: 400;
+  font-family: "Roboto", Arial, sans-serif;
+}
+
+input {
+  width: 9rem;
+}
+
+.button {
+  background-color: white;
+  border: 1px;
+  color: #3EA6CE;
+  padding: 10px 25px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.btn {
+  border: 1px solid black;
+  background-color: white;
+  color: black;
+  font-size: 16px;
+  width:15%;
+  line-height: 1px;
+  cursor: pointer;
+}
+
+.btn-save {
+  border: 1px solid black;
+  background-color: white;
+  color: black;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.info {
+  border-color: #3EA6CE;
+  color: #3EA6CE
+}
+
+.entity-text{
+  width: 160px;
+  margin-right: 20px;
+}
+.dept-text{
+  width: 160px;
+}
+.exit{
+  height: 2rem;
+  width:100px;
+  font-weight: 500;
+  border-radius: 5px;
+}
+.plan-next{
+  height: 2rem;width:130px;
+  font-weight: 500;
+  border:2px ;
+  border-radius: 5px;
+}
+.save-exit{
+  height: 2rem;width:120px;
+  font-weight: 500;
+  border-radius: 5px;
+}
+.save-valid{
+  height: 2rem;width:120px;
+  font-weight: 500;
+  border-radius: 5px;
+}
+.input-numberbox
+{
+  height:3%;
+  width: 5%;
+  border-radius: 2px;
+  border:1px solid gray;
+  padding-left: 0.8rem;
+  padding-right: 0.8rem;
+  padding-top: 0rem;
+  padding-bottom: 0rem;
+}
+.exit-dialog .popup{
+  overflow-x: hidden !important;
+}
+
+
+@media screen and (min-width:600px) {
+  .mrright{
+    margin-left: 73px;
+  }
+}
+@media screen and (max-width: 1444px) {
+  .mrright{
+    margin-left: 73px;
+  }
+}
+@media screen and (max-width: 980px) {
+  .mrright {
+    margin-left: 73px;
+  }
+}
+@media screen and (max-width: 1079px) {
+  .mrright {
+    margin-left: 73px;
+  }
+}
+
+
+
+@media screen and (min-width:600px) {
+  .mlpleft{
+    margin-left: 104px;
+  }
+}
+@media screen and (max-width: 1444px) {
+  .mlpleft{
+    margin-left: 68px;
+  }
+}
+@media screen and (max-width: 1100px) {
+  .mlpleft{
+    margin-left: 86px;
+  }
+}
+@media screen and (max-width: 980px) {
+  .mlpleft {
+    margin-left: 73px;
+  }
+}
+@media screen and (max-width: 1310px) {
+  .mlpleft {
+    margin-left: 99px;
+  }
+}
+@media screen and (max-width: 1040px) {
+  .mlpleft {
+    margin-left: 89px;
+  }
+}
+.selectWrapper{
+  display:inline-block;
+  overflow:hidden;
+  background:#cccccc;
+  border:1px solid #cccccc;
+}
+.selectBox{
+  width:180px;
+  height:35px;
+  border-box:1.4px;
+  outline:none;
+  margin-top: 1px;
+}
+
+.plan-setup{
+  width :100%;
+  text-align:center;
+  background-color: white;
+
+  @media screen and (min-width:900px) {
+    .mlpset{
+      margin-left: 3.3% ;
+      width: 93.4%;
+    }
+  }
+  @media screen and (min-width:1686px) {
+    .mlpset{
+      margin-left: 3.3% ;
+      width: 93.6%;
+    }
+  }
+
+
+  @media screen and (max-width: 1444px) {
+    .mlpset{
+      margin-left: 4%;
+      width: 92.4%;
+    }
+  }
+
+  @media screen and (max-width: 1200px) {
+    .mlpset{
+      margin-left: 4%;
+      width: 91.4%;
+    }
+  }
+
+  @media screen and (min-width: 1798px) {
+    .mlpset{
+      margin-left: 3.3%;
+      width: 94.0%;
+    }
+  }
+}
+.plan-setup-table-div{
+  margin-top: 20px;
+}
+
+.plan-setup-div-top-margin{
+ margin-top: 20px;
+}
+
+.plan-setup-div-right{
+  text-align: left;
+}
+
+.plan-setup-div-right-label{
+  color:red;
+}
+.plan-setup-tab-div-left{
+  width: 70%;
+  .div-align
+  {
+    float:left; margin-top:2%;
+  }
+}
+.plan-setup-tab-div-right{
+  text-align: left;
+  width: 30%;
+  text-align: right;
+  .div-align
+  {
+    float:left;
+    text-align: right;
+    width: 100%;
+    margin-top:2%;
+  }
+}
+
+.plan-text-input{
+  border-color: #D1D4D5;
+  width: 400px;
+  height: 35px;
+}
+
+.plan-setup-div-left{
+  text-align: right;
+  width: 100%;
+}
+
+.plan-setup-container-left-div-header{
+  color:#003b49;
+}
+
+.plan-parameter-tool-tip{
+  padding-left:3px;
+}
+
+.entity-dept-data{
+  width: 180px;
+}
+
+.entity-dept-department{
+  width: 25.5%;
+  margin-left: 21px;
+}
+
+.effective-date-label{
+  color:red;
+}
+.notes{
+  margin-top: -30px;
+  float: left;
+  &:first-child{
+    width: 50% !important;
+    padding-left: 20px;
+  }
+  &:last-child{
+    width: 50% !important;
+  }
+}
+.effective-end-date{
+  padding-left: 20px;
+}
+.date{
+  position: relative;
+  .dateSeperator{
+    position: absolute;
+    top: -10px;
+    margin-left: 0;
+  }
+}
+.effective-end-date{
+}
+
+.plan-utilized-label{
+  color:red;
+}
+
+.vol-budget-container{
+  width:100%;
+}
+
+.vol-budget-container-div{
+  width:65px;
+  float:left;
+  &.extend{
+    width: 20%;
+  }
+}
+
+.plan-utilized-volume{
+  height:35px;
+  width:100%;
+  background-color: white;
+}
+
+.plan-utilized-volume-detail{
+  width:190px;
+  float:left;
+  word-wrap: break-word;
+  padding-left: 2%;
+  &.extend{
+    width: 80%;
+  }
+}
+
+.mandatory-color{
+  color:red;
+}
+
+.plan-utilized-volume-text-area{
+  border-color: #D1D4D5 ;
+  font-size:16px;
+  width: 100%;
+}
+
+.mat-div-border{
+  border-style: groove;
+}
+
+.plan-setup-container-right-header{
+  color:#003b49;
+}
+.plan-setup-container-right-header-census-range{
+  color:#003b49;
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+.header{
+  font-size: 18px;
+  margin-top: 6px;
+  padding-right: 5px;
+}
+
+.div-flex{
+  display:flex;
+}
+.ligher-font{
+  font-weight: lighter !important;
+}
+.mat-input-element:disabled{
+  width: 98%!important;
+}
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  .selectBox{
+    border-top: 3px solid lightgray !important;
+}
+  .plan-utilized-volume-text-area{
+    width: 95% !important;
+  }
+  .plan-setup{
+    padding-top: 21px !important;
+  }
+}
+
+.mat-group-tab{
+  width:100% !important;
+
+  ::ng-deep mat-tab-group {
+    width: 100% !important;
+  }
+
+  ::ng-deep .mat-ink-bar {
+    background-color: #1c6d89 !important;
+    height: 3px;
+    margin-bottom: 37px;
+  }
+  ::ng-deep .mat-tab-label
+  {
+    height: 40px;
+    padding: 0 25px;
+    background-color: #F2F4F4;
+  }
+}
+
+::ng-deep .mat-tab-list .mat-tab-labels .mat-tab-label-active {
+  background-color: #ffffff;
+  border-top: 3px solid #1c6d89;
+}
+::ng-deep .mat-tab-header {
+  background-color: white;
+}
+
+.mat-tab-label:not(.mat-tab-label-active):focus {
+  background: #f6f8f8 !important;
+  color: #7e7e7e;
+}
+.pleft{
+padding-left: 145px;
+}
+
+.rdcorn{
+  border-radius:5px;
+  margin-right: 10px;
+  &:last-child{
+    margin-right: 0;
+  }
+}
+.department-space{
+  margin-left: 20px;
+  padding-right: 20px;
+}
+.effective-date-label-margin{
+  margin-bottom: 5px;
+}
+.label-notes {
+  font-size: .75rem;
+  color: #6f7479;
+}
+.mat-form-pad{
+  padding-top: 18px !important;
+}
+.notesProduct{
+  width: 56% !important;
+}
+.widthSet{
+  width: 88% !important;
+  outline: white !important;
+  border: none !important;
+  text-overflow: ellipsis;
+}
+.buttonCss{
+  border: none;
+  background: none;
+  color: rgba(0,0,0,.54);
+  height: 16px;
+  width: 5% !important;
+  padding: 0px !important;
+  border-left: white 1px solid !important;
+  border-radius: 0px !important;
+  line-height: 0 !important;
+  font-size: small !important;
+}
+.mat-input-element:disabled{
+  width: 145px !important;
+}
+.form-control{
+  height: unset !important;
+}
+.mat-option{
+  padding: 10px !important;
+  height: auto !important;
+  font-size: 12px !important;
+  overflow: unset!important;
+  &.active{
+    background-color: #e2e2e2;
+    color: #313030;
+  }
+}
+.dropdownName{
+  line-height: 20px;
+  font-size: 15px;
+  white-space: pre-wrap !important;
+}
+.dropdownCode{
+  height: 15px;
+  line-height: 15px;
+  margin: 8px 0 0;
+  font-size: 12px;
+  white-space: pre-wrap  !important;
+}
+.effective-start-date, .effective-end-date{
+  input.form-control{
+    box-shadow: none;
+    outline: none;
+    border: none !important;
+  }
+  .form-control:disabled{
+    background-color: transparent;
+  }
+}
+.mat-form-field-label{
+  display: none;
+}
+::ng-deep{
+  .mat-datepicker-toggle{
+    button{
+      outline: none !important;
+    }
+    button:hover{
+      background-color: transparent;
+      color: #0591b2;
+    }
+  }
+}
+.vol-budget{
+  clear: both;
+  display: inline-block;
+}
+
+// Redesign
+.plan-setup-holder{
+  width: 1199px;
+  margin: auto;
+  position: relative;
+  .plan-setup-table{
+    clear: both;
+  }
+}
+.w-25{
+  width: 25% !important;
+  float: left;
+}
+.w-75{
+  width: 75% !important;
+  float: left;
+}
+.clearfix{
+  display: table;
+  clear: both;
+  width: 100%;
+}
+.align-right{
+  text-align: right;
+}
+.pdt-10{
+  padding-top: 10px;
+}
+::ng-deep .mat-ink-bar{
+  display: none;
+}
+.volBudgetController{
+  b{
+    padding-left: 25px;
+    color: #007994;
+    cursor: pointer;
+    &.disable{
+      color: grey;
+    }
+  }
+}
+@media (min-width: 768px) and (max-width: 1023px){
+  .plan-setup-holder{
+    width: 100% !important;
+  }
+  .w-25, .w-75, .w-70, .w-60, .w-40, .w-30{
+    width: 100% !important;
+    text-align: center !important;
+    margin-bottom: 10px;
+  }
+  .div-flex{
+    display: block !important;
+  }
+  ::ng-deep{
+    .mat-tab-labels{
+      display: block !important;
+    }
+  }
+  #plan-setup-container{
+    display: block;
+    width: 95% !important;
+  }
+  .plan-setup-container-left, #right-container{
+    width: 100% !important;
+  }
+  .plan-setup-container-left{
+    .mat-card{
+      table{
+        width: 100%;
+      }
+    }
+  }
+  .headerTabContainer{
+    button{
+      padding-left: 10px !important;
+      padding-right: 10px !important;
+    }
+    ::ng-deep{
+      .mat-tab-label{
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+      }
+    }
+
+  }
+}
+@media (min-width: 1024px) {
+  #plan-setup-container, .plan-setup-holder{
+    width: 100% !important;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+  }
+  .w-25{
+    width: 20% !important;
+  }
+  .w-75{
+    width: 80% !important;
+  }
+  .container-fluid{
+    padding: 0 !important;
+  }
+  .w-70.mat-group-tab{
+    width: 67% !important;
+  }
+  .w-30.button-group{
+    width: 33% !important;
+  }
+  .headerTabContainer{
+    button{
+      padding-left: 10px !important;
+      padding-right: 10px !important;
+    }
+  }
+}
+@media (min-width: 1199px) {
+  #plan-setup-container, .plan-setup-holder{
+    width: 100% !important;
+  }
+  .plan-setup-holder{
+    padding-left: 25px !important;
+    padding-right: 25px !important;
+  }
+  .container-fluid{
+    padding: 0 !important;
+  }
+  .headerTabContainer{
+    button{
+      padding-left: 1.5rem !important;
+      padding-right: 1.5rem !important;
+    }
+  }
+}
+@media (min-width: 1300px) {
+  #plan-setup-container, .plan-setup-holder{
+    width: 100% !important;
+  }
+  .plan-setup-holder{
+    padding-left: 25px !important;
+    padding-right: 25px !important;
+  }
+  .container-fluid{
+    padding: 0 !important;
+  }
+}
+@media (min-width : 1500px){
+  #plan-setup-container, .plan-setup-holder{
+    width: 100% !important;
+  }
+  .plan-setup-holder{
+    padding-left: 25px !important;
+    padding-right: 25px !important;
+  }
+  .container-fluid{
+    padding: 0 !important;
+  }
+}
+.w-20{
+  width: 20% !important;
+}
+.w-22{
+  width: 22% !important;
+}
+.formWidth{
+  width: 21% !important;
+  &.extend{
+    width: 33% !important;
+  }
+}
+.pl-20{
+  padding-left: 20px;
+}
+@media (min-width: 768px) and (max-width: 1024px){
+  .entity-dept{
+    .w-22{
+      width: 49% !important;
+    }
+    .department-space.w-22{
+      margin-left: 10px;
+      padding-right: 10px;
+    }
+    .formWidth, .formWidth.extend{
+      width: 50% !important;
+      &.form-group{
+        margin-bottom: 0;
+      }
+    }
+    .formWidth.extend{
+      padding-left: 5px;
+    }
+  }
+  #plan-setup-container{
+    #left-container{
+      .date > div, .notesProduct{
+        width: 100% !important;
+        clear: both;
+        display: block;
+      }
+      .notesProduct{
+        .notes{
+          margin-top: 0;
+          padding-left: 0;
+        }
+      }
+      .planStatus{
+        margin-top: 0;
+      }
+    }
+  }
+  .category-selector .selectBox{
+    width: 125px;
+  }
+  .category-abbrevation .category-abbrevation-input{
+    width: 125px;
+  }
+  .category-description .category-description-input{
+    width: 125px;
+  }
+}
+@media (max-width: 1023px){
+  .vol-budget-container-div{
+    width: 25%;
+  }
+  .plan-utilized-volume-detail{
+    width: 75%;
+  }
+  .entity-dept{
+    .w-20{
+      width: 48% !important;
+    }
+  }
+}
+@media (min-width: 1024px){
+  .plan-setup-table{
+    .div-align{
+      button{
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+    }
+  }
+  .plan-setup-container-left{
+    mat-card{
+      padding: 10px;
+    }
+  }
+  .entity-dept{
+    .formWidth{
+      width: 26% !important;
+    }
+    .formWidth.extend{
+      width: 28% !important;
+    }
+  }
+  .vol-budget-container-div{
+    width: 25%;
+  }
+  .plan-utilized-volume-detail{
+    width: 75%;
+  }
+  .vol-budget-container-div{
+    width: 18%;
+  }
+  .plan-utilized-volume-detail{
+    width: 82%;
+    font-size: 13px;
+  }
+}
+
+@media (min-width: 1199px){
+  .plan-setup-container-left{
+    mat-card{
+      padding: 20px;
+    }
+  }
+  .entity-dept{
+    .formWidth{
+      width: 26.3% !important;
+    }
+    .formWidth.extend{
+      width: 31% !important;
+    }
+  }
+  .vol-budget-container-div{
+    width: 18%;
+  }
+  .plan-utilized-volume-detail{
+    width: 82%;
+    font-size: 13px;
+  }
+}
+@media (min-width: 1300px){
+
+}
+@media (min-width: 1500px){
+  .vol-budget-container-div{
+    width: 25%;
+  }
+  .plan-utilized-volume-detail{
+    width: 75%;
+  }
+  .entity-dept{
+    .formWidth{
+      width: 26.8% !important;
+    }
+  }
+}
+@media (min-width: 1768px){
+  #plan-setup-container, .plan-setup-holder{
+    width: 100% !important;
+  }
+  .plan-utilized-volume-detail{
+    font-size: 13px;
+  }
+}
+@media (min-width: 1920px){
+  .vol-budget-container-div{
+    width: 25%;
+  }
+  .plan-utilized-volume-detail{
+    width: 75%;
+  }
+  // .entity-dept{
+  //   .formWidth{
+  //     width: 22% !important;
+  //   }
+  //   .formWidth.extend{
+  //     width: 32% !important;
+  //   }
+  // }
+  // .notesProduct{
+  //   .notes:first-child{
+  //     width: 41% !important;
+  //   }
+  //   .notes:last-child{
+  //     width: 59% !important;
+  //   }
+  // }
+}
+.headerTabContainer{
+  margin-top: 30px;
+  margin-bottom: -1px;
+  .w70{
+    width: 70% !important;
+    float: left;
+  }
+  .w30{
+    width: 30%;
+    float: left;
+    padding-right: 25px;
+  }
+  button{
+    background-color: transparent;
+    border-radius: 0;
+    border: 2px solid #1c6d89;
+    color: #1c6d89;
+  }
+  ::ng-deep{
+    .mat-tab-label{
+      border: 1px solid #aaa;
+      opacity: 1;
+      border-right: 0;
+    }
+    .mat-tab-list .mat-tab-labels .mat-tab-label-active {
+      background-color: #fff;
+      border-top: 3px solid #1c6d89!important;
+      border-bottom: 0!important;
+    }
+    .mat-tab-label:last-child {
+      border-right: 1px solid #aaa;
+    }
+    .mat-tab-header{
+      background-color: transparent;
+    }
+  }
+}
+.plansSetupContainer{
+  background-color: #fff;
+  padding: 10px 25px;
+  border: 1px solid #aaa;
+  border-right: none;
+  border-left: none;
+  margin-bottom: 20px;
+}
+.non-variable-pos{
+  margin-bottom: 0;
+}

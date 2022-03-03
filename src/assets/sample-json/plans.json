@@ -1,0 +1,49 @@
+[{
+  "id":101,
+  "Department": "6000-ICU",
+  "Plan": "6000-ICU-2Q19",
+  "DateUpdated": "00/00/2019",
+  "DateRange": "00/00/2019 00/00/2019",
+  "Volume": "4000",
+  "Hours": "00.0/00",
+  "PlanStatus": "32"
+},
+  {
+    "id":102,
+    "Department": "6000-ICU",
+    "Plan": "6000-ICU-3Q19",
+    "DateUpdated": "00/00/2019",
+    "DateRange": "00/00/2019 00/00/2019",
+    "Volume": "2000",
+    "Hours": "00.0/00",
+    "PlanStatus": "40"
+  },
+  {"id":103,
+    "Department": "6000-ICU",
+    "Plan": "6000-ICU-3Q19",
+    "DateUpdated": "00/00/2019",
+    "DateRange": "00/00/2019 00/00/2019",
+    "Volume": "2000",
+    "Hours": "00.0/00",
+    "PlanStatus": "40"
+  },
+  {
+    "id":104,
+    "Department": "6000-ICU",
+    "Plan": "6000-ICU-3Q19",
+    "DateUpdated": "00/00/2019",
+    "DateRange": "00/00/2019 00/00/2019",
+    "Volume": "2000",
+    "Hours": "00.0/00",
+    "PlanStatus": "40"
+  },
+  {
+    "id":105,
+    "Department": "6000-Clinic",
+    "Plan": "6000-Clinic-1Q19",
+    "DateUpdated": "00/00/2019",
+    "DateRange": "00/00/2019 00/00/2019",
+    "Volume": "0,0000",
+    "Hours": "00.0/00",
+    "PlanStatus": "12"
+  }]

@@ -1,0 +1,52 @@
+<style> html {
+  display: none;
+} </style>
+<script>
+  if (top !== self) {
+    document.documentElement.style.display = 'none';
+  } // Attempt to escape frame
+  else {
+    document.documentElement.style.display = 'block';
+  } // If not in frame, make html visible
+</script>
+<div>
+    <mat-card class="grid-score-card-container" >
+      <div class="row">
+        <div class="col">
+          <div class="title">planned target wh<span class="lower">p</span>u</div>
+          <div class="titleValue">{{ planDetails.targetBudget | number: '0.4-4' }}</div>
+        </div>
+        <mat-divider [vertical]="true"></mat-divider>
+        <div class="col">
+          <div class="title">calculated target wh<span class="lower">p</span>u</div>
+          <div class="titleValue">{{ isNumber(planWhpu) | number: '0.4-4' }}</div>
+        </div>
+        <mat-divider [vertical]="true"></mat-divider>
+        <div class="col" *ngIf="showTotalPlanTargetHours" >
+          <div class="title">total target work hrs.</div>
+          <div class="titleValue" *ngIf="totalTargetWrkhrs >= 0">{{ isNumber(totalTargetWrkhrs) | number}}<sub>({{check(totalTargetWrkhrsFte)?totalTargetWrkhrsFte.toFixed(2):'-'}}FTEs)</sub></div>
+          <div class="titleValue" *ngIf="totalTargetWrkhrs < 0">({{ (-1 * totalTargetWrkhrs) | number}})<sub>({{check(totalTargetWrkhrsFte)?totalTargetWrkhrsFte.toFixed(2):'-' }}FTEs)</sub></div>
+        </div>
+        <mat-divider [vertical]="true" *ngIf="showTotalPlanTargetHours" ></mat-divider>
+        <div class="col" *ngIf="showTotalPlanTargetHours" >
+          <div class="title">plan total work hrs.</div>
+          <div class="titleValue" *ngIf="planTotalWrkhrs >=0">{{ isNumber(planTotalWrkhrs) | number}}<sub>({{ check(planTotalWrkhrsFte)?planTotalWrkhrsFte.toFixed(2):'-'}} FTEs)</sub></div>
+          <div class="titleValue" *ngIf="planTotalWrkhrs <0">({{ (-1* planTotalWrkhrs) | number}})<sub>({{ check(planTotalWrkhrsFte)?planTotalWrkhrsFte.toFixed(2):'-'}} FTEs)</sub></div>
+        </div>
+        <mat-divider [vertical]="true" *ngIf="showTotalPlanTargetHours" ></mat-divider>
+        <div class="col">
+          <div class="title">annual total hrs. variance</div>
+          <div class="titleValue" *ngIf="isAnnualTotalHoursVariencepositive">
+              <app-svg-icon *ngIf="!isAnnualTotalHoursVariencepositive" name="x-circle" color="red"  size="20"></app-svg-icon>
+              <app-svg-icon *ngIf="isAnnualTotalHoursVariencepositive" name="check-circle" color="green" size="20"></app-svg-icon>
+            {{ isNumber(annualTotalHoursVarience) | number }}<sub>({{ check(annualTotalHoursVarienceFte)?annualTotalHoursVarienceFte.toFixed(2):'-'}} FTEs)</sub>
+          </div>
+          <div class="titleValue" *ngIf="!isAnnualTotalHoursVariencepositive">
+            <app-svg-icon *ngIf="!isAnnualTotalHoursVariencepositive" name="x-circle" color="red"  size="20"></app-svg-icon>
+            <app-svg-icon *ngIf="isAnnualTotalHoursVariencepositive" name="check-circle" color="green" size="20"></app-svg-icon>
+            ({{(-1 * annualTotalHoursVarience) | number}})<sub>({{ check(annualTotalHoursVarienceFte)?annualTotalHoursVarienceFte.toFixed(2):'-'}} FTEs)</sub>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+  </div>

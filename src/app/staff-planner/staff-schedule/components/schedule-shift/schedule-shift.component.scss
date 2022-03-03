@@ -1,0 +1,597 @@
+table {
+    border: 1px solid #CCC;
+    border-collapse: collapse;
+     width: 100%;
+}
+
+td {
+    border: none;
+}
+.Error
+{
+    color: red;
+    text-align: center;
+}
+.pointer {
+  cursor: pointer;
+  font-weight: 500;
+  border-radius: 5px;
+}
+.input-numberbox
+  {
+    height:35px;
+    width: 45px;
+    border-radius: 2px;
+    border:1px solid gray;
+    padding-left: 0.8rem;
+    padding-right: 0.8rem;
+    padding-top: 0rem;
+    padding-bottom: 0rem;
+  }
+  .input-dropdown
+  {
+
+    border-radius: 2px;
+    border:1px solid gray;
+  }
+
+  .input-dropdown-edit
+  {
+    border:1px solid #007994;
+  }
+  .input-numberbox
+  {
+   height: 30px; width:30%;
+   padding-left: 1rem;
+   padding-right: 0rem;
+   padding-top: 0.5rem;
+   padding-bottom: 0.5rem;
+  }
+  .input-timebox
+  {
+    height: 30px;
+    width:50%;
+    padding-left: 1rem;
+    padding-right: 0rem;
+     padding-bottom: 0.5rem;
+  }
+  .input-numberbox-edit
+  {
+    height:25px;
+    width: 45px;
+    border-radius: 2px;
+    border:1px solid #007994;
+    padding-left: 0.8rem;
+    padding-right: 0.8rem;
+    padding-top: 0rem;
+    padding-bottom: 0rem;
+  }
+  .blockElm{
+    display: block !important;
+  }
+.switch {
+  position: relative;
+  display: block;
+  vertical-align: middle;
+  width: 76px;
+  height: 30px;
+  padding: 3px;
+  margin: 0 10px 10px 0;
+  background: linear-gradient(to bottom, #eeeeee, #FFFFFF 25px);
+  background-image: -webkit-linear-gradient(top, #eeeeee, #FFFFFF 25px);
+  box-shadow: inset 0 -1px white, inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  box-sizing:content-box;
+  top:5px;
+}
+.switch-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: inherit;
+  width: inherit;
+  opacity: 0;
+  box-sizing:content-box;
+}
+.switch-label {
+  position: relative;
+  display: block;
+  height: inherit;
+  width: inherit;
+  font-size: 10px;
+  text-transform: uppercase;
+  background: #007994;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12), inset 0 0 2px rgba(0, 0, 0, 0.15);
+  box-sizing:content-box;
+}
+.switch-label:before, .switch-label:after {
+  position: absolute;
+  top: 50%;
+  margin-top: -.5em;
+  line-height: 1;
+  -webkit-transition: inherit;
+  -moz-transition: inherit;
+  -o-transition: inherit;
+  transition: inherit;
+  box-sizing:content-box;
+}
+.switch-label:before {
+  content: attr(data-off);
+  right: 13px;
+  color: #aaaaaa;
+  text-shadow: 0 1px rgba(255, 255, 255, 0.5);
+}
+.switch-label:after {
+  content: attr(data-on);
+  left: 13px;
+  color: #FFFFFF;
+  text-shadow: 0 1px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+}
+.switch-input:checked ~ .switch-label {
+  background: #007994;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15), inset 0 0 3px rgba(0, 0, 0, 0.2);
+}
+.switch-input:checked ~ .switch-label:before {
+  opacity: 0;
+}
+.switch-input:checked ~ .switch-label:after {
+  opacity: 1;
+}
+.switch-handle {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(to bottom, #FFFFFF 40%, #f0f0f0);
+  background-image: -webkit-linear-gradient(top, #FFFFFF 40%, #f0f0f0);
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+}
+.switch-handle:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -6px 0 0 -6px;
+  width: 12px;
+  height: 12px;
+  background: linear-gradient(to bottom, #eeeeee, #FFFFFF);
+  background-image: -webkit-linear-gradient(top, #eeeeee, #FFFFFF);
+  box-shadow: inset 0 1px rgba(0, 0, 0, 0.02);
+}
+.switch-input:checked ~ .switch-handle {
+  left: 50px;
+  box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Transition
+========================== */
+.switch-label, .switch-handle {
+  transition: All 0.1ms ease;
+  -webkit-transition: All 0.1ms ease;
+  -moz-transition: All 0.1ms ease;
+  -o-transition: All 0.1ms ease;
+}
+
+.less-padding
+{
+  padding-right: 8px;
+  padding-left: 10px;
+}
+input[type=time]::-webkit-clear-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -o-appearance: none;
+  -ms-appearance:none;
+  appearance: none;
+}
+.icon-add-shift {
+  font-size: 40px;
+  font-weight: bold;
+  color: #007994;
+}
+.icon-remove
+{
+  font-size: 30px;
+  color: #007994;
+}
+
+hr {
+  border:none;
+  border-top:1.9px dotted #6f7479;
+  color:#D1D4D5;
+  background-color:#fff;
+  height:1px;
+  width:50%;
+}
+
+.tool-tip-margin
+{
+  margin-left: 5px;
+  margin-right: 1px;
+}
+
+.round {
+  display: inline-block;
+  height: 11px;
+  width: 10px;
+  line-height: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 18px;
+  border-color: #4183c4;
+  background-color: #f8f8ff;
+  color: #1e90ff;
+  text-align: center;
+}
+
+.round.round-sm {
+  height: 11px;
+  width: 10px;
+  line-height: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 18px;
+  border-color: #4183c4;
+  font-size: 0.6em;
+  font-family: "Bookman Old Style";
+  -webkit-box-shadow: 0px 0px 0px 1px #3EA6CE;
+  -moz-box-shadow: 0px 0px 0px 1px #3EA6CE;
+  box-shadow: 0px 0px 0px 1px #3EA6CE;
+}
+
+.table-schedule-shift{
+  width: 96%;
+  margin-left: 1%;
+}
+
+.spacing-td{
+  width: 2%;
+}
+
+.schedule-shift-name{
+  width: 35%;
+  height: 40px;
+}
+
+.shift-hours{
+  width: 15%; text-align: left;
+}
+
+.shift-start-time{
+  width: 30%;
+  text-align: left;
+}
+
+.spacing-shift{
+  width: 14%;
+  text-align: left;
+}
+
+.table-schedule-empty-td{
+  background-color: #D1D4D5;
+  height:2px;
+}
+
+.table-schedule-row-two{
+  height:60px;
+}
+
+.table-schedule-row-two-td-one{
+  width: 2%;
+}
+
+.shift-name-data{
+  width: 35%;
+  text-align: left;
+}
+
+.shift-name{
+  height: 35px;
+  width:85%;
+  border-color: #D1D4D5 ;
+}
+
+.shift-hours-data{
+  width: 15%;
+  text-align: left;
+}
+
+.shift-hours{
+  border-color: #D1D4D5;
+  width:70px;
+  text-align: right;
+}
+
+.shift-start-time-data{
+  width: 30%;
+  text-align: left;
+  position: relative;
+  & .hasError{
+    border: 1px solid red !important;
+  }
+  & .Error{
+    position: absolute;
+  }
+}
+
+.shift-start-time{
+  height: 35px;
+  width:36%;
+  border-color: #D1D4D5 ;
+}
+
+.switch-input-td{
+  width: 14%;
+  text-align: left;
+  padding-top:.5rem;
+}
+
+.shift-empty{
+  height: 50px;
+}
+
+.head-right{
+  width: 96%;
+}
+
+.patient-grid-data{
+  height: 50px;
+}
+.shiftdivparent
+{
+  width:100%;float:left;
+  display:flex;
+}
+
+.shiftdivchild1 {
+  width: 45%;
+  float: left
+}
+
+.shiftdivchild2 {
+  width: 55%;
+  text-align: -webkit-right;
+  .shiftdivchild-align-right
+  {
+    width: 92%;
+    display: flex;
+    text-align: right;
+    margin-right: 10px;
+  }
+}
+
+.div-del-btn {
+  float: right;
+  padding-right: 2%;
+}
+
+.table-patient-grid{
+  border:none;
+}
+
+.table-patient-grid-row-one{
+  width: 94%;
+}
+
+.table-grid-row-one-data{
+  text-align: left;
+  width: 95%;
+  display: flex;
+}
+.table-grid-row-one-data-padding{
+  margin-top:2%;
+}
+
+.table-grid-row-one-div{
+  word-wrap: break-word;
+  display: flex;
+}
+
+.div-staff-to-patient{
+  width:204px;
+  line-height:34px;
+  margin-left: 10px;
+}
+
+.input-edit{
+  height: 35px;
+  border-color: #D1D4D5;
+}
+
+.feather-icon-group{
+  text-align: right;
+  width: 5%;
+  padding-right: 20px
+}
+
+.error-align{
+  text-align: center;
+}
+.btn-add-another-shift{
+  color: #207D9D;
+  background-color: white;
+  padding: 3px 5px;
+  font-size: 12px;
+  height: auto;
+  border: 1px solid #207D9D;
+  border-radius: 3px;
+  cursor: pointer;
+  // width: 180px;
+  font-weight: 500;
+}
+
+.btn-add-another-shift-disable{
+  color: lightgrey;
+  background-color: white;
+  padding: 3px 5px;
+  font-size: 12px;
+  height: auto;
+  border: 1px solid lightgrey;
+  border-radius: 3px;
+  cursor: pointer;
+  // width: 180px;
+  font-weight: 500;
+  outline: none;
+}
+
+.btn-add-del-shift{
+  margin-left: 10px;
+  color: #207D9D;
+  background-color: white;
+  padding: 3px 5px;
+  font-size: 12px;
+  height: auto;
+  border: 1px solid #207D9D;
+  border-radius: 3px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+
+.btn-add-del-shift-disable{
+  margin-left: 10px;
+  color: lightgrey;
+  background-color: white;
+  padding: 3px 5px;
+  font-size: 12px;
+  height: auto;
+  border: 1px solid lightgrey;
+  border-radius: 3px;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+}
+.btn-add-dup-shift{
+  //position:relative;
+  margin-left: 10px;
+  color: #207D9D;
+  background-color: white;
+  padding: 3px 5px;
+  font-size: 12px;
+  height: auto;
+  border: 1px solid #207D9D;
+  border-radius: 3px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+
+.btn-add-dup-shift-disable{
+  // position:relative;
+  // left:2%;
+  margin-left: 10px;
+  color: lightgrey;
+  background-color: white;
+  padding: 3px 5px;
+  font-size: 12px;
+  height: auto;
+  border: 1px solid lightgrey;
+  border-radius: 3px;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+}
+.click-top{
+  z-index : 1000;
+}
+
+.float-left{
+  float:right !important;
+  margin-right:10%;
+}
+
+.schedule-shift{
+  border: 1px solid darkgray;
+  margin-bottom: 20px;
+  .shiftContainer{
+    .shiftDetails{
+      padding: 15px 20px;
+      .shiftName{
+        width: 33%;
+      }
+      .shiftHours{
+        width: 10%;
+      }
+      .shiftStartTime{
+        width: 20%;
+        input{
+          width: auto;
+        }
+      }
+      .shiftTimeFormat{
+        width: 30%;
+        label{
+          display: inline-block;
+        }
+      }
+      .shiftIcons{
+        line-height: 80px;
+        position: absolute;
+        app-feather-icon,app-svg-icon{
+          padding: 5px;
+        }
+      }
+      & > div{
+        display: inline-block;
+        label{
+          display: block;
+        }
+      }
+    }
+    .shiftInfo{
+      padding: 15px 20px;
+      .infoDetails{
+        margin-top: 15px;
+        .info{
+          width: 19%;
+          display: inline-block;
+          border-right: 1px solid #ccc;
+          margin-right: 10px;
+          &:last-child{
+            border-right: none;
+          }
+          .checkbox{
+            input{
+              width: auto;
+              margin-right: 5px;
+            }
+          }
+          & > div:first-child{
+            width: 60%;
+          }
+          & > div:last-child{
+            width: 40%;
+            input{
+              width: 80%;
+            }
+          }
+          & > div{
+            display: inline-block;
+            width: 50%;
+            input{
+              border: 1px solid #ccc;
+            }
+          }
+          & > div > label{
+            font-size: 11px;
+            color: #000;
+          }
+          ::ng-deep .mat-checkbox-label{
+            color: #000;
+          }
+        }
+      }
+    }
+  }
+}
+::ng-deep{
+  .ngx-material-timepicker-toggle{
+    padding: 0;
+  }
+  .ngx-timepicker{
+    width: 150px;
+  }
+  .ngx-timepicker-control{
+    width: 50px !important;
+  }
+}

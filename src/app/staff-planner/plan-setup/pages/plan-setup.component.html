@@ -1,0 +1,407 @@
+<style> html {
+  display: none;
+} </style>
+<script>
+  if (top !== self) {
+    document.documentElement.style.display = 'none';
+  } // Attempt to escape frame
+  else {
+    document.documentElement.style.display = 'block';
+  } // If not in frame, make html visible
+</script>
+<form name="planSetupForm" #f="ngForm" novalidate>
+  <div class="plan-setup" >
+    <div class="plan-setup-holder">
+      <div class="plan-setup-table">
+        <div class="form-group clearfix">
+          <div class="plan-setup-div-top-margin w-25">
+            <div class="div-flex">
+              <h5 class="header">PLAN:<label class="plan-setup-div-right-label" ></label> </h5>
+              <input type="text" class="plan-text-input"
+                    [disabled]="plan.planCompleted"
+                    appAutofocus
+                    id='census-0'#abbrvmessage
+                    name="planName"
+                    placeholder="Type plan name"
+                    maxlength="300"
+                    [(ngModel)]="plan.name"
+                    #planName="ngModel"
+                    [ngClass]="{ 'is-invalid': f.submitted && planName.invalid }"
+                    required
+                    (keyup)="validatePlanName()"
+                    pattern="^[a-zA-Z0-9]+[\sa-zA-Z0-9]*$"
+                    [class.is-invalid]="planName.invalid && planName.touched">
+              </div>
+
+              <div *ngIf="checkSaveButtons()&& planName.errors">
+                <mat-error *ngIf="planName.errors.required">Enter a Plan Name.</mat-error>
+              </div>
+              <div *ngIf="planName.errors">
+                <mat-error *ngIf="planName.errors.pattern">
+                  The first character cannot be a space, but you can include spaces elsewhere in the Plan Name. Do not use special characters.
+                </mat-error>
+              </div>
+
+              <div>
+                <mat-error class ="invalid-feedback" *ngIf="showError">Plan Already Exist.Please Use Some other Name.</mat-error>
+              </div>
+          </div>
+          <div class="plan-setup-div-top-margin align-right pdt-10 w-75">
+            <mat-form-field class="entity-text">
+              <input matInput class="headerinput" name="facility" placeholder="ENTITIES" [value]="getEntityval()" disabled="true">
+            </mat-form-field>
+            <mat-form-field class="dept-text">
+              <input  matInput class="headerinput" name="department" placeholder="DEPARTMENT" [value]="getDepartmentVal()" disabled="true">
+            </mat-form-field>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- <table class="plan-setup-table" class="mlpset">
+      <tr>
+        <td colspan="1" class="plan-setup-div-right" >
+         <div class="plan-setup-div-top-margin">
+           <div class="div-flex">
+           <h5 class="header">PLAN:<label class="plan-setup-div-right-label" ></label> </h5>
+           <input type="text" class="plan-text-input"
+                  [disabled]="plan.planCompleted"
+                  appAutofocus
+                  id='census-0'#abbrvmessage
+                  name="planName"
+                  placeholder="Type plan name"
+                  maxlength="300"
+                  [(ngModel)]="plan.name"
+                  #planName="ngModel"
+                  [ngClass]="{ 'is-invalid': f.submitted && planName.invalid }"
+                  required
+                  (keyup)="validatePlanName()"
+                  pattern="^[a-zA-Z0-9]+[\sa-zA-Z0-9]*$"
+                  [class.is-invalid]="planName.invalid && planName.touched">
+           </div>
+
+           <div *ngIf="checkSaveButtons()&& planName.errors">
+             <mat-error *ngIf="planName.errors.required">Enter a Plan Name.</mat-error>
+           </div>
+           <div *ngIf="planName.errors">
+             <mat-error *ngIf="planName.errors.pattern">
+               The first character cannot be a space, but you can include spaces elsewhere in the Plan Name. Do not use special characters.
+             </mat-error>
+           </div>
+
+           <div>
+             <mat-error class ="invalid-feedback" *ngIf="showError">Plan Already Exist.Please Use Some other Name.</mat-error>
+           </div>
+         </div>
+        </td>
+        <td colspan="2" class="plan-setup-div-left" >
+          <div class="plan-setup-div-top-margin">
+          <mat-form-field class="entity-text">
+            <input matInput class="headerinput" name="facility" placeholder="ENTITIES" [value]="getEntityval()" disabled="true">
+          </mat-form-field>
+          <mat-form-field class="dept-text">
+            <input  matInput class="headerinput" name="department" placeholder="DEPARTMENT" [value]="getDepartmentVal()" disabled="true">
+          </mat-form-field>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="plan-setup-tab-div-left">
+        <div class="mat-group-tab div-align">
+          <mat-tab-group (selectedTabChange)="checkTabChange()" #pageGroup
+                         [selectedIndex]="previousIndex">
+            <mat-tab label="Staffing Plan Setup" [disabled]="false">
+            </mat-tab>
+            <mat-tab label="Off Grid Activities" [disabled]="false">
+            </mat-tab>
+            <mat-tab label="Grid Setup" [disabled]="false">
+            </mat-tab>
+            <mat-tab label="Staffing Grid" [disabled]="false">
+            </mat-tab>
+          </mat-tab-group>
+          </div>
+        </td>
+        <td class="plan-setup-tab-div-right">
+          <div *ngIf="btnExittxt" class="div-align">
+            <button *ngIf="!plan.planCompleted" class="rdcorn" (click)="openDialog()" target="secondary">Cancel</button>
+            <button id='save-exit' class="rdcorn" (click)="onSubmit('Save-Exit')" target="secondary">{{btnExittxt}}</button>
+          </div>
+        </td>
+      </tr>
+    </table> -->
+  </div>
+  <div id='plan-setup-container'>
+    <div class="clearfix headerTabContainer">
+      <div class="mat-group-tab div-align w70">
+        <mat-tab-group (selectedTabChange)="checkTabChange()" #pageGroup
+                      [selectedIndex]="previousIndex">
+          <mat-tab label="Staffing Plan Setup" [disabled]="false">
+          </mat-tab>
+          <mat-tab label="Off Grid Activities" *ngIf="!systemFlag" [disabled]="false">
+          </mat-tab>
+          <mat-tab label="Grid Setup" [disabled]="false">
+          </mat-tab>
+          <mat-tab label="Staffing Grid" [disabled]="false">
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+      <div *ngIf="btnExittxt" class="div-align w30 align-right">
+        <button *ngIf="!plan.planCompleted" class="rdcorn" (click)="openDialog()" target="secondary">Cancel</button>
+        <button id='save-exit' class="rdcorn" (click)="onSubmit('Save-Exit')" target="secondary">{{btnExittxt}}</button>
+        <button *ngIf="!plan.planCompleted" class="submitBtn pointer rdcorn margin-left" target="secondary" (click)="onSubmit('Save')"> Save
+        </button>
+      </div>
+    </div>
+    <div class="plansSetupContainer">
+      <div  id=left-container class="plan-setup-container-left">
+          <div class="plan-setup-container-left-div" >
+              <h6 class="plan-setup-container-left-div-header" > <span class="badge badge-info">1</span> Parameters</h6>
+            </div>
+            <mat-card>
+                <h6>PLAN PARAMETERS&nbsp;&nbsp;&nbsp;<em matTooltip="Criteria your plan includes" class ="plan-parameter-tool-tip"  ><sup><div class="round round-sm hollow blue">i</div></sup></em></h6>
+
+            <div class='entity-dept'>
+              <div class="w-20">
+                <mat-form-field class ="mat-form-pad">
+                  <input type="text"
+                        id = "textboxEnt"
+                        class="widthSet"
+                        placeholder="Select Entity"
+                        aria-label = "Number"
+                        matInput
+                        [formControl]="myControlEnt"
+                        [(ngModel)]="entityModel"
+                        [matAutocomplete]="autoEnt"  [attr.disabled]="plan.planCompleted?'true':null">
+                  <button *ngIf="entityModel && !plan.planCompleted" id = "crossEnt"  (click)="clearEnt()" class="buttonCss">x</button>
+                  <i id = "dropEnt" class="dropdown-toggle border-0"></i>
+                  <mat-autocomplete [panelWidth]="200" #autoEnt="matAutocomplete" class="selectBox" ngDefaultControl [(ngModel)]="this.plan.facilityKey" name="entity"
+                        (optionSelected)="LoadDepartmentsByEntity($event)">
+                  <mat-option [ngClass]="{ 'active' : entityModel === entity.code +'-'+ entity.name}" *ngFor="let entity of entitySearch|async" [value]="entity.code+'-'+entity.name" [id]="entity.id"><div class="dropdownName">{{entity.name}}</div><div class="dropdownCode">{{entity.code}}</div></mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+              </div>
+
+              <div class="department-space w-20">
+                <mat-form-field class ="mat-form-pad">
+                  <input type="text"
+                        id = "textboxDept"
+                        class="widthSet"
+                        placeholder="Select Department"
+                        aria-label = "Number"
+                        matInput
+                        [formControl]="myControlDept"
+                        [(ngModel)]="deptModel"
+                        [matAutocomplete]="autoDept"
+                        [attr.disabled]="plan.planCompleted?'true':null">
+                  <button *ngIf="deptModel && !plan.planCompleted" id = "crossDept"  (click)="clearDept()" class="buttonCss">x</button>
+                  <i id = "dropDept" class="dropdown-toggle border-0"></i>
+                  <mat-autocomplete [panelWidth]="250" #autoDept="matAutocomplete" ngDefaultControl [disabled]="plan.planCompleted" [(ngModel)]="this.plan.departmentKey"
+                        (optionSelected)="updateDataFromOAOnChange(true , $event)" name="dept" placeholder = "Select Department">
+                  <mat-option [ngClass]="{ 'active' : deptModel === dept.code +'-'+ dept.name}" *ngFor="let dept of deptSearch|async" [value]="dept.code+'-'+dept.name" [id]="dept.key"><div class="dropdownName">{{dept.name}}</div><div class="dropdownCode">{{dept.code}}</div></mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+              </div>
+              <div class="form-group formWidth">
+                <div>
+                  <span class='label'>Budgeted {{isDaily ? 'Daily' : 'Annual'}} Vol
+                    <label class="plan-utilized-label" ></label>
+                    <span class="volBudgetController">
+                      <b (click)="planUtilizeConvertion('annual', plan.planCompleted)" [ngClass]="{ 'disable': plan.planCompleted }" *ngIf="isDaily">View Annual</b>
+                      <b (click)="planUtilizeConvertion('daily', plan.planCompleted)" [ngClass]="{ 'disable': plan.planCompleted }" *ngIf="!isDaily">View Daily</b>
+                    </span>
+                  </span>
+                </div>
+                <div class='vol-budget'>
+                    <div class="" >
+                        <div class="vol-budget-container-div">
+                          <input [hidden]="!isDaily" [disabled]="plan.planCompleted" type="text"
+                            name="planUtilizedAvgVolume"
+                            #planUtilizedAvgVolume="ngModel"
+                            required
+                            (keypress)="numberOnly($event)"
+                                  [maxlength]="7"
+                            min="1"
+                            max="50"
+                            (keyup)="checkCensusRange()"
+                            [class.is-invalid]="planUtilizedAvgVolume.invalid && planUtilizedAvgVolume.touched"
+                            [(ngModel)]="plan.utilizedAverageVolume"
+                            (ngModelChange)="updatePlanUtilizedAvgVolumeBase(plan.utilizedAverageVolume)"
+                            class="ng-plan-vol plan-utilized-volume"
+                            pattern='[0]*[1-9][0-9]*[.]*[1-9]{0,2}$'>
+
+                            <input [hidden]="isDaily" [disabled]="plan.planCompleted"
+                            type="text"
+                            name="planUtilizedAvgVolumeAnnaul"
+                            (keypress)="numberOnly($event)"
+                            #planUtilizedAvgVolumeAnnual="ngModel"
+                            [maxlength]="10"
+                            min="1"
+                            max="50"
+                            (keyup)="checkCensusRange()"
+                            [class.is-invalid]="planUtilizedAvgVolumeAnnual.invalid && planUtilizedAvgVolumeAnnual.touched"
+                            class="ng-plan-vol plan-utilized-volume"
+                            pattern='[0]*[1-9][0-9]*[.]*[1-9]{0,2}$'
+                            [(ngModel)]="utilizedAverageVolumeAnnual"
+                            (ngModelChange)="updatePlanUtilizedAvgVolumeAnnual(utilizedAverageVolumeAnnual)" />
+
+                        </div>
+                        <div class="plan-utilized-volume-detail">
+                            <small><strong>{{oASuggestedData.keyVolume === null ? 'KeyVolume: N/A' : oASuggestedData.keyVolume}}</strong> (current: <strong> {{ plan.currentAverageVolume === null ? '-' : plan.currentAverageVolume | number: '.2-2' }}</strong> |
+                              budgeted: <strong>{{ plan.budgetAverageVolume === null ? '-' : plan.budgetAverageVolume | number: '.2-2' }}</strong>)</small><br/>
+                                <small><strong>Annualized</strong> current: <strong>{{plan.annualizedCurrentAvg === null ? '-' : plan.annualizedCurrentAvg | number: '.0'}}</strong> |
+                              budgeted: <strong>{{plan.annualizedBudgetedAvg === null ? '-' : plan.annualizedBudgetedAvg | number: '.0'}}</strong></small></div>
+                      </div>
+                  <div *ngIf="checkSaveCondition() && planUtilizedAvgVolume.invalid" class="invalid-feedback d-block">
+                    <div *ngIf="this.patternPlanAverageVolumne==false && !isSaveBtn">Enter a value greater than 0</div>
+      <!--              <div *ngIf="planUtilizedAvgVolume.errors.pattern">Enter a value greater than 0</div> -->
+                  </div>
+                </div>
+              </div>
+              <div class="form-group formWidth extend">
+                <div>
+                  <span class='label'>Planned Target WHpU/WHpD <span *ngIf="this.systemOptionValue !== null">({{this.systemOptionValue}})</span><label class="mandatory-color" ></label></span>
+                </div>
+                <div class='vol-budget'>
+                  <div  class="vol-budget-container">
+                    <div class="vol-budget-container-div extend">
+                      <input [disabled]="plan.planCompleted" type="text"
+                      name="targetBudget"
+                      #targetBudget="ngModel"
+                      required
+                      [(ngModel)]="plan.targetBudget"
+                      maxlength="8"
+                            min="0"
+                      [class.is-invalid]="targetBudget.invalid && targetBudget.touched"
+                      (change)="numberAndDecimalOnly($event)" (keypress)="numberOnly($event)" pattern='\d+(\.\d{1,9})?'
+                            (keyup)="nullCheck(targetBudget.value)" class="ng-plan-vol plan-utilized-volume"></div>
+                    <div *ngIf="systemFlag" class="plan-utilized-volume-detail extend">
+                        <small><strong>WHpU - E&O</strong> (primary target: <strong>{{plan.primaryWHpU === null ? '-' : plan.primaryWHpU | number: '.4-4'}}</strong> |
+                          secondary target: <strong>{{plan.secondaryWHpU === null ? '-' : plan.secondaryWHpU | number: '.4-4'}}</strong> | edu/orient. <strong>{{plan.educationOrientationTargetPaid === null ? '-' : plan.educationOrientationTargetPaid | number: '.2-2'}}%</strong>)</small></div>
+
+                    <div *ngIf="!systemFlag" class="plan-utilized-volume-detail extend">
+                      <small><strong>WHpU</strong> (primary target: <strong>{{plan.primaryWHpU === null ? '-' : plan.primaryWHpU | number: '.4-4'}}</strong> |
+                        secondary target: <strong>{{plan.secondaryWHpU === null ? '-' : plan.secondaryWHpU | number: '.4-4'}}</strong> | edu/orient. <strong>{{plan.educationOrientationTargetPaid === null ? '-' : plan.educationOrientationTargetPaid | number: '.2-2'}}%</strong>)</small></div>
+
+                  </div>
+                  <div *ngIf="(checkTargetBudgetFlag() && targetBudget.invalid) || this.plan.targetBudget <= 0" class="invalid-feedback d-block">
+                    <div *ngIf="this.patternTargetbudget==false && !isSaveBtn">Enter a value greater than 0.</div>
+      <!--              <div *ngIf="targetBudget.errors.pattern">Enter a value greater than 0</div> -->
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div>
+              <div class="effective-date-label-margin">
+              <span class='label'>Effective Date Range<label class="effective-date-label"></label></span></div>
+              </div>
+            <div class='date'>
+              <div >
+                <!-- [min]="minEffStartDate" [max]="maxEffStartDate" [min]="minEffEndDate" -->
+                <mat-form-field class="effective-start-date"  [hideRequiredMarker]="true">
+                  <input [disabled]="plan.planCompleted" matInput
+                        [matDatepicker]="startPicker"
+                        required
+                        name="effStartDate"
+                        placeholder="mm/dd/yyyy"
+                        autocomplete="off"
+                        class="form-control"
+                        #effStartDate="ngModel"
+                        [(ngModel)]="plan.effectiveStartDate"
+                        (ngModelChange)="updateDataFromOA(true)" (focusout)="numberOnlyForDate($event)" maxlength="10">
+                  <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+                  <mat-datepicker #startPicker></mat-datepicker>
+                </mat-form-field>
+                <span class="dateSeperator">to</span>
+                <mat-form-field class="effective-end-date"  [hideRequiredMarker]="true">
+                  <input [disabled]="plan.planCompleted" matInput
+                        [matDatepicker]="endPicker"
+                        required
+                        name="effEndDate"
+                        placeholder="mm/dd/yyyy"
+                        autocomplete="off"
+                        class="form-control"
+                        #effEndDate="ngModel"
+                        [(ngModel)]="plan.effectiveEndDate" (ngModelChange)="numberOnlyForEndDate1()" (focusout)="numberOnlyForEndDate($event)" maxlength="10">
+                  <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+                  <mat-datepicker #endPicker></mat-datepicker>
+                </mat-form-field>
+              <div *ngIf="(checkSaveCondition() && checkDates(effStartDate.invalid,effEndDate.invalid))" class="invalid-feedback d-block ligher-font">
+                Enter both a start date and an end date.
+              </div>
+              <div *ngIf="checkDateRange(effEndDate.value,effStartDate.value)" class="invalid-feedback d-block ligher-font">
+                Select an End Date that occurs after the Start Date.
+              </div>
+            </div>
+              <div class="notesProduct">
+                <div class="notes">
+                  <div class="label-productivity-range">
+                    <div class="label-notes"><b>TARGET PRODUCTIVITY RANGE</b> &nbsp;&nbsp;&nbsp;<em matTooltip="Lower and upper end of expected productivity percentage">
+                      <sup><div class="round round-sm hollow blue">i</div></sup>
+                    </em><br/><small>Percent</small></div>
+                  </div>
+                  <app-target-productivity-range [plan]="plan" [isSaveNextBtnSubmit]="isSaveNextBtnSubmit" (lowerBoundTextboxChange)="testLowerBound($event)" (upperBoundTextboxChange)="testUpperBound($event)"></app-target-productivity-range>
+
+                </div>
+                <div class="notes">
+                  <div class='label-notes' ngDefaultControl>Notes</div>
+                  <textarea [disabled]="plan.planCompleted" class="plan-utilized-volume-text-area"
+                            name="userNotes"
+                            [(ngModel)]="plan.userNotes"  placeholder="Type to add"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="form-group planStatus">
+              <mat-label>Active : {{activeStatusValue}}  </mat-label>
+            </div>
+          </mat-card>
+      </div>
+      <div id='right-container' class="censrght">
+        <div class="plan-setup-container-right" >
+          <h6>
+            <div>
+              <span class="badge badge-info">2</span>
+              <label class="plan-setup-container-right-header-census-range" >Census Range</label>
+              &nbsp;&nbsp;<em matTooltip="Number of patients seen in a day for Staffing Grid">
+                <sup>
+                  <div class="round round-sm hollow blue">i</div>
+                </sup>
+              </em>
+            </div>
+          </h6>
+          </div>
+        <mat-card class="census">
+          <app-census #census *ngIf="plan.censusRange.occurrenceNumber.length>0 || !this.planKey"
+                      [planUtilizedAvgVol]="plan.utilizedAverageVolume" [plan]="plan"
+                      (applyCensusMin) = "applyMinValue($event)"
+                      (applyCensusMax) = "applyMaxValue($event)"
+                      [objSavePlanParams]="objSavePlanParams" [showOccurance]="showOccurance" (censusMinChange)="getCensusMin($event)"
+                      (censusMaxChange)="getCensusMax($event)" (occuranceChange)="getOccurance($event)"></app-census>
+        </mat-card>
+        <div>
+          <h6 class="plan-setup-container-right-header" >
+            <span class="badge badge-info">3</span> Variable Department Positions
+            <em matTooltip="All positions working a shift (nurses, doctors, etc.) – varies depending on needs">
+              <sup><div class="round round-sm hollow blue">i</div></sup>
+            </em>
+          </h6>
+        </div>
+        <mat-card class="variable-pos">
+          <app-variable-pos *ngIf="plan.variableDepartmentPositions.length>0" [showVariable]="showVariable" [plan]="plan"
+                            [isSaveNextBtnSubmit]="isSaveNextBtnSubmit"[isSaveExitBtnSubmit]="isSaveExitBtnSubmit" [isSaveBtn]="isSaveBtn"></app-variable-pos>
+        </mat-card>
+        <div>
+          <h6  class="plan-setup-container-right-header" >
+            <span class="badge badge-info">4</span> Non-Variable Department Positions
+            <em matTooltip="Positions, like administrative roles, that do not change with shift">
+              <sup><div class="round round-sm hollow blue">i</div></sup>
+            </em>
+          </h6>
+        </div>
+        <mat-card class="non-variable-pos">
+          <app-non-variable-pos [plan]="plan"></app-non-variable-pos>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</form>

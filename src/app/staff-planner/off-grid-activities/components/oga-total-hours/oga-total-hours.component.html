@@ -1,0 +1,26 @@
+<style> html {
+  display: none;
+} </style>
+<script>
+  if (top !== self) {
+    document.documentElement.style.display = 'none';
+  } // Attempt to escape frame
+  else {
+    document.documentElement.style.display = 'block';
+  } // If not in frame, make html visible
+</script>
+<div class="container-fluid pd-15">
+    <mat-card class="grid-score-card-container" >
+      <div class="row">
+        <div class="col1">
+          <div class="title">OGA PLAN HRS</div>
+          <div class="titleValue">{{isNumber(totalOGAhrs)| number: '2.0'}}<sub>annual</sub></div>
+        </div>
+        <mat-divider [vertical]="true"></mat-divider>
+        <div class="col2">
+          <div class="title">OGA TARGET HRS</div>
+          <div class="titleValue">{{((planDetails.educationOrientationTargetPaid * planDetails.targetBudget*planDetails.utilizedAverageVolume*this.leapDays)/100 ).toFixed(0)}} <sub>annual</sub></div>
+        </div>       
+      </div>
+    </mat-card>
+  </div>

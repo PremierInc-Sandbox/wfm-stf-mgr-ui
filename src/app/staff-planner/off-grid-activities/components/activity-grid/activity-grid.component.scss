@@ -1,0 +1,228 @@
+.tbl-bordered {
+    border-collapse: collapse;
+  }
+  .trow-bordered { 
+    border: solid;
+    height:50px;
+    border-width: 1px;
+  }
+
+  .trow-bordered-size{
+    font-size:smaller;
+    color: gray;
+  }
+  .input-numberbox
+  {
+    height:25px;
+    width: 70px;
+    text-align: center;
+    border-radius: 2px;
+    border:1px solid #D1D4D5;
+    padding-left: 0.6rem;
+    padding-right: 0.6rem; 
+    padding-top: 0rem; 
+    padding-bottom: 0rem; 
+  }
+  .input-numberbox1
+  {
+    height:25px;
+    width: 52px;
+    border-radius: 2px;
+    border:1px solid #D1D4D5;
+    padding-left: 0.8rem;
+    padding-right: 0.8rem;
+    padding-top: 0rem; 
+    padding-bottom: 0rem;
+    text-align: center;
+
+  }
+
+  .input-number-mgmt{
+    background-color:#F2F2F2;
+    text-align:center
+  }
+  
+  .input-dropdown
+  {
+    border:1px solid #007994;
+  }
+  .dropdowndiv
+  {
+    border-radius: 2px;
+    border:1px solid #D1D4D5;
+    width: 91%;
+    height: 100%;
+    padding-left: 8px;
+    padding-right: 8px;
+
+  }
+  .customInput
+  {
+    border:1px none #FFFFFF;
+    height: 25px;
+    width: 95%;
+    margin-top: 1px;
+  }
+  .customInput:hover
+  {
+    border:1px none #FFFFFF !important;
+    height: 25px;
+  }
+  .customInput:focus
+  {
+    border:1px none #FFFFFF !important;
+    height: 25px;
+  }
+  .dropdowndiv:hover
+  {
+    outline: #007994;
+    border:1px solid #007994!important;
+  }
+  .dropdowndiv:focus
+  {
+    outline: #007994;
+    border:1px solid #007994!important;
+  }
+
+
+  .input-dropdown-edit
+  {
+    border:1px solid #007994;
+  }
+  .input-dropdown-edit-required
+  {
+    border:1px solid red;
+  }
+  .input-numberbox-edit
+  {
+    height:40px;
+    border-radius: 2px;
+    border:1px solid #D1D4D5;
+    padding-left: 8px;
+    padding-right: 8px; 
+    padding-top: 0rem;
+    padding-bottom: 0rem; 
+  }
+
+  .mat-input-container.app-input-no-underline .mat-input-underline {
+    display: none;
+  }
+  .mat-form-field-underline {
+    display: none;
+}
+.pointer {
+  cursor: pointer;
+}
+
+.new-activity{
+  height: 20px;width:70px;
+  border-radius: 5px;
+}
+.icon-add-activity {  
+  font-size: 25px;
+  color: #007994;
+}
+
+.activity-grid-row-one{
+  border-top: 6px solid #005C72;
+}
+
+.activity-grid-row-one-mod{
+  height:0px;
+}
+
+.activity-grid-row-label-center{
+  width:7%;
+  text-align: center;
+}
+
+.activity-grid-row-label-center-bgcolor{
+  width:7%;
+  text-align: center;
+  background-color: #F2F2F2;
+
+}
+
+.trow-activity-header{
+  width:19%;
+  padding-left:16px;
+}
+
+.trow-vertical-middle{
+  vertical-align: middle;
+  text-align: left;
+  padding-left:16px;
+}
+
+.trow-vertical-center{
+  vertical-align: middle;
+  text-align: center;
+}
+
+.trow-center{
+  text-align: center;
+ /* border-right: 1px solid;*/
+  display: flex;
+  position: relative;
+  height: inherit;
+  padding-top: 14px;
+  width: 50px;
+}
+
+.border-fix{
+  border-right: 1px solid;
+  padding-left: 10px;
+  padding-right: 16px;
+}
+
+.background{
+  background-color: white;
+  height:inherit;
+  border:none;
+  width:4%;
+  margin-top: 1px;
+}
+.background:hover{
+  background-color: white;
+  border:none;
+  cursor: pointer;
+
+}
+
+.background{
+  background-color: white;
+  border:none;
+  cursor: pointer;
+  outline:none;
+}
+
+.noHover{
+  pointer-events: none;
+}
+
+.closeSpan{
+  color:gray;
+}
+
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  .customInput
+  {
+    border:1px none #FFFFFF;
+    height: 25px;
+    width: 95%;
+    padding:0 !important;
+  }
+  .customInput::-ms-clear {
+    display: none;
+  }
+  .customInput:hover
+  {
+    border:1px none #FFFFFF !important;
+    height: 25px;
+  }
+  .customInput:focus
+  {
+    border:1px none #FFFFFF !important;
+    height: 25px;
+  }
+}
