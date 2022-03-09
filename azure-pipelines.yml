@@ -90,6 +90,8 @@ stages:
               unzip bundle.zip
               eval "$(<env.sh)"
               docker login -u ${ucp_username} -p ${ucp_password} ${registry_domain}
+              docker-compose -f pco-staff-scheduler-ui-stack.yml config
+              ls -la
               docker --host ${ucp_domain}:443 stack deploy -c pco-staff-scheduler-ui-stack.yml --with-registry-auth ${stack_name}
             env:
               JAVA_HOME: $(SYSTEM_JDK_11)
@@ -133,6 +135,8 @@ stages:
               unzip bundle.zip
               eval "$(<env.sh)"
               docker login -u ${ucp_username} -p ${ucp_password} ${registry_domain}
+              docker-compose -f pco-staff-scheduler-ui-stack.yml config
+              ls -la
               docker --host ${ucp_domain}:443 stack deploy -c pco-staff-scheduler-ui-stack.yml --with-registry-auth ${stack_name}
             env:
               JAVA_HOME: $(SYSTEM_JDK_11)
@@ -176,6 +180,8 @@ stages:
               unzip bundle.zip
               eval "$(<env.sh)"
               docker login -u ${ucp_username} -p ${ucp_password} ${registry_domain}
+              docker-compose -f pco-staff-scheduler-ui-stack.yml config
+              ls -la
               docker --host ${ucp_domain}:443 stack deploy -c pco-staff-scheduler-ui-stack.yml --with-registry-auth ${stack_name}
             env:
               JAVA_HOME: $(SYSTEM_JDK_11)
@@ -219,6 +225,8 @@ stages:
               unzip bundle.zip
               eval "$(<env.sh)"
               docker login -u ${ucp_username} -p ${ucp_password} ${registry_domain}
+              docker-compose -f pco-staff-scheduler-ui-stack.yml config
+              ls -la
               docker --host ${ucp_domain}:443 stack deploy -c pco-staff-scheduler-ui-stack.yml --with-registry-auth ${stack_name}
             env:
               JAVA_HOME: $(SYSTEM_JDK_11)
@@ -239,3 +247,47 @@ stages:
               traefik_ntwk: $(traefik_ntwk)
             workingDirectory: $(Pipeline.Workspace)/wfm_artifacts
             displayName: PERF DEPLOY
+
+- stage: 'PROD_DEPLOY'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
+  dependsOn: ['WFMStaffMgrUIBuild']
+  jobs:
+  - deployment: PROD_DEPLOY
+    environment: wfm-staff-scheduler-ui-prod
+    variables:
+      - group: "wfm-staff-scheduler-ui-prod"
+      - group: "wfm-ucp-prod"
+      - name: APP_VERSION
+        value: $[ stageDependencies.WFMStaffMgrUIBuild.WFMStaffMgrUIBuild.outputs['set_version.APP_VERSION'] ]
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - bash: |
+              AUTHTOKEN=$(curl -sk -d '{"username":"'${ucp_username}'", "password":"'${ucp_password}'"}' https://${ucp_domain}/auth/login | jq -r .auth_token)
+              curl -k -H "Authorization: Bearer $AUTHTOKEN" https://${ucp_domain}/api/clientbundle -o bundle.zip
+              unzip bundle.zip
+              eval "$(<env.sh)"
+              docker login -u ${ucp_username} -p ${ucp_password} ${registry_domain}
+              docker-compose -f pco-staff-scheduler-ui-stack.yml config
+              ls -la
+              docker --host ${ucp_domain}:443 stack deploy -c pco-staff-scheduler-ui-stack.yml --with-registry-auth ${stack_name}
+            env:
+              JAVA_HOME: $(SYSTEM_JDK_11)
+              registry_domain: $(registry_domain)
+              registry_username: $(ucp_username)
+              registry_password: $(ucp_password)
+              ucp_domain: $(ucp_domain)
+              ucp_username: $(ucp_username)
+              ucp_password: $(ucp_password)
+              stack_file: $(stack_file)
+              stack_name: $(stack_name)
+              env: $(env)
+              registry_image: $(registry_image)
+              APP_VERSION: $(APP_VERSION)
+              active_profiles: $(active_profiles)
+              network_pcops: $(network_pcops)
+              jvm_options: $(jvm_options)
+              traefik_ntwk: $(traefik_ntwk)
+            workingDirectory: $(Pipeline.Workspace)/wfm_artifacts
+            displayName: PROD DEPLOY
