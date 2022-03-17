@@ -1,0 +1,36 @@
+image:
+  repository: "##placeholder"
+  pullPolicy: IfNotPresent
+  tag: "##placeholder"
+
+service:
+  type: ClusterIP
+  port: 8080
+  adminPort: 8081
+
+ingress:
+  enabled: false
+  className: "nginx"
+  hosts: []
+
+livenessProbe:
+  httpGet:
+    port: admin
+    path: /pcops/staff-scheduler-rest/padmin/health
+  periodSeconds: 10
+  timeoutSeconds: 1
+
+readinessProbe:
+  httpGet:
+    port: admin
+    path: /pcops/staff-scheduler-ui/padmin/health
+  periodSeconds: 10
+  timeoutSeconds: 1
+
+appinsights:
+  enabled: false
+
+env: {}
+storageClaims: []
+nasShares: []
+resources: {}
