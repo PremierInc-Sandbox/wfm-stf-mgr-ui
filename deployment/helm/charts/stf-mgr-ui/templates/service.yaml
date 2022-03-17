@@ -1,0 +1,23 @@
+{{- $port := .Values.service.port }}
+{{- $adminPort := .Values.service.adminPort | default $port }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "stf-mgr-ui.fullname" . }}
+  labels:
+  {{- include "stf-mgr-ui.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: app
+      protocol: TCP
+      name: app
+    {{- if ne $adminPort $port }}
+    - port: {{ $adminPort }}
+      targetPort: admin
+      protocol: TCP
+      name: admin
+    {{- end }}
+  selector:
+  {{- include "stf-mgr-ui.selectorLabels" . | nindent 4 }}

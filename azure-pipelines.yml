@@ -9,6 +9,12 @@ pool:
 variables:
   isrc: $[eq( variables['Build.SourceBranch'], 'refs/heads/rc' )]
   isRelease: $[contains( variables['Build.SourceBranch'], 'refs/heads/release' )]
+  AcrImageName: stf-mgr-ui
+  AcrImageTag: $[variables['Build.BuildNumber']]
+  HelmChartName: stf-mgr-ui
+  HelmChartVersion: $[variables['Build.BuildNumber']]
+  HelmAppVersion: $[variables['Build.BuildNumber']]
+  ArmConnectionNonProd: WFMDevacr-east_SC
 
 resources:
   repositories:
@@ -16,6 +22,23 @@ resources:
       type: github
       name: PremierInc/shield-ado-templates
       endpoint: PremierInc
+
+trigger:
+  batch: "true"
+  branches:
+    include:
+      - develop
+      - rc/*
+      - release/*
+
+pr:
+  autoCancel: "true"
+  drafts: "false"
+  branches:
+    include:
+      - develop
+      - rc/*
+      - release/*
 
 stages:
 - stage: WFMStaffMgrUIBuild
@@ -26,14 +49,13 @@ stages:
       - group: "wfm-ucp-np"
     steps:
       - bash: |
-          chmod +x ./gradlew && ./gradlew wrapper
-          ./gradlew release -Pregistry.username=${registry_username} -Pregistry.password=${registry_password}
+          chmod +x ./gradlew && ./gradlew wrapper --no-daemon
+          ./gradlew --no-daemon release -Pregistry.username=${registry_username} -Pregistry.password=${registry_password}
         env:
           JAVA_HOME: $(SYSTEM_JDK_11)
           registry_username: $(ucp_username)
           registry_password: $(ucp_password)
         displayName: WFMStaffMgrUIBuild
-
       - bash: |
           cat build/git.properties
           version="$(grep 'git.build.version' build/git.properties | awk -F= '{print $2}')"
@@ -41,14 +63,39 @@ stages:
           echo "##vso[task.setvariable variable=APP_VERSION;isOutput=true]$version"
         displayName: extract version
         name: set_version
-
-      - bash: mkdir pipeline-artifact && cp build/stacks/* pipeline-artifact/
-        displayName: Prepare Artifact
-
-      - publish: pipeline-artifact
-        artifact: wfm_artifacts
-        displayName: Publish Artifacts
-
+      - task: AzureCLI@2
+        displayName: Build and Publish Image to ACR
+        inputs:
+          azureSubscription: $(ArmConnectionNonProd)
+          scriptType: bash
+          scriptLocation: inlineScript
+          addSpnToEnvironment: true
+          inlineScript: |
+            az acr login -n wfmnpacr
+            docker build -t wfmnpacr.azurecr.io/premierinc/wfm/ci/stf-mgr-ui:$(Build.BuildNumber) build/docker &&\
+            docker push wfmnpacr.azurecr.io/premierinc/wfm/ci/stf-mgr-ui:$(Build.BuildNumber)
+      - task: HelmInstaller@0
+        displayName: Install Helm
+        inputs:
+          helmVersion: 'latest'
+          installKubectl: false
+      - task: AzureCLI@2
+        displayName: Login to ACR
+        inputs:
+          azureSubscription: $(ArmConnectionNonProd)
+          scriptType: bash
+          scriptLocation: inlineScript
+          addSpnToEnvironment: true
+          inlineScript: |
+            helm registry login wfmnpacr.azurecr.io \
+            --username ${servicePrincipalId} \
+            --password ${servicePrincipalKey}
+      - bash: |
+          helm package build/helm/charts/stf-mgr-ui --app-version $(Build.BuildNumber) --version $(Build.BuildNumber)
+          helm push stf-mgr-ui-$(Build.BuildNumber).tgz oci://wfmnpacr.azurecr.io/premierinc/wfm/ci/helm/
+        displayName: 'Publish Helm Chart'
+        env:
+          HELM_EXPERIMENTAL_OCI: 1
   - job: BlackduckScan
     dependsOn: ['WFMStaffMgrUIBuild']
     displayName: Blackduck Scan
@@ -62,232 +109,278 @@ stages:
       parameters:
         BLACKDUCK_API_TOKEN: $(BLACKDUCK_API_TOKEN)
         BRANCH_SCAN_LIST: "develop"
-        DISTRIBUTION: "SAAS" 
+        DISTRIBUTION: "SAAS"
         PROJECT_NAME: "pcops:pco-staff-scheduler-ui"
         SOURCE_PATH: "$(Build.SourcesDirectory)"
         PROJECT_VERSION: "$(APP_VERSION)"
         TEAM: "PCOPS"
-
-- stage: 'DEV_DEPLOY'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
-  dependsOn: ['WFMStaffMgrUIBuild']
+- stage: wfm_stf_mgr_ui_np_promotion
+  displayName: Promote CI Artifacts to Non-Prod ACR
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  dependsOn: [ 'WFMStaffMgrUIBuild' ]
   jobs:
-  - deployment: DEV_DEPLOY
-    environment: wfm-staff-scheduler-ui-dev
-    variables:
+    - job: wfm_stf_mgr_ui_np_promotion
+      displayName: Promote CI Image to Non-Prod ACR
+      steps:
+        - template: ./pipelines/templates/image_promotion.yaml
+          parameters:
+            ArmServiceConnection: WFMDevacr-east_SC
+            SourceAcr: wfmnpacr
+            SourceRepository: premierinc/wfm/ci/stf-mgr-ui
+            SourceTag: $(Build.BuildNumber)
+            TargetAcr: wfmnpacr
+            TargetRepository: premierinc/wfm/np/stf-mgr-ui
+            TargetTag: $(Build.BuildNumber)
+    - job: wfm_stf_mgr_ui_np_helm_promotion
+      displayName: Promote CI Helm to Non-Prod ACR
+      steps:
+        - template: ./pipelines/templates/image_promotion.yaml
+          parameters:
+            ArmServiceConnection: WFMDevacr-east_SC
+            SourceAcr: wfmnpacr
+            SourceRepository: premierinc/wfm/ci/helm/stf-mgr-ui
+            SourceTag: $(Build.BuildNumber)
+            TargetAcr: wfmnpacr
+            TargetRepository: premierinc/wfm/np/helm/stf-mgr-ui
+            TargetTag: $(Build.BuildNumber)
+- template: ./pipelines/helm_deployment.yaml
+  parameters:
+    DependsOn: [ 'WFMStaffMgrUIBuild', 'wfm_stf_mgr_ui_np_promotion' ]
+    TargetEnvironment: wfm-staff-scheduler-ui-dev
+    Environment: dev
+    RunIf: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    ArmConnection: $(ArmConnectionNonProd)
+    DeploymentVariables:
       - group: "wfm-staff-scheduler-ui-dev"
       - group: "wfm-ucp-np"
-      - name: APP_VERSION
-        value: $[ stageDependencies.WFMStaffMgrUIBuild.WFMStaffMgrUIBuild.outputs['set_version.APP_VERSION'] ]
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - bash: |
-              echo project_version=$APP_VERSION
-              AUTHTOKEN=$(curl -sk -d '{"username":"'${ucp_username}'", "password":"'${ucp_password}'"}' https://${ucp_domain}/auth/login | jq -r .auth_token)
-              curl -k -H "Authorization: Bearer $AUTHTOKEN" https://${ucp_domain}/api/clientbundle -o bundle.zip
-              unzip bundle.zip
-              eval "$(<env.sh)"
-              docker login -u ${ucp_username} -p ${ucp_password} ${registry_domain}
-              docker-compose -f pco-staff-scheduler-ui-stack.yml config
-              ls -la
-              docker --host ${ucp_domain}:443 stack deploy -c pco-staff-scheduler-ui-stack.yml --with-registry-auth ${stack_name}
-            env:
-              JAVA_HOME: $(SYSTEM_JDK_11)
-              registry_domain: $(registry_domain)
-              registry_username: $(ucp_username)
-              registry_password: $(ucp_password)
-              ucp_domain: $(ucp_domain)
-              ucp_username: $(ucp_username)
-              ucp_password: $(ucp_password)
-              stack_file: $(stack_file)
-              stack_name: $(stack_name)
-              env: $(env)
-              registry_image: $(registry_image)
-              APP_VERSION: $(APP_VERSION)
-              active_profiles: $(active_profiles)
-              network_pcops: $(network_pcops)
-              jvm_options: $(jvm_options)
-              traefik_ntwk: $(traefik_ntwk)
-            workingDirectory: $(Pipeline.Workspace)/wfm_artifacts
-            displayName: DEV DEPLOY
-
-- stage: 'QA_DEPLOY'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
-  dependsOn: ['WFMStaffMgrUIBuild']
-  jobs:
-  - deployment: QA_DEPLOY
-    environment: wfm-staff-scheduler-ui-qa
-    variables:
-      - group: "wfm-staff-scheduler-ui-qa"
-      - group: "wfm-ucp-np"
-      - name: APP_VERSION
-        value: $[ stageDependencies.WFMStaffMgrUIBuild.WFMStaffMgrUIBuild.outputs['set_version.APP_VERSION'] ]
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - bash: |
-              echo project_version=$APP_VERSION
-              AUTHTOKEN=$(curl -sk -d '{"username":"'${ucp_username}'", "password":"'${ucp_password}'"}' https://${ucp_domain}/auth/login | jq -r .auth_token)
-              curl -k -H "Authorization: Bearer $AUTHTOKEN" https://${ucp_domain}/api/clientbundle -o bundle.zip
-              unzip bundle.zip
-              eval "$(<env.sh)"
-              docker login -u ${ucp_username} -p ${ucp_password} ${registry_domain}
-              docker-compose -f pco-staff-scheduler-ui-stack.yml config
-              ls -la
-              docker --host ${ucp_domain}:443 stack deploy -c pco-staff-scheduler-ui-stack.yml --with-registry-auth ${stack_name}
-            env:
-              JAVA_HOME: $(SYSTEM_JDK_11)
-              registry_domain: $(registry_domain)
-              registry_username: $(ucp_username)
-              registry_password: $(ucp_password)
-              ucp_domain: $(ucp_domain)
-              ucp_username: $(ucp_username)
-              ucp_password: $(ucp_password)
-              stack_file: $(stack_file)
-              stack_name: $(stack_name)
-              env: $(env)
-              registry_image: $(registry_image)
-              APP_VERSION: $(APP_VERSION)
-              active_profiles: $(active_profiles)
-              network_pcops: $(network_pcops)
-              jvm_options: $(jvm_options)
-              traefik_ntwk: $(traefik_ntwk)
-            workingDirectory: $(Pipeline.Workspace)/wfm_artifacts
-            displayName: QA DEPLOY
-
-- stage: 'UAT_DEPLOY'
-  condition: or(eq(variables['isrc'], 'true'), eq(variables['isRelease'], 'true'))
-  dependsOn: ['WFMStaffMgrUIBuild']
-  jobs:
-  - deployment: UAT_DEPLOY
-    environment: wfm-staff-scheduler-ui-uat
-    variables:
-      - group: "wfm-staff-scheduler-ui-uat"
-      - group: "wfm-ucp-prod"
-      - name: APP_VERSION
-        value: $[ stageDependencies.WFMStaffMgrUIBuild.WFMStaffMgrUIBuild.outputs['set_version.APP_VERSION'] ]
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - bash: |
-              echo project_version=$APP_VERSION
-              AUTHTOKEN=$(curl -sk -d '{"username":"'${ucp_username}'", "password":"'${ucp_password}'"}' https://${ucp_domain}/auth/login | jq -r .auth_token)
-              curl -k -H "Authorization: Bearer $AUTHTOKEN" https://${ucp_domain}/api/clientbundle -o bundle.zip
-              unzip bundle.zip
-              eval "$(<env.sh)"
-              docker login -u ${ucp_username} -p ${ucp_password} ${registry_domain}
-              docker-compose -f pco-staff-scheduler-ui-stack.yml config
-              ls -la
-              docker --host ${ucp_domain}:443 stack deploy -c pco-staff-scheduler-ui-stack.yml --with-registry-auth ${stack_name}
-            env:
-              JAVA_HOME: $(SYSTEM_JDK_11)
-              registry_domain: $(registry_domain)
-              registry_username: $(ucp_username)
-              registry_password: $(ucp_password)
-              ucp_domain: $(ucp_domain)
-              ucp_username: $(ucp_username)
-              ucp_password: $(ucp_password)
-              stack_file: $(stack_file)
-              stack_name: $(stack_name)
-              env: $(env)
-              registry_image: $(registry_image)
-              APP_VERSION: $(APP_VERSION)
-              active_profiles: $(active_profiles)
-              network_pcops: $(network_pcops)
-              jvm_options: $(jvm_options)
-              traefik_ntwk: $(traefik_ntwk)
-            workingDirectory: $(Pipeline.Workspace)/wfm_artifacts
-            displayName: UAT DEPLOY
-
-- stage: 'PERF_DEPLOY'
-  condition: or(eq(variables['isrc'], 'true'), eq(variables['isRelease'], 'true'))
-  dependsOn: ['WFMStaffMgrUIBuild']
-  jobs:
-  - deployment: PERF_DEPLOY
-    environment: wfm-staff-scheduler-ui-perf
-    variables:
-      - group: "wfm-staff-scheduler-ui-perf"
-      - group: "wfm-ucp-prod"
-      - name: APP_VERSION
-        value: $[ stageDependencies.WFMStaffMgrUIBuild.WFMStaffMgrUIBuild.outputs['set_version.APP_VERSION'] ]
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - bash: |
-              echo project_version=$APP_VERSION
-              AUTHTOKEN=$(curl -sk -d '{"username":"'${ucp_username}'", "password":"'${ucp_password}'"}' https://${ucp_domain}/auth/login | jq -r .auth_token)
-              curl -k -H "Authorization: Bearer $AUTHTOKEN" https://${ucp_domain}/api/clientbundle -o bundle.zip
-              unzip bundle.zip
-              eval "$(<env.sh)"
-              docker login -u ${ucp_username} -p ${ucp_password} ${registry_domain}
-              docker-compose -f pco-staff-scheduler-ui-stack.yml config
-              ls -la
-              docker --host ${ucp_domain}:443 stack deploy -c pco-staff-scheduler-ui-stack.yml --with-registry-auth ${stack_name}
-            env:
-              JAVA_HOME: $(SYSTEM_JDK_11)
-              registry_domain: $(registry_domain)
-              registry_username: $(ucp_username)
-              registry_password: $(ucp_password)
-              ucp_domain: $(ucp_domain)
-              ucp_username: $(ucp_username)
-              ucp_password: $(ucp_password)
-              stack_file: $(stack_file)
-              stack_name: $(stack_name)
-              env: $(env)
-              registry_image: $(registry_image)
-              APP_VERSION: $(APP_VERSION)
-              active_profiles: $(active_profiles)
-              network_pcops: $(network_pcops)
-              jvm_options: $(jvm_options)
-              traefik_ntwk: $(traefik_ntwk)
-            workingDirectory: $(Pipeline.Workspace)/wfm_artifacts
-            displayName: PERF DEPLOY
-
-- stage: 'PROD_DEPLOY'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
-  dependsOn: ['WFMStaffMgrUIBuild']
-  jobs:
-  - deployment: PROD_DEPLOY
-    environment: wfm-staff-scheduler-ui-prod
-    variables:
-      - group: "wfm-staff-scheduler-ui-prod"
-      - group: "wfm-ucp-prod"
-      - name: APP_VERSION
-        value: $[ stageDependencies.WFMStaffMgrUIBuild.WFMStaffMgrUIBuild.outputs['set_version.APP_VERSION'] ]
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - bash: |
-              AUTHTOKEN=$(curl -sk -d '{"username":"'${ucp_username}'", "password":"'${ucp_password}'"}' https://${ucp_domain}/auth/login | jq -r .auth_token)
-              curl -k -H "Authorization: Bearer $AUTHTOKEN" https://${ucp_domain}/api/clientbundle -o bundle.zip
-              unzip bundle.zip
-              eval "$(<env.sh)"
-              docker login -u ${ucp_username} -p ${ucp_password} ${registry_domain}
-              docker-compose -f pco-staff-scheduler-ui-stack.yml config
-              ls -la
-              docker --host ${ucp_domain}:443 stack deploy -c pco-staff-scheduler-ui-stack.yml --with-registry-auth ${stack_name}
-            env:
-              JAVA_HOME: $(SYSTEM_JDK_11)
-              registry_domain: $(registry_domain)
-              registry_username: $(ucp_username)
-              registry_password: $(ucp_password)
-              ucp_domain: $(ucp_domain)
-              ucp_username: $(ucp_username)
-              ucp_password: $(ucp_password)
-              stack_file: $(stack_file)
-              stack_name: $(stack_name)
-              env: $(env)
-              registry_image: $(registry_image)
-              APP_VERSION: $(APP_VERSION)
-              active_profiles: $(active_profiles)
-              network_pcops: $(network_pcops)
-              jvm_options: $(jvm_options)
-              traefik_ntwk: $(traefik_ntwk)
-            workingDirectory: $(Pipeline.Workspace)/wfm_artifacts
-            displayName: PROD DEPLOY
+      - name: AcrRegistryName
+        value: wfmnpacr
+      - name: AcrImageRepository
+        value: premierinc/wfm/np
+      - name: ArmConnection
+        value: WFMDevacr-east_SC
+      - name: HelmRepository
+        value: premierinc/wfm/np/helm
+#- stage: 'DEV_DEPLOY'
+#  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+#  dependsOn: ['WFMStaffMgrUIBuild']
+#  jobs:
+#  - deployment: DEV_DEPLOY
+#    environment: wfm-staff-scheduler-ui-dev
+#    variables:
+#      - group: "wfm-staff-scheduler-ui-dev"
+#      - group: "wfm-ucp-np"
+#      - name: APP_VERSION
+#        value: $[ stageDependencies.WFMStaffMgrUIBuild.WFMStaffMgrUIBuild.outputs['set_version.APP_VERSION'] ]
+#    strategy:
+#      runOnce:
+#        deploy:
+#          steps:
+#          - bash: |
+#              echo project_version=$APP_VERSION
+#              AUTHTOKEN=$(curl -sk -d '{"username":"'${ucp_username}'", "password":"'${ucp_password}'"}' https://${ucp_domain}/auth/login | jq -r .auth_token)
+#              curl -k -H "Authorization: Bearer $AUTHTOKEN" https://${ucp_domain}/api/clientbundle -o bundle.zip
+#              unzip bundle.zip
+#              eval "$(<env.sh)"
+#              docker login -u ${ucp_username} -p ${ucp_password} ${registry_domain}
+#              docker-compose -f pco-staff-scheduler-ui-stack.yml config
+#              ls -la
+#              docker --host ${ucp_domain}:443 stack deploy -c pco-staff-scheduler-ui-stack.yml --with-registry-auth ${stack_name}
+#            env:
+#              JAVA_HOME: $(SYSTEM_JDK_11)
+#              registry_domain: $(registry_domain)
+#              registry_username: $(ucp_username)
+#              registry_password: $(ucp_password)
+#              ucp_domain: $(ucp_domain)
+#              ucp_username: $(ucp_username)
+#              ucp_password: $(ucp_password)
+#              stack_file: $(stack_file)
+#              stack_name: $(stack_name)
+#              env: $(env)
+#              registry_image: $(registry_image)
+#              APP_VERSION: $(APP_VERSION)
+#              active_profiles: $(active_profiles)
+#              network_pcops: $(network_pcops)
+#              jvm_options: $(jvm_options)
+#              traefik_ntwk: $(traefik_ntwk)
+#            workingDirectory: $(Pipeline.Workspace)/wfm_artifacts
+#            displayName: DEV DEPLOY
+#
+#- stage: 'QA_DEPLOY'
+#  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+#  dependsOn: ['WFMStaffMgrUIBuild']
+#  jobs:
+#  - deployment: QA_DEPLOY
+#    environment: wfm-staff-scheduler-ui-qa
+#    variables:
+#      - group: "wfm-staff-scheduler-ui-qa"
+#      - group: "wfm-ucp-np"
+#      - name: APP_VERSION
+#        value: $[ stageDependencies.WFMStaffMgrUIBuild.WFMStaffMgrUIBuild.outputs['set_version.APP_VERSION'] ]
+#    strategy:
+#      runOnce:
+#        deploy:
+#          steps:
+#          - bash: |
+#              echo project_version=$APP_VERSION
+#              AUTHTOKEN=$(curl -sk -d '{"username":"'${ucp_username}'", "password":"'${ucp_password}'"}' https://${ucp_domain}/auth/login | jq -r .auth_token)
+#              curl -k -H "Authorization: Bearer $AUTHTOKEN" https://${ucp_domain}/api/clientbundle -o bundle.zip
+#              unzip bundle.zip
+#              eval "$(<env.sh)"
+#              docker login -u ${ucp_username} -p ${ucp_password} ${registry_domain}
+#              docker-compose -f pco-staff-scheduler-ui-stack.yml config
+#              ls -la
+#              docker --host ${ucp_domain}:443 stack deploy -c pco-staff-scheduler-ui-stack.yml --with-registry-auth ${stack_name}
+#            env:
+#              JAVA_HOME: $(SYSTEM_JDK_11)
+#              registry_domain: $(registry_domain)
+#              registry_username: $(ucp_username)
+#              registry_password: $(ucp_password)
+#              ucp_domain: $(ucp_domain)
+#              ucp_username: $(ucp_username)
+#              ucp_password: $(ucp_password)
+#              stack_file: $(stack_file)
+#              stack_name: $(stack_name)
+#              env: $(env)
+#              registry_image: $(registry_image)
+#              APP_VERSION: $(APP_VERSION)
+#              active_profiles: $(active_profiles)
+#              network_pcops: $(network_pcops)
+#              jvm_options: $(jvm_options)
+#              traefik_ntwk: $(traefik_ntwk)
+#            workingDirectory: $(Pipeline.Workspace)/wfm_artifacts
+#            displayName: QA DEPLOY
+#
+#- stage: 'UAT_DEPLOY'
+#  condition: or(eq(variables['isrc'], 'true'), eq(variables['isRelease'], 'true'))
+#  dependsOn: ['WFMStaffMgrUIBuild']
+#  jobs:
+#  - deployment: UAT_DEPLOY
+#    environment: wfm-staff-scheduler-ui-uat
+#    variables:
+#      - group: "wfm-staff-scheduler-ui-uat"
+#      - group: "wfm-ucp-prod"
+#      - name: APP_VERSION
+#        value: $[ stageDependencies.WFMStaffMgrUIBuild.WFMStaffMgrUIBuild.outputs['set_version.APP_VERSION'] ]
+#    strategy:
+#      runOnce:
+#        deploy:
+#          steps:
+#          - bash: |
+#              echo project_version=$APP_VERSION
+#              AUTHTOKEN=$(curl -sk -d '{"username":"'${ucp_username}'", "password":"'${ucp_password}'"}' https://${ucp_domain}/auth/login | jq -r .auth_token)
+#              curl -k -H "Authorization: Bearer $AUTHTOKEN" https://${ucp_domain}/api/clientbundle -o bundle.zip
+#              unzip bundle.zip
+#              eval "$(<env.sh)"
+#              docker login -u ${ucp_username} -p ${ucp_password} ${registry_domain}
+#              docker-compose -f pco-staff-scheduler-ui-stack.yml config
+#              ls -la
+#              docker --host ${ucp_domain}:443 stack deploy -c pco-staff-scheduler-ui-stack.yml --with-registry-auth ${stack_name}
+#            env:
+#              JAVA_HOME: $(SYSTEM_JDK_11)
+#              registry_domain: $(registry_domain)
+#              registry_username: $(ucp_username)
+#              registry_password: $(ucp_password)
+#              ucp_domain: $(ucp_domain)
+#              ucp_username: $(ucp_username)
+#              ucp_password: $(ucp_password)
+#              stack_file: $(stack_file)
+#              stack_name: $(stack_name)
+#              env: $(env)
+#              registry_image: $(registry_image)
+#              APP_VERSION: $(APP_VERSION)
+#              active_profiles: $(active_profiles)
+#              network_pcops: $(network_pcops)
+#              jvm_options: $(jvm_options)
+#              traefik_ntwk: $(traefik_ntwk)
+#            workingDirectory: $(Pipeline.Workspace)/wfm_artifacts
+#            displayName: UAT DEPLOY
+#
+#- stage: 'PERF_DEPLOY'
+#  condition: or(eq(variables['isrc'], 'true'), eq(variables['isRelease'], 'true'))
+#  dependsOn: ['WFMStaffMgrUIBuild']
+#  jobs:
+#  - deployment: PERF_DEPLOY
+#    environment: wfm-staff-scheduler-ui-perf
+#    variables:
+#      - group: "wfm-staff-scheduler-ui-perf"
+#      - group: "wfm-ucp-prod"
+#      - name: APP_VERSION
+#        value: $[ stageDependencies.WFMStaffMgrUIBuild.WFMStaffMgrUIBuild.outputs['set_version.APP_VERSION'] ]
+#    strategy:
+#      runOnce:
+#        deploy:
+#          steps:
+#          - bash: |
+#              echo project_version=$APP_VERSION
+#              AUTHTOKEN=$(curl -sk -d '{"username":"'${ucp_username}'", "password":"'${ucp_password}'"}' https://${ucp_domain}/auth/login | jq -r .auth_token)
+#              curl -k -H "Authorization: Bearer $AUTHTOKEN" https://${ucp_domain}/api/clientbundle -o bundle.zip
+#              unzip bundle.zip
+#              eval "$(<env.sh)"
+#              docker login -u ${ucp_username} -p ${ucp_password} ${registry_domain}
+#              docker-compose -f pco-staff-scheduler-ui-stack.yml config
+#              ls -la
+#              docker --host ${ucp_domain}:443 stack deploy -c pco-staff-scheduler-ui-stack.yml --with-registry-auth ${stack_name}
+#            env:
+#              JAVA_HOME: $(SYSTEM_JDK_11)
+#              registry_domain: $(registry_domain)
+#              registry_username: $(ucp_username)
+#              registry_password: $(ucp_password)
+#              ucp_domain: $(ucp_domain)
+#              ucp_username: $(ucp_username)
+#              ucp_password: $(ucp_password)
+#              stack_file: $(stack_file)
+#              stack_name: $(stack_name)
+#              env: $(env)
+#              registry_image: $(registry_image)
+#              APP_VERSION: $(APP_VERSION)
+#              active_profiles: $(active_profiles)
+#              network_pcops: $(network_pcops)
+#              jvm_options: $(jvm_options)
+#              traefik_ntwk: $(traefik_ntwk)
+#            workingDirectory: $(Pipeline.Workspace)/wfm_artifacts
+#            displayName: PERF DEPLOY
+#
+#- stage: 'PROD_DEPLOY'
+#  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
+#  dependsOn: ['WFMStaffMgrUIBuild']
+#  jobs:
+#  - deployment: PROD_DEPLOY
+#    environment: wfm-staff-scheduler-ui-prod
+#    variables:
+#      - group: "wfm-staff-scheduler-ui-prod"
+#      - group: "wfm-ucp-prod"
+#      - name: APP_VERSION
+#        value: $[ stageDependencies.WFMStaffMgrUIBuild.WFMStaffMgrUIBuild.outputs['set_version.APP_VERSION'] ]
+#    strategy:
+#      runOnce:
+#        deploy:
+#          steps:
+#          - bash: |
+#              AUTHTOKEN=$(curl -sk -d '{"username":"'${ucp_username}'", "password":"'${ucp_password}'"}' https://${ucp_domain}/auth/login | jq -r .auth_token)
+#              curl -k -H "Authorization: Bearer $AUTHTOKEN" https://${ucp_domain}/api/clientbundle -o bundle.zip
+#              unzip bundle.zip
+#              eval "$(<env.sh)"
+#              docker login -u ${ucp_username} -p ${ucp_password} ${registry_domain}
+#              docker-compose -f pco-staff-scheduler-ui-stack.yml config
+#              ls -la
+#              docker --host ${ucp_domain}:443 stack deploy -c pco-staff-scheduler-ui-stack.yml --with-registry-auth ${stack_name}
+#            env:
+#              JAVA_HOME: $(SYSTEM_JDK_11)
+#              registry_domain: $(registry_domain)
+#              registry_username: $(ucp_username)
+#              registry_password: $(ucp_password)
+#              ucp_domain: $(ucp_domain)
+#              ucp_username: $(ucp_username)
+#              ucp_password: $(ucp_password)
+#              stack_file: $(stack_file)
+#              stack_name: $(stack_name)
+#              env: $(env)
+#              registry_image: $(registry_image)
+#              APP_VERSION: $(APP_VERSION)
+#              active_profiles: $(active_profiles)
+#              network_pcops: $(network_pcops)
+#              jvm_options: $(jvm_options)
+#              traefik_ntwk: $(traefik_ntwk)
+#            workingDirectory: $(Pipeline.Workspace)/wfm_artifacts
+#            displayName: PROD DEPLOY

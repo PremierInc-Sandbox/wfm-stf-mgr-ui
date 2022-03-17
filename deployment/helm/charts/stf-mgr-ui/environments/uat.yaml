@@ -1,0 +1,23 @@
+env:
+  SPRING_PROFILES_ACTIVE: "uat"
+  ENV_NAME: "uat"
+  JAVA_TOOL_OPTIONS: "-Xms512m -Xmx512m -Xshare:off -XX:MaxMetaspaceSize=128m -XX:ReservedCodeCacheSize=256m"
+
+ingress:
+  enabled: true
+  hosts:
+    - host: pco-stf-gateway-uat.premierinc.com
+      paths:
+        - path: /pcops/staff-scheduler-ui/
+          pathType: Prefix
+          port: 8080
+    - host: pco-stf-gateway-uat-inside.premierinc.com
+      paths:
+        - path: /pcops/staff-scheduler-ui/
+          pathType: Prefix
+          port: 8080
+    - host: pco-stf-gateway-uat-internal.premierinc.com
+      paths:
+        - path: /pcops/staff-scheduler-ui/
+          pathType: Prefix
+          port: 8081

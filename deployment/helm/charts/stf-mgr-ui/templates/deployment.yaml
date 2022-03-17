@@ -1,0 +1,65 @@
+{{- $port := .Values.service.port }}
+{{- $adminPort := .Values.service.adminPort | default $port }}
+{{- $hasSecrets := ge (len (.Files.Glob "secrets/*")) 0 }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "stf-mgr-ui.fullname" . }}
+  labels:
+  {{- include "stf-mgr-ui.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+  {{- include "stf-mgr-ui.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+    {{- include "stf-mgr-ui.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: app
+              containerPort: {{ $port }}
+              protocol: TCP
+            {{- if ne $adminPort $port }}
+            - name: admin
+              containerPort: {{ .Values.service.adminPort }}
+              protocol: TCP
+            {{- end }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "stf-mgr-ui.fullname" . }}
+          volumeMounts:
+          {{- if $hasSecrets }}
+            - mountPath: /var/run/secrets/
+              name: app-secrets
+          {{- end }}
+          {{- range .Values.storageClaims }}
+            - mountPath: {{ .path | quote }}
+              name: {{ .name | quote }}
+          {{- end }}
+          {{- range .Values.nasShares }}
+            - mountPath: {{ .mountPath | quote }}
+              name: {{ .name | quote }}
+          {{- end }}
+          livenessProbe:
+          {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+          {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        {{- if $hasSecrets }}
+        - name: app-secrets
+          secret:
+            secretName: {{ include "stf-mgr-ui.fullname" . }}
+        {{- end }}
+        {{- range .Values.nasShares }}
+        - name: {{.name}}
+          nfs:
+            server: {{.server}}
+            path: {{.path}}
+        {{- end }}
