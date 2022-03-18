@@ -21,7 +21,7 @@ open class NodePlugin : Plugin<Project> {
       download.set(true)
       distBaseUrl.set("https://code.premierinc.com/artifacts/repository/nodejs/")
       version.set("14.18.0")
-      npmVersion.set("7.24.0")
+      npmVersion.set("8.5.5")
     }
 
     tasks.apply {
