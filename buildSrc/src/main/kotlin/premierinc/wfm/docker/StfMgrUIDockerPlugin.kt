@@ -41,7 +41,7 @@ open class StfMgrUIDockerPlugin : Plugin<Project> {
         into("dist")
       }
       from(generateGitProperties)
-      into(layout.buildDirectory.dir("deployment").get().asFile)
+      into(layout.buildDirectory.dir("docker").get().asFile)
     }
 
     return@run
