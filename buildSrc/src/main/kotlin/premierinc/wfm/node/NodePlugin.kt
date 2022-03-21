@@ -25,9 +25,10 @@ open class NodePlugin : Plugin<Project> {
     }
 
     tasks.apply {
-      val npmInstall by existing(NpmInstallTask::class) {
+      val npmCi by registering(NpmTask::class) {
         args.set(mutableListOf(
-          "--registry=https://code.premierinc.com/artifacts/repository/npm/"
+            "ci",
+            "--registry=https://code.premierinc.com/artifacts/repository/npm/"
         ))
         execOverrides.set(Action {
           standardOutput = System.out
@@ -37,7 +38,7 @@ open class NodePlugin : Plugin<Project> {
       val test by registering(NpmTask::class) {
         group = TASK_GROUP
         description = "Run frontend tests via `npm run test-headless`"
-        dependsOn(npmInstall)
+        dependsOn(npmCi)
         args.set(mutableListOf(
           "run", "test-headless"
         ))
@@ -48,7 +49,7 @@ open class NodePlugin : Plugin<Project> {
           .dir(layout.projectDirectory.dir("dist"))
         group = TASK_GROUP
         description = "Build the UI distribution via `npm run build-cli`"
-        dependsOn(npmInstall, test)
+        dependsOn(npmCi, test)
         args.set(mutableListOf(
           "run", "build-cli"
         ))

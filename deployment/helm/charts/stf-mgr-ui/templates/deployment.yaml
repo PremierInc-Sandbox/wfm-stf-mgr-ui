@@ -4,9 +4,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "staff-scheduler.fullname" . }}
+  name: {{ include "stf-mgr-ui.fullname" . }}
   labels:
-  {{- include "staff-scheduler.labels" . | nindent 4 }}
+  {{- include "stf-mgr-ui.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
