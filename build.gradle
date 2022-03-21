@@ -49,7 +49,7 @@ gitProperties {
 wfmHelm {
   sourceDirectory(layout.projectDirectory.dir("deployment/helm/charts"))
   charts {
-    create("stfMgrUI") {}
+    create("stfMgrUi") {}
   }
 }
 
