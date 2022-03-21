@@ -85,8 +85,8 @@ stages:
             --username ${servicePrincipalId} \
             --password ${servicePrincipalKey}
       - bash: |
-          helm package pco-stfsch-webapp/build/helm/charts/staff-scheduler --app-version $(Build.BuildNumber) --version $(Build.BuildNumber)
-          helm push staff-scheduler-$(Build.BuildNumber).tgz oci://wfmnpacr.azurecr.io/premierinc/helm/wfm/
+          helm package pco-stfsch-webapp/build/helm/charts/stf-mgr-ui --app-version $(Build.BuildNumber) --version $(Build.BuildNumber)
+          helm push stf-mgr-ui-$(Build.BuildNumber).tgz oci://wfmnpacr.azurecr.io/premierinc/helm/wfm/
         displayName: 'Publish Helm Chart'
         env:
           HELM_EXPERIMENTAL_OCI: 1
