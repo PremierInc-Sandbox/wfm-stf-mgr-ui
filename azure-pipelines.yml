@@ -9,6 +9,12 @@ pool:
 variables:
   isrc: $[eq( variables['Build.SourceBranch'], 'refs/heads/rc' )]
   isRelease: $[contains( variables['Build.SourceBranch'], 'refs/heads/release' )]
+  AcrImageName: stf-mgr-ui
+  AcrImageTag: $[variables['Build.BuildNumber']]
+  HelmChartName: stf-mgr-ui
+  HelmChartVersion: $[variables['Build.BuildNumber']]
+  HelmAppVersion: $[variables['Build.BuildNumber']]
+  ArmConnectionNonProd: WFMDevacr-east_SC
 
 resources:
   repositories:
@@ -60,7 +66,7 @@ stages:
       - task: AzureCLI@2
         displayName: Build and Publish Image to ACR
         inputs:
-          azureSubscription: WFMDevacr-east_SC
+          azureSubscription: $(ArmConnectionNonProd)
           scriptType: bash
           scriptLocation: inlineScript
           addSpnToEnvironment: true
@@ -76,7 +82,7 @@ stages:
       - task: AzureCLI@2
         displayName: Login to ACR
         inputs:
-          azureSubscription: WFMDevacr-east_SC
+          azureSubscription: $(ArmConnectionNonProd)
           scriptType: bash
           scriptLocation: inlineScript
           addSpnToEnvironment: true
@@ -108,7 +114,24 @@ stages:
         SOURCE_PATH: "$(Build.SourcesDirectory)"
         PROJECT_VERSION: "$(APP_VERSION)"
         TEAM: "PCOPS"
-
+  - template: ./pipelines/helm_deployment.yaml
+    parameters:
+      DependsOn: [ 'WFMStaffMgrUIBuild' ]
+      TargetEnvironment: wfm-staff-scheduler-ui-dev
+      Environment: dev
+      RunIf: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+      ArmConnection: $(ArmConnectionNonProd)
+      DeploymentVariables:
+        - group: "wfm-staff-scheduler-ui-dev"
+        - group: "wfm-ucp-np"
+        - name: AcrRegistryName
+          value: wfmnpacr
+        - name: AcrImageRepository
+          value: premierinc/wfm-np
+        - name: ArmConnection
+          value: WFMDevacr-east_SC
+        - name: HelmRepository
+          value: premierinc/helm/wfm
 #- stage: 'DEV_DEPLOY'
 #  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
 #  dependsOn: ['WFMStaffMgrUIBuild']

@@ -1,0 +1,81 @@
+parameters:
+  - name: DependsOn
+    default: ['publish']
+    type: object
+  - name: TargetEnvironment
+  - name: DeploymentVariables
+    default: []
+    type: object
+  - name: RunIf
+    type: string
+    default: 'True'
+  - name: Environment
+    values:
+      - dev
+      - qa
+      - uat
+      - perf
+      - prod
+  - name: ArmConnection
+    type: string
+
+stages:
+  - stage: "${{parameters.Environment}}_deploy"
+    displayName: "Deploy to ${{parameters.TargetEnvironment}}"
+    pool: "Premier Linux Agents"
+    dependsOn: ${{parameters.DependsOn}}
+    condition: ${{parameters.RunIf}}
+    jobs:
+      - deployment: k8s_deploy
+        environment: ${{parameters.TargetEnvironment}}
+        variables:
+          - ${{parameters.DeploymentVariables}}
+          - name: ChartsDirectory
+            value: $(Pipeline.Workspace)/charts
+          - name: HelmChartDirectory
+            value: $(ChartsDirectory)/$(HelmChartName)
+          - name: HelmSecretsDirectory
+            value: $(HelmChartDirectory)/secrets
+          - name: EnvironmentValueYaml
+            value: $(HelmChartDirectory)/environments/${{ parameters.Environment }}
+        displayName: "Deploy to Kubernetes"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: HelmInstaller@0
+                  displayName: Install Helm
+                  inputs:
+                    helmVersion: 'latest'
+                    installKubectl: false
+                - task: AzureCLI@2
+                  displayName: Login to ACR
+                  inputs:
+                    azureSubscription: ${{parameters.ArmConnection}}
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    addSpnToEnvironment: true
+                    inlineScript: |
+                      helm registry login $(AcrRegistryName).azurecr.io \
+                      --username ${servicePrincipalId} \
+                      --password ${servicePrincipalKey}
+                - bash: |
+                    helm pull oci://$(AcrRegistryName).azurecr.io/$(HelmRepository)/$(HelmChartName) \
+                    --untar \
+                    --untardir $(ChartsDirectory) \
+                    --version $(HelmChartVersion) &&\
+                    mkdir -p $(HelmSecretsDirectory)
+                  displayName: Pull and Unpackage Helm Chart
+#                - task: HelmDeploy@0
+#                  displayName: Deploy App
+#                  inputs:
+#                    connectionType: Kubernetes Service Connection
+#                    kubernetesServiceEndpoint: AKS Democtp-dev-eastus
+#                    releaseName: ctp-prices-dev
+#                    install: true
+#                    command: upgrade
+#                    chartType: FilePath
+#                    chartPath: $(BuildProperties.ChartsDirectory)/ctp-prices
+#                    namespace: ctp-dev
+#                    waitForExecution: false
+#                    valueFile: $(BuildProperties.ChartsDirectory)/values-dev.yaml
