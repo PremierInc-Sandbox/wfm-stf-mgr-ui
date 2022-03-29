@@ -106,6 +106,7 @@
     "url-parse": "1.5.9",
     "engine.io": "6.1.1",
     "electron-to-chromium": "1.4.97",
+    "caniuse-lite" : "1.0.30001320",
     "ajv-keywords" : "https://code.premierinc.com/artifacts/repository/npm/ajv-keywords/-/ajv-keywords-5.1.0.tgz"
   }
 }
