@@ -105,6 +105,6 @@
     "y18n": "^5.0.8",
     "url-parse": "1.5.9",
     "engine.io": "6.1.1",
-    "qs" : "6.10.3"
+    "ajv-keywords" : "https://code.premierinc.com/artifacts/repository/npm/ajv-keywords/-/ajv-keywords-5.1.0.tgz"
   }
 }
