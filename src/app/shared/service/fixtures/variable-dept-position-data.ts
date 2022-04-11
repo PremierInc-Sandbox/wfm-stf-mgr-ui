@@ -11,3 +11,13 @@ export function variableDepartmentpositionData() {
     includedInNursingHoursFlag: false
   }];
 }
+export function variableDepartmentpositionDataKey() {
+  return [{
+    key : 3,
+    categoryKey : 1,
+    categoryAbbreviation: 'categoryAbbrev',
+    categoryDescription: 'categoryDesc',
+    includedInNursingHoursFlag: false
+  }];
+}
+

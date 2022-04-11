@@ -197,8 +197,15 @@ export class SubmitPlanModelComponent implements OnInit {
 
   getTotal(objstaffGridCensus: StaffGridCensus): string {
     let sum = 0;
+    let isIncluded = false
+
+    for (const objVarpos of this.planDetails.variableDepartmentPositions) {
+        if(objVarpos.includedInNursingHoursFlag){
+          isIncluded = objVarpos.includedInNursingHoursFlag;
+        }
+      }
     for (const objstaffToPatient of objstaffGridCensus.staffToPatientList) {
-      if (this.checkIsIncluded(objstaffToPatient.variablePositionKey)) {
+      if (isIncluded) {
         sum = (1 * sum) + (1 * objstaffToPatient.staffCount);
       }
     }

@@ -14,6 +14,10 @@ import SpyObj = jasmine.SpyObj;
 import {of} from 'rxjs';
 import {deptDetails} from '../../../../shared/service/fixtures/dept-details-data';
 import {staffScheduleData} from '../../../../shared/service/fixtures/staff-schedule-data';
+import {
+  variableDepartmentpositionData,
+  variableDepartmentpositionDataKey
+} from "../../../../shared/service/fixtures/variable-dept-position-data";
 
 describe('SubmitPlanModelComponent', () => {
   let component: SubmitPlanModelComponent;
@@ -27,6 +31,7 @@ describe('SubmitPlanModelComponent', () => {
   let testPlanDetailsData = planDetailsData();
   let testStaffSchedule = staffScheduleData();
   let testDeptDetailsData = deptDetails();
+  const variableDepartmentDataTest = variableDepartmentpositionDataKey();
   const departmentServiceSpyObj: SpyObj<DepartmentService> = jasmine.createSpyObj(['getDepts']);
   const planServiceSpyObj: SpyObj<PlanService> = jasmine.createSpyObj(['updatePlanAsActive', 'getPlans']);
   const staffGridServiceSpyObj: SpyObj<StaffGridService> = jasmine.createSpyObj(['saveStaffGridDetails']);
@@ -168,14 +173,19 @@ describe('SubmitPlanModelComponent', () => {
   });
 
 
-  it('should get total and return 0.0 when variable position is not included', () => {
+  it('should get total and return 2.0 when minimum of one variable position is included', () => {
     testPlanDetailsData[0].staffScheduleList[0].planShiftList[0].staffGridCensuses[0].staffToPatientList[0].staffCount = 2;
-    expect(component.getTotal(testPlanDetailsData[0].staffScheduleList[0].planShiftList[0].staffGridCensuses[0])).toEqual('0.0');
+    expect(component.getTotal(testPlanDetailsData[0].staffScheduleList[0].planShiftList[0].staffGridCensuses[0])).toEqual('2.0');
   });
   it('should get total and return 2.0 planShiftList variable position is included', () => {
     testPlanDetailsData[0].staffScheduleList[0].planShiftList[0].staffGridCensuses[0].staffToPatientList[0].staffCount = 2;
     spyOn(component, 'checkIsIncluded').and.returnValue(true);
     expect(component.getTotal(testPlanDetailsData[0].staffScheduleList[0].planShiftList[0].staffGridCensuses[0])).toEqual('2.0');
+  });
+  it('should get total and return 0.0 when no variable position is included', () => {
+    testPlanDetailsData[0].variableDepartmentPositions[0] = variableDepartmentDataTest[0];
+    testPlanDetailsData[0].staffScheduleList[0].planShiftList[0].staffGridCensuses[0].staffToPatientList[0].staffCount = 2;
+    expect(component.getTotal(testPlanDetailsData[0].staffScheduleList[0].planShiftList[0].staffGridCensuses[0])).toEqual('0.0');
   });
   it('should check if date range is overlapping', () => {
     testPlanDetailsData[0].effectiveStartDate = 1;

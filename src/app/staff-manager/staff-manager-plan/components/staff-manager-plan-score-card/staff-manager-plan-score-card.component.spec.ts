@@ -139,7 +139,7 @@ describe('StaffManagerPlanScoreCardComponent', () => {
     component.staffVariance=testStaffVarianceData[0];
     component.planDetails=planDetailsTest[0];
     component.getActualWHpU();
-    expect(component.getActualWHpU()).toEqual(8);
+    expect(component.getActualWHpU()).toEqual(9);
   });
   it('should getActualHour', function () {
     let planDetailsTest =planDetailsData();
@@ -147,7 +147,7 @@ describe('StaffManagerPlanScoreCardComponent', () => {
     component.staffVariance=testStaffVarianceData[0];
     component.planDetails=planDetailsTest[0];
     component.getActualHour();
-    expect(component.getActualHour()).toEqual(8);
+    expect(component.getActualHour()).toEqual(9);
   });
   it('should getPlannedMinusDailyHours', function () {
     component.getPlannedMinusDailyHours();
