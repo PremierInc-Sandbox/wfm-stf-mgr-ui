@@ -18,6 +18,13 @@ export function variableDepartmentpositionDataKey() {
     categoryAbbreviation: 'categoryAbbrev',
     categoryDescription: 'categoryDesc',
     includedInNursingHoursFlag: false
-  }];
+  },
+    {
+      key : 4,
+      categoryKey : 1,
+      categoryAbbreviation: 'categoryAbbrev',
+      categoryDescription: 'categoryDesc',
+      includedInNursingHoursFlag: true
+    }];
 }
 
