@@ -12,6 +12,7 @@ import {DepartmentService} from '../../../../shared/service/department-service';
 import {DeptDetails} from '../../../../shared/domain/DeptDetails';
 import * as moment from 'moment';
 import {AlertBox} from '../../../../shared/domain/alert-box';
+import {VariableDepartmentPosition} from "../../../../shared/domain/var-pos";
 
 @Component({
   selector: 'app-submit-plan-model',
@@ -30,7 +31,9 @@ export class SubmitPlanModelComponent implements OnInit {
               public  dialogRef: MatDialogRef<SubmitPlanModelComponent>) {
     this.alertBox = new AlertBox(this.dialog);
   }
-
+  enabledStaffToPatientVarpos: VariableDepartmentPosition[] = [];
+  isIncluded = false
+  isIncludedInStafftoPatient = false;
   isPlanActive = false;
   isError = false;
   errormsg: string[] = [];
@@ -197,8 +200,25 @@ export class SubmitPlanModelComponent implements OnInit {
 
   getTotal(objstaffGridCensus: StaffGridCensus): string {
     let sum = 0;
+
+    for (const objVarpos of this.planDetails.variableDepartmentPositions) {
+        if(objVarpos.includedInNursingHoursFlag && !(this.enabledStaffToPatientVarpos.indexOf(objVarpos) >= 0)){
+          this.isIncluded = objVarpos.includedInNursingHoursFlag;
+          this.enabledStaffToPatientVarpos.push(objVarpos);
+        }
+      }
     for (const objstaffToPatient of objstaffGridCensus.staffToPatientList) {
-      if (this.checkIsIncluded(objstaffToPatient.variablePositionKey)) {
+      if(objstaffToPatient.activeFlag ){
+        for (const enabledStpVarpos of this.enabledStaffToPatientVarpos) {
+          if(objstaffToPatient.variablePositionKey === enabledStpVarpos.categoryKey && this.isIncludedInStafftoPatient === false){
+            this.isIncludedInStafftoPatient = true;
+            break;
+          }
+        }
+      }
+    }
+    for (const objstaffToPatient of objstaffGridCensus.staffToPatientList) {
+      if (this.isIncluded && this.isIncludedInStafftoPatient) {
         sum = (1 * sum) + (1 * objstaffToPatient.staffCount);
       }
     }
