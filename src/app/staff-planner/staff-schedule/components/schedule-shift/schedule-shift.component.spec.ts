@@ -286,7 +286,7 @@ describe('ScheduleShiftComponent', () => {
     expect(component.removeFromShiftErrors('error')).toBe(false);
   });
   it('should remove error from giving shift error ', () => {
-    expect(component.removeFromgivenShiftErrors('error', testShiftData[0])).toBe(true);
+    expect(component.removeFromgivenShiftErrors('error', testShiftData[0])).toBe(false);
   });
   it('should not remove error from giving shift error because its length is 0', () => {
     testShiftData[0].errormsg = [];
