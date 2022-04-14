@@ -114,53 +114,53 @@ stages:
         SOURCE_PATH: "$(Build.SourcesDirectory)"
         PROJECT_VERSION: "$(APP_VERSION)"
         TEAM: "PCOPS"
-  - stage: wfm_stf_mgr_ui_np_promotion
-    displayName: Promote CI Artifacts to Non-Prod ACR
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-    dependsOn: [ 'WFMStaffMgrUIBuild' ]
-    jobs:
-      - job: wfm_stf_mgr_ui_np_promotion
-        displayName: Promote CI Image to Non-Prod ACR
-        steps:
-          - template: ./pipelines/templates/image_promotion.yaml
-            parameters:
-              ArmServiceConnection: WFMDevacr-east_SC
-              SourceAcr: wfmnpacr
-              SourceRepository: premierinc/wfm/ci/wfm-stf-mgr-ui
-              SourceTag: $(Build.BuildNumber)
-              TargetAcr: wfmnpacr
-              TargetRepository: premierinc/wfm/np/wfm-stf-mgr-ui
-              TargetTag: $(Build.BuildNumber)
-      - job: wfm_stf_mgr_ui_np_helm_promotion
-        displayName: Promote CI Helm to Non-Prod ACR
-        steps:
-          - template: ./pipelines/templates/image_promotion.yaml
-            parameters:
-              ArmServiceConnection: WFMDevacr-east_SC
-              SourceAcr: wfmnpacr
-              SourceRepository: premierinc/wfm/ci/helm/wfm-stf-mgr-ui
-              SourceTag: $(Build.BuildNumber)
-              TargetAcr: wfmnpacr
-              TargetRepository: premierinc/wfm/np/helm/wfm-stf-mgr-ui
-              TargetTag: $(Build.BuildNumber)
-  - template: ./pipelines/helm_deployment.yaml
-    parameters:
-      DependsOn: [ 'WFMStaffMgrUIBuild' ]
-      TargetEnvironment: wfm-staff-scheduler-ui-dev
-      Environment: dev
-      RunIf: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-      ArmConnection: $(ArmConnectionNonProd)
-      DeploymentVariables:
-        - group: "wfm-staff-scheduler-ui-dev"
-        - group: "wfm-ucp-np"
-        - name: AcrRegistryName
-          value: wfmnpacr
-        - name: AcrImageRepository
-          value: premierinc/wfm/np
-        - name: ArmConnection
-          value: WFMDevacr-east_SC
-        - name: HelmRepository
-          value: premierinc/wfm/np/helm
+- stage: wfm_stf_mgr_ui_np_promotion
+  displayName: Promote CI Artifacts to Non-Prod ACR
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  dependsOn: [ 'WFMStaffMgrUIBuild' ]
+  jobs:
+    - job: wfm_stf_mgr_ui_np_promotion
+      displayName: Promote CI Image to Non-Prod ACR
+      steps:
+        - template: ./pipelines/templates/image_promotion.yaml
+          parameters:
+            ArmServiceConnection: WFMDevacr-east_SC
+            SourceAcr: wfmnpacr
+            SourceRepository: premierinc/wfm/ci/wfm-stf-mgr-ui
+            SourceTag: $(Build.BuildNumber)
+            TargetAcr: wfmnpacr
+            TargetRepository: premierinc/wfm/np/wfm-stf-mgr-ui
+            TargetTag: $(Build.BuildNumber)
+    - job: wfm_stf_mgr_ui_np_helm_promotion
+      displayName: Promote CI Helm to Non-Prod ACR
+      steps:
+        - template: ./pipelines/templates/image_promotion.yaml
+          parameters:
+            ArmServiceConnection: WFMDevacr-east_SC
+            SourceAcr: wfmnpacr
+            SourceRepository: premierinc/wfm/ci/helm/wfm-stf-mgr-ui
+            SourceTag: $(Build.BuildNumber)
+            TargetAcr: wfmnpacr
+            TargetRepository: premierinc/wfm/np/helm/wfm-stf-mgr-ui
+            TargetTag: $(Build.BuildNumber)
+- template: ./pipelines/helm_deployment.yaml
+  parameters:
+    DependsOn: [ 'WFMStaffMgrUIBuild' ]
+    TargetEnvironment: wfm-staff-scheduler-ui-dev
+    Environment: dev
+    RunIf: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    ArmConnection: $(ArmConnectionNonProd)
+    DeploymentVariables:
+      - group: "wfm-staff-scheduler-ui-dev"
+      - group: "wfm-ucp-np"
+      - name: AcrRegistryName
+        value: wfmnpacr
+      - name: AcrImageRepository
+        value: premierinc/wfm/np
+      - name: ArmConnection
+        value: WFMDevacr-east_SC
+      - name: HelmRepository
+        value: premierinc/wfm/np/helm
 #- stage: 'DEV_DEPLOY'
 #  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
 #  dependsOn: ['WFMStaffMgrUIBuild']
