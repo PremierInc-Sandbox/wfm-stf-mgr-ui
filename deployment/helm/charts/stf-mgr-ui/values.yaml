@@ -16,14 +16,14 @@ ingress:
 livenessProbe:
   httpGet:
     port: admin
-    path: /pcops/staff-scheduler-rest/padmin/health
+    path: /padmin/health
   periodSeconds: 10
   timeoutSeconds: 1
 
 readinessProbe:
   httpGet:
     port: admin
-    path: /pcops/staff-scheduler-ui/padmin/health
+    path: /padmin/health
   periodSeconds: 10
   timeoutSeconds: 1
 
