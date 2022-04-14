@@ -126,10 +126,10 @@ stages:
           parameters:
             ArmServiceConnection: WFMDevacr-east_SC
             SourceAcr: wfmnpacr
-            SourceRepository: premierinc/wfm/ci/wfm-stf-mgr-ui
+            SourceRepository: premierinc/wfm/ci/stf-mgr-ui
             SourceTag: $(Build.BuildNumber)
             TargetAcr: wfmnpacr
-            TargetRepository: premierinc/wfm/np/wfm-stf-mgr-ui
+            TargetRepository: premierinc/wfm/np/stf-mgr-ui
             TargetTag: $(Build.BuildNumber)
     - job: wfm_stf_mgr_ui_np_helm_promotion
       displayName: Promote CI Helm to Non-Prod ACR
