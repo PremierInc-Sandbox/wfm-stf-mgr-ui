@@ -138,10 +138,10 @@ stages:
           parameters:
             ArmServiceConnection: WFMDevacr-east_SC
             SourceAcr: wfmnpacr
-            SourceRepository: premierinc/wfm/ci/helm/wfm-stf-mgr-ui
+            SourceRepository: premierinc/wfm/ci/helm/stf-mgr-ui
             SourceTag: $(Build.BuildNumber)
             TargetAcr: wfmnpacr
-            TargetRepository: premierinc/wfm/np/helm/wfm-stf-mgr-ui
+            TargetRepository: premierinc/wfm/np/helm/stf-mgr-ui
             TargetTag: $(Build.BuildNumber)
 - template: ./pipelines/helm_deployment.yaml
   parameters:
