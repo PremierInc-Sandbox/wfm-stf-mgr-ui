@@ -72,8 +72,8 @@ stages:
           addSpnToEnvironment: true
           inlineScript: |
             az acr login -n wfmnpacr
-            docker build -t wfmnpacr.azurecr.io/premierinc/wfm-np/stf-mgr-ui:$(Build.BuildNumber) build/docker &&\
-            docker push wfmnpacr.azurecr.io/premierinc/wfm-np/stf-mgr-ui:$(Build.BuildNumber)
+            docker build -t wfmnpacr.azurecr.io/premierinc/wfm/ci/stf-mgr-ui:$(Build.BuildNumber) build/docker &&\
+            docker push wfmnpacr.azurecr.io/premierinc/wfm/ci/stf-mgr-ui:$(Build.BuildNumber)
       - task: HelmInstaller@0
         displayName: Install Helm
         inputs:
@@ -92,7 +92,7 @@ stages:
             --password ${servicePrincipalKey}
       - bash: |
           helm package build/helm/charts/stf-mgr-ui --app-version $(Build.BuildNumber) --version $(Build.BuildNumber)
-          helm push stf-mgr-ui-$(Build.BuildNumber).tgz oci://wfmnpacr.azurecr.io/premierinc/helm/wfm/
+          helm push stf-mgr-ui-$(Build.BuildNumber).tgz oci://wfmnpacr.azurecr.io/premierinc/wfm/ci/helm/
         displayName: 'Publish Helm Chart'
         env:
           HELM_EXPERIMENTAL_OCI: 1
@@ -114,6 +114,35 @@ stages:
         SOURCE_PATH: "$(Build.SourcesDirectory)"
         PROJECT_VERSION: "$(APP_VERSION)"
         TEAM: "PCOPS"
+  - stage: wfm_stf_mgr_ui_np_promotion
+    displayName: Promote CI Artifacts to Non-Prod ACR
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    dependsOn: [ 'WFMStaffMgrUIBuild' ]
+    jobs:
+      - job: wfm_stf_mgr_ui_np_promotion
+        displayName: Promote CI Image to Non-Prod ACR
+        steps:
+          - template: ./pipelines/templates/image_promotion.yaml
+            parameters:
+              ArmServiceConnection: WFMDevacr-east_SC
+              SourceAcr: wfmnpacr
+              SourceRepository: premierinc/wfm/ci/wfm-stf-mgr-ui
+              SourceTag: $(Build.BuildNumber)
+              TargetAcr: wfmnpacr
+              TargetRepository: premierinc/wfm/np/wfm-stf-mgr-ui
+              TargetTag: $(Build.BuildNumber)
+      - job: wfm_stf_mgr_ui_np_helm_promotion
+        displayName: Promote CI Helm to Non-Prod ACR
+        steps:
+          - template: ./pipelines/templates/image_promotion.yaml
+            parameters:
+              ArmServiceConnection: WFMDevacr-east_SC
+              SourceAcr: wfmnpacr
+              SourceRepository: premierinc/wfm/ci/helm/wfm-stf-mgr-ui
+              SourceTag: $(Build.BuildNumber)
+              TargetAcr: wfmnpacr
+              TargetRepository: premierinc/wfm/np/helm/wfm-stf-mgr-ui
+              TargetTag: $(Build.BuildNumber)
   - template: ./pipelines/helm_deployment.yaml
     parameters:
       DependsOn: [ 'WFMStaffMgrUIBuild' ]
@@ -127,11 +156,11 @@ stages:
         - name: AcrRegistryName
           value: wfmnpacr
         - name: AcrImageRepository
-          value: premierinc/wfm-np
+          value: premierinc/wfm/np
         - name: ArmConnection
           value: WFMDevacr-east_SC
         - name: HelmRepository
-          value: premierinc/helm/wfm
+          value: premierinc/wfm/np/helm
 #- stage: 'DEV_DEPLOY'
 #  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
 #  dependsOn: ['WFMStaffMgrUIBuild']
