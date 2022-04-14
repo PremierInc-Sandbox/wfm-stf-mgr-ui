@@ -145,7 +145,7 @@ stages:
             TargetTag: $(Build.BuildNumber)
 - template: ./pipelines/helm_deployment.yaml
   parameters:
-    DependsOn: [ 'WFMStaffMgrUIBuild' ]
+    DependsOn: [ 'WFMStaffMgrUIBuild', 'wfm_stf_mgr_ui_np_promotion' ]
     TargetEnvironment: wfm-staff-scheduler-ui-dev
     Environment: dev
     RunIf: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
