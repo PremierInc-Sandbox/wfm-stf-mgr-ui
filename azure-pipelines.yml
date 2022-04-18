@@ -25,7 +25,13 @@ stages:
       - group: "wfm-staff-scheduler-ui-dev"
       - group: "wfm-ucp-np"
     steps:
+      - task: DockerInstaller@0
+        displayName: Install Docker Engine
+        inputs:
+          dockerVersion: 19.03.17
+          releaseType: stable
       - bash: |
+          docker login -u "${registry_username}" -p "${registry_password}"
           chmod +x ./gradlew && ./gradlew wrapper
           ./gradlew release -Pregistry.username=${registry_username} -Pregistry.password=${registry_password}
         env:
@@ -62,7 +68,7 @@ stages:
       parameters:
         BLACKDUCK_API_TOKEN: $(BLACKDUCK_API_TOKEN)
         BRANCH_SCAN_LIST: "develop"
-        DISTRIBUTION: "SAAS" 
+        DISTRIBUTION: "SAAS"
         PROJECT_NAME: "pcops:pco-staff-scheduler-ui"
         SOURCE_PATH: "$(Build.SourcesDirectory)"
         PROJECT_VERSION: "$(APP_VERSION)"
