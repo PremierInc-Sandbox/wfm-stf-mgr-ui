@@ -28,7 +28,7 @@ stages:
       - task: DockerInstaller@0
         displayName: Install Docker Engine
         inputs:
-          dockerVersion: 19.03.17
+          dockerVersion: 19.03.15
           releaseType: stable
       - bash: |
           docker login -u "${registry_username}" -p "${registry_password}"
