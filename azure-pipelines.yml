@@ -2,7 +2,7 @@
 # Add steps that build, run tests, deploy, and more:
 
 pool:
-  name: 'Premier QA Linux Agents'
+  name: 'Premier Linux Agents'
   demands:
   - SYSTEM_JDK_11
 
@@ -25,13 +25,7 @@ stages:
       - group: "wfm-staff-scheduler-ui-dev"
       - group: "wfm-ucp-np"
     steps:
-      - task: DockerInstaller@0
-        displayName: Install Docker Engine
-        inputs:
-          dockerVersion: 19.03.15
-          releaseType: stable
       - bash: |
-          docker login -u "${registry_username}" -p "${registry_password}"
           chmod +x ./gradlew && ./gradlew wrapper
           ./gradlew release -Pregistry.username=${registry_username} -Pregistry.password=${registry_password}
         env:
