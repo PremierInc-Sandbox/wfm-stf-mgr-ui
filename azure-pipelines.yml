@@ -2,7 +2,7 @@
 # Add steps that build, run tests, deploy, and more:
 
 pool:
-  name: 'Premier QA Linux Agents'
+  name: 'Premier Linux Agents'
   demands:
   - SYSTEM_JDK_11
 
@@ -62,7 +62,7 @@ stages:
       parameters:
         BLACKDUCK_API_TOKEN: $(BLACKDUCK_API_TOKEN)
         BRANCH_SCAN_LIST: "develop"
-        DISTRIBUTION: "SAAS" 
+        DISTRIBUTION: "SAAS"
         PROJECT_NAME: "pcops:pco-staff-scheduler-ui"
         SOURCE_PATH: "$(Build.SourcesDirectory)"
         PROJECT_VERSION: "$(APP_VERSION)"
