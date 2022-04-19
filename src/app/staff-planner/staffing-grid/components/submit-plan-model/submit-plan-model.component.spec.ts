@@ -176,12 +176,14 @@ describe('SubmitPlanModelComponent', () => {
 
 
   it('should get total and return 2.0 when minimum of one variable position is included', () => {
+    component.isIncluded = true;
     testPlanDetailsData[0].staffScheduleList[0].planShiftList[0].staffGridCensuses[0].staffToPatientList[0]=teststaffToPatientData[1]
     testPlanDetailsData[0].variableDepartmentPositions[0] = variableDepartmentDataTest[1];
     testPlanDetailsData[0].staffScheduleList[0].planShiftList[0].staffGridCensuses[0].staffToPatientList[0].staffCount = 2;
     expect(component.getTotal(testPlanDetailsData[0].staffScheduleList[0].planShiftList[0].staffGridCensuses[0])).toEqual('2.0');
   });
   it('should get total and return 2.0 planShiftList variable position is included', () => {
+    component.isIncluded = true;
     testPlanDetailsData[0].staffScheduleList[0].planShiftList[0].staffGridCensuses[0].staffToPatientList[0].staffCount = 2;
     expect(component.getTotal(testPlanDetailsData[0].staffScheduleList[0].planShiftList[0].staffGridCensuses[0])).toEqual('2.0');
   });
