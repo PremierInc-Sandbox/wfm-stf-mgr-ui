@@ -2,7 +2,7 @@
 # Add steps that build, run tests, deploy, and more:
 
 pool:
-  name: 'Premier QA Linux Agents'
+  name: 'Premier Linux Agents'
   demands:
   - SYSTEM_JDK_11
 
