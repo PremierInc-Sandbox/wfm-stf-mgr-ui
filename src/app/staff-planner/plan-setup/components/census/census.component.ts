@@ -62,7 +62,7 @@ export class CensusComponent implements OnInit {
     this.previuosOccurnum = JSON.parse(JSON.stringify(this.plan.censusRange.occurrenceNumber));
     this.minCensus = this.plan.censusRange.minimumCensus;
     this.maxCensus = this.plan.censusRange.maximumCensus;
-    if(this.plan.censusRange.minimumCensus){
+    if(this.plan.censusRange.occurrenceNumber.length){
       this.censusToggle = true;
     }
   }
