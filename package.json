@@ -30,6 +30,7 @@
     "@angular/router": "12.2.16",
     "@types/html2canvas": "0.0.35",
     "@types/yargs-parser": "^15.0.0",
+    "ajv-keywords": "^5.1.0",
     "bootstrap": "^4.4.1",
     "caniuse-lite": "1.0.30001264",
     "classlist.js": "^1.1.20150312",
@@ -106,6 +107,7 @@
     "url-parse": "1.5.10",
     "electron-to-chromium": "1.4.113",
     "npmlog": "6.0.1",
-    "async": "3.2.3"
+    "async": "3.2.3",
+    "ajv-keywords": "5.1.0"
   }
 }
