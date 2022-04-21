@@ -18,16 +18,16 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "12.2.13",
+    "@angular/animations": "12.2.16",
     "@angular/cdk": "12.2.12",
-    "@angular/common": "12.2.13",
-    "@angular/compiler": "12.2.13",
-    "@angular/core": "12.2.13",
-    "@angular/forms": "12.2.13",
+    "@angular/common": "12.2.16",
+    "@angular/compiler": "12.2.16",
+    "@angular/core": "12.2.16",
+    "@angular/forms": "12.2.16",
     "@angular/material": "12.2.12",
-    "@angular/platform-browser": "12.2.13",
-    "@angular/platform-browser-dynamic": "12.2.13",
-    "@angular/router": "12.2.13",
+    "@angular/platform-browser": "12.2.16",
+    "@angular/platform-browser-dynamic": "12.2.16",
+    "@angular/router": "12.2.16",
     "@types/html2canvas": "0.0.35",
     "@types/yargs-parser": "^15.0.0",
     "bootstrap": "^4.4.1",
@@ -40,7 +40,7 @@
     "is-primitive": "^3.0.1",
     "jquery": "^3.5.1",
     "material-icons": "^0.3.1",
-    "minimist": "^1.2.5",
+    "minimist": "1.2.6",
     "moment-timezone": "^0.5.28",
     "ngx-material-timepicker": "^5.5.3",
     "popper.js": "^1.16.1",
@@ -53,10 +53,10 @@
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "12.2.13",
-    "@angular/cli": "12.2.13",
-    "@angular/compiler-cli": "12.2.13",
-    "@angular/language-service": "12.2.13",
+    "@angular-devkit/build-angular": "12.2.16",
+    "@angular/cli": "12.2.16",
+    "@angular/compiler-cli": "12.2.16",
+    "@angular/language-service": "12.2.16",
     "@angular/material-moment-adapter": "12.2.12",
     "@babel/parser": "7.15.7",
     "@types/hammerjs": "^2.0.36",
@@ -102,6 +102,7 @@
     "set-value": "4.1.0",
     "socket.io-parser": "4.0.4",
     "ua-parser-js": "0.7.28",
-    "y18n": "^5.0.8"
+    "y18n": "^5.0.8",
+    "url-parse" : "1.5.10"
   }
 }
