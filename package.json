@@ -34,7 +34,7 @@
     "caniuse-lite": "1.0.30001264",
     "classlist.js": "^1.1.20150312",
     "core-js": "3.18.2",
-    "electron-to-chromium": "1.3.857",
+    "electron-to-chromium": "1.4.113",
     "hammerjs": "^2.0.8",
     "html2canvas": "^1.0.0-rc.4",
     "is-primitive": "^3.0.1",
@@ -103,6 +103,7 @@
     "socket.io-parser": "4.0.4",
     "ua-parser-js": "0.7.28",
     "y18n": "^5.0.8",
-    "url-parse" : "1.5.10"
+    "url-parse" : "1.5.10",
+    "electron-to-chromium": "1.4.113"
   }
 }
