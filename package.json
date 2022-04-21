@@ -108,6 +108,7 @@
     "electron-to-chromium": "1.4.113",
     "npmlog": "6.0.1",
     "async": "3.2.3",
-    "ajv-keywords": "5.1.0"
+    "ajv-keywords": "5.1.0",
+    "postcss-preset-env" : "7.4.3"
   }
 }
