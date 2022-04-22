@@ -30,7 +30,8 @@ readinessProbe:
 appinsights:
   enabled: false
 
-env: {}
+env:
+  SERVER_SERVLET_CONTEXTPATH: '/pcops/staff-scheduler-ui'
 storageClaims: []
 nasShares: []
 resources: {}
