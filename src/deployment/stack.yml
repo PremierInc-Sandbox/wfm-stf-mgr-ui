@@ -8,7 +8,7 @@
 # network_pcops
 # traefik_ntwk
 
-version: "3.5"
+version: "3.8"
 services:
   pco-staff-scheduler-ui:
     image: ${registry_image}:${APP_VERSION}
@@ -51,8 +51,8 @@ services:
           memory: 1G
       restart_policy:
         condition: on-failure
-        delay: 5s
-        max_attempts: 3
+        delay: 10s
+        max_attempts: 5
         window: 120s
       update_config:
         parallelism: 1
@@ -62,6 +62,7 @@ services:
         max_failure_ratio: 0.3
       placement:
         constraints: [node.role == worker]
+        max_replicas_per_node: 1
 networks:
   pcops-ntwk:
     external: true
