@@ -102,6 +102,7 @@
     "socket.io-parser": "4.0.4",
     "ua-parser-js": "0.7.28",
     "y18n": "5.0.8",
-    "log4js": "6.4.5"
+    "log4js": "6.4.5",
+    "streamroller" : "3.0.7"
   }
 }
