@@ -105,6 +105,8 @@
     "log4js": "6.4.5",
     "streamroller" : "3.0.7",
     "date-format" : "4.0.7",
-    "async" : "3.2.3"
+    "async" : "3.2.3",
+    "ajv":"8.11.0",
+    "ajv-keywords":"5.1.0"
   }
 }
