@@ -2,6 +2,7 @@ plugins {
   id "org.sonarqube" version "2.7"
   id "maven-publish"
   id "com.github.node-gradle.node" version "2.2.4"
+
   id "com.gorylenko.gradle-git-properties" version "2.3.1"
 }
 
@@ -134,7 +135,7 @@ tasks.register("deletePackageLock", Delete) { t->
 
 tasks.register("createPackageLock", NpmTask) { t ->
   t.dependsOn("deletePackageLock")
-  t.args = [ "install", "--force", "--package-lock-only", "--info", "--ignore-scripts", '--registry=https://code.premierinc.com/artifacts/repository/npm/']
+  t.args = [ "ci", "--force", "--package-lock-only", "--info", "--ignore-scripts", '--registry=https://code.premierinc.com/artifacts/repository/npm/']
 }
 
 tasks.register("forceResolution", NpxTask) { t ->
