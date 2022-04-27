@@ -23,7 +23,7 @@ node {
   download = true
   distBaseUrl = 'https://code.premierinc.com/artifacts/repository/nodejs/'
   version = '14.18.0'
-  npmVersion = '7.24.0'
+  npmVersion = '8.5.5'
 }
 
 sonarqube {
