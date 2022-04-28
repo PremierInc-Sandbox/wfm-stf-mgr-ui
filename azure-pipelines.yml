@@ -1,11 +1,16 @@
 # WFM STAFF SCHEDULER UI build/deploy cicd
 # Add steps that build, run tests, deploy, and more:
 
-pool:
-  name: 'Premier Linux Agents'
-  demands:
-  - SYSTEM_JDK_11
+# pool:
+#   name: 'Premier Linux Agents'
+#   demands:
+#   - SYSTEM_JDK_11
 
+pool: 
+  name: Premier QA Linux Agents 
+  demands: 
+    - test 
+    
 variables:
   isrc: $[eq( variables['Build.SourceBranch'], 'refs/heads/rc' )]
   isRelease: $[contains( variables['Build.SourceBranch'], 'refs/heads/release' )]
