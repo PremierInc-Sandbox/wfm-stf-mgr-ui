@@ -10,7 +10,7 @@ pool:
   name: Premier QA Linux Agents 
   demands: 
     - test 
-    
+
 variables:
   isrc: $[eq( variables['Build.SourceBranch'], 'refs/heads/rc' )]
   isRelease: $[contains( variables['Build.SourceBranch'], 'refs/heads/release' )]
@@ -47,7 +47,7 @@ stages:
         displayName: extract version
         name: set_version
 
-      - bash: mkdir pipeline-artifact && cp build/stacks/* pipeline-artifact/
+      - bash: mkdir -p pipeline-artifact && cp build/stacks/* pipeline-artifact/
         displayName: Prepare Artifact
 
       - publish: pipeline-artifact
