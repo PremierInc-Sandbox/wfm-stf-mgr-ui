@@ -174,7 +174,7 @@
             <td mat-cell *matCellDef="let row" class="leftAlign"> <tr>{{row.effectiveStartDate | date:'yyyy-MM-dd'}}</tr> <tr>{{row.effectiveEndDate | date:'yyyy-MM-dd'}}</tr> </td>
           </ng-container>
           <ng-container matColumnDef="volume">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header class=" rightAlign">Annual Daily Volume </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class=" rightAlign">Budgeted Daily Volume </th>
             <td mat-cell *matCellDef="let row" class="rightAlign"> {{limitDecimals( (row.utilizedAverageVolume* (row.dailyFlag ? findLeapYear(row.effectiveEndDate) : 1)))}} ({{ limitDecimals( row.utilizedAverageVolume / (row.dailyFlag ? 1 : findLeapYear(row.effectiveEndDate))) }}/day) </td>
           </ng-container>
           <ng-container matColumnDef="hours">
@@ -262,7 +262,7 @@
             <td mat-cell *matCellDef="let row" class="leftAlign pdl-10"> <tr>{{row.effectiveStartDate | date:'yyyy-MM-dd'}}</tr> <tr>{{row.effectiveEndDate | date:'yyyy-MM-dd'}}</tr> </td>
           </ng-container>
           <ng-container matColumnDef="volume">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header class="top-align-reset rightAlign">Annual Daily Volume </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="top-align-reset rightAlign">Budgeted Daily Volume </th>
             <td mat-cell *matCellDef="let row" class="rightAlign pdr-10">{{limitDecimals( (row.utilizedAverageVolume* (row.dailyFlag ? findLeapYear(row.effectiveEndDate) : 1)))}} ({{ limitDecimals( row.utilizedAverageVolume / (row.dailyFlag ? 1 : findLeapYear(row.effectiveEndDate))) }}/day)</td>
           </ng-container>
           <ng-container matColumnDef="hours">

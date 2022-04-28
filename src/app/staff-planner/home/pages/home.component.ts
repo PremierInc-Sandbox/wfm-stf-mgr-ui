@@ -254,7 +254,7 @@ isPlanActive( planAction: string, defaultPlanFlag: boolean): boolean {
   limitDecimals(value){
     if(value !== null){
       let limitedValue = String(value);
-      return (limitedValue.indexOf('.') > 0) ? limitedValue.slice(0, limitedValue.indexOf('.') + 5) : limitedValue;
+      return (limitedValue.indexOf('.') > 0) ? limitedValue.slice(0, limitedValue.indexOf('.') + 2) : limitedValue;
     }else{
       return value;
     }
