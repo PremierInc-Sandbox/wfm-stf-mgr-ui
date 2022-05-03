@@ -1,22 +1,24 @@
 plugins {
 //  id "org.sonarqube" version "2.7"
-  id "maven-publish"
-  id "premierinc.wfm.stfmgr.node"
-  id "premierinc.wfm.stfmgr.docker"
-  id "premierinc.wfm.helm"
+    id "maven-publish"
+    id "com.gorylenko.gradle-git-properties" version "2.4.0"
+    id "premierinc.wfm.stfmgr.node"
+    id "wfm.core"
+    id "wfm.docker"
+    id "wfm.helm"
 }
 
-ext{
-  group 'com.premierinc.pcops.stfs'
-  version '2.10.0-SNAPSHOT'
+ext {
+    group 'com.premierinc.pcops.stfs'
+    version '2.10.0-SNAPSHOT'
 
-  registry = 'dtr.premierinc.com'
-  image = "${registry}/pcops_org/pco-staff-scheduler-ui:${version}"
+    registry = 'dtr.premierinc.com'
+    image = "${registry}/pcops_org/pco-staff-scheduler-ui:${version}"
 }
 
 repositories {
-  mavenLocal()
-  maven { url "https://code.premierinc.com/artifacts/content/groups/public" }
+    mavenLocal()
+    maven { url "https://code.premierinc.com/artifacts/content/groups/public" }
 }
 
 //sonarqube {
@@ -30,29 +32,44 @@ repositories {
 //}
 
 wrapper {
-  distributionUrl = "https://code.premierinc.com/artifacts/repository/gradle-distributions/gradle-7.4-bin.zip"
+    distributionUrl = "https://code.premierinc.com/artifacts/repository/gradle-distributions/gradle-7.4-bin.zip"
 }
 
 tasks.register("clean", Delete) {
-  delete project.buildDir
+    delete project.buildDir
 }
 
 gitProperties {
-  gitPropertiesDir.set(layout.buildDirectory)
-  dateFormat = "yyyy-MM-dd hh:mm:ss a z"
-  dateFormatTimeZone = 'EST'
+    gitPropertiesDir.set(layout.buildDirectory)
+    dateFormat = "yyyy-MM-dd hh:mm:ss a z"
+    dateFormatTimeZone = 'EST'
 
-  customProperty "build.version", { project.version }
-  customProperty "version", { project.version }
+    customProperty "build.version", { project.version }
+    customProperty "version", { project.version }
 }
 
 wfmHelm {
-  sourceDirectory(layout.projectDirectory.dir("deployment/helm/charts"))
-  charts {
-    create("stfMgrUi") {}
-  }
+    sourceDirectory(layout.projectDirectory.dir("deployment/helm/charts"))
+    charts {
+        create("stfMgrUi") {}
+    }
 }
 
-tasks.register("release") {t ->
-  t.dependsOn(createDockerContext, createHelmCharts)
+wfmDocker {
+    images {
+        create("UI") {
+            dockerFile file("Dockerfile")
+            additionalFiles {
+                from(tasks.named("buildUI")) {
+                    into("assets")
+                }
+                from(generateGitProperties)
+            }
+        }
+    }
+}
+
+tasks.register("prepareRelease") { t ->
+    t.group = "release"
+    t.dependsOn(createDockerContext, createHelmCharts)
 }

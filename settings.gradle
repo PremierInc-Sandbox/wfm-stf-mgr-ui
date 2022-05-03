@@ -1,7 +1,15 @@
 pluginManagement {
   repositories {
+    mavenLocal()
+    maven { url ("https://code.premierinc.com/artifacts/content/groups/public") }
     maven { url 'https://code.premierinc.com/artifacts/content/repositories/gradle-plugins/' }
-    maven { url "https://code.premierinc.com/artifacts/content/groups/public" }
+  }
+
+  plugins {
+    String pluginVersion = "2.7.1.0"
+    id "wfm.core" version pluginVersion
+    id "wfm.docker" version pluginVersion
+    id "wfm.helm" version pluginVersion
   }
 }
 

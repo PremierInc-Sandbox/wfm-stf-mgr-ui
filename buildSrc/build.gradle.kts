@@ -19,7 +19,6 @@ dependencies {
 
   implementation("com.github.node-gradle:gradle-node-plugin:3.2.1")
   implementation("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.3")
-  implementation("com.gorylenko.gradle-git-properties:gradle-git-properties:2.4.0")
 
   testImplementation("org.jetbrains.kotlin:kotlin-test")
   testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
@@ -33,21 +32,6 @@ java {
 
 gradlePlugin {
   plugins {
-    create("helmPlugin") {
-      id = "premierinc.wfm.helm"
-      implementationClass = "premierinc.wfm.aks.helm.HelmPlugin"
-    }
-
-    create("propertiesPlugin") {
-      id = "premierinc.wfm.properties"
-      implementationClass = "premierinc.wfm.aks.properties.BuildPropertiesPlugin"
-    }
-
-    create("dockerPlugin") {
-      id = "premierinc.wfm.stfmgr.docker"
-      implementationClass = "premierinc.wfm.docker.StfMgrUIDockerPlugin"
-    }
-
     create("nodePlugin") {
       id = "premierinc.wfm.stfmgr.node"
       implementationClass = "premierinc.wfm.node.NodePlugin"

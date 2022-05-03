@@ -50,7 +50,9 @@ stages:
     steps:
       - bash: |
           chmod +x ./gradlew && ./gradlew wrapper --no-daemon
-          ./gradlew --no-daemon release -Pregistry.username=${registry_username} -Pregistry.password=${registry_password}
+          ./gradlew --no-daemon prepareRelease \
+          -Pregistry.username=${registry_username} \
+          -Pregistry.password=${registry_password}
         env:
           JAVA_HOME: $(SYSTEM_JDK_11)
           registry_username: $(ucp_username)
@@ -72,7 +74,7 @@ stages:
           addSpnToEnvironment: true
           inlineScript: |
             az acr login -n wfmnpacr
-            docker build -t wfmnpacr.azurecr.io/premierinc/wfm/ci/stf-mgr-ui:$(Build.BuildNumber) build/docker &&\
+            docker build -t wfmnpacr.azurecr.io/premierinc/wfm/ci/stf-mgr-ui:$(Build.BuildNumber) build/dist-bundles/docker/UI &&\
             docker push wfmnpacr.azurecr.io/premierinc/wfm/ci/stf-mgr-ui:$(Build.BuildNumber)
       - task: HelmInstaller@0
         displayName: Install Helm
@@ -91,7 +93,7 @@ stages:
             --username ${servicePrincipalId} \
             --password ${servicePrincipalKey}
       - bash: |
-          helm package build/helm/charts/stf-mgr-ui --app-version $(Build.BuildNumber) --version $(Build.BuildNumber)
+          helm package build/dist-bundles/helm-charts/stf-mgr-ui --app-version $(Build.BuildNumber) --version $(Build.BuildNumber)
           helm push stf-mgr-ui-$(Build.BuildNumber).tgz oci://wfmnpacr.azurecr.io/premierinc/wfm/ci/helm/
         displayName: 'Publish Helm Chart'
         env:
