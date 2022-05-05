@@ -56,7 +56,7 @@
           </div>
           <div>
             <label for="">From 1 to:</label>
-            <input type="number" (keypress)="validateShiftLength($event)" min="0" [disabled]="!patient.activeFlag || planDetails.planCompleted" [(ngModel)]="patient.staffCount" />
+            <input class="schedule-shifts" type="number" (keypress)="validateShiftLength($event)" min="0" [disabled]="!patient.activeFlag || planDetails.planCompleted" [(ngModel)]="patient.staffCount" />
           </div>
         </div>
       </div>
