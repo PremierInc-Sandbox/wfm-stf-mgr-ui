@@ -7,7 +7,7 @@ pool:
   - SYSTEM_JDK_11
 
 variables:
-  isrc: $[eq( variables['Build.SourceBranch'], 'refs/heads/rc' )]
+  isrc: $[contains( variables['Build.SourceBranch'], 'refs/heads/rc' )]
   isRelease: $[contains( variables['Build.SourceBranch'], 'refs/heads/release' )]
 
 resources:
@@ -249,7 +249,7 @@ stages:
             displayName: PERF DEPLOY
 
 - stage: 'PROD_DEPLOY'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
+  condition: eq(variables['isRelease'], 'true')
   dependsOn: ['WFMStaffMgrUIBuild']
   jobs:
   - deployment: PROD_DEPLOY
