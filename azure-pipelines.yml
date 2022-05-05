@@ -9,11 +9,6 @@ pool:
 variables:
   isrc: $[eq( variables['Build.SourceBranch'], 'refs/heads/rc' )]
   isRelease: $[contains( variables['Build.SourceBranch'], 'refs/heads/release' )]
-  AcrImageName: stf-mgr-ui
-  AcrImageTag: $[variables['Build.BuildNumber']]
-  HelmChartName: stf-mgr-ui
-  HelmChartVersion: $[variables['Build.BuildNumber']]
-  HelmAppVersion: $[variables['Build.BuildNumber']]
   ArmConnectionNonProd: WFMDevacr-east_SC
 
 resources:
@@ -21,6 +16,10 @@ resources:
     - repository: sdlc_templates
       type: github
       name: PremierInc/shield-ado-templates
+      endpoint: PremierInc
+    - repository: wfm-templates
+      type: github
+      name: PremierInc/wfm-ado-templates
       endpoint: PremierInc
 
 trigger:
@@ -41,128 +40,169 @@ pr:
       - release/*
 
 stages:
-- stage: WFMStaffMgrUIBuild
-  jobs:
-  - job: WFMStaffMgrUIBuild
-    variables:
-      - group: "wfm-staff-scheduler-ui-dev"
-      - group: "wfm-ucp-np"
-    steps:
-      - bash: |
-          chmod +x ./gradlew && ./gradlew wrapper --no-daemon
-          ./gradlew --no-daemon prepareRelease \
-          -Pregistry.username=${registry_username} \
-          -Pregistry.password=${registry_password}
-        env:
-          JAVA_HOME: $(SYSTEM_JDK_11)
-          registry_username: $(ucp_username)
-          registry_password: $(ucp_password)
-        displayName: WFMStaffMgrUIBuild
-      - bash: |
-          cat build/git.properties
-          version="$(grep 'git.build.version' build/git.properties | awk -F= '{print $2}')"
-          echo "version is $version"
-          echo "##vso[task.setvariable variable=APP_VERSION;isOutput=true]$version"
-        displayName: extract version
-        name: set_version
-      - task: AzureCLI@2
-        displayName: Build and Publish Image to ACR
-        inputs:
-          azureSubscription: $(ArmConnectionNonProd)
-          scriptType: bash
-          scriptLocation: inlineScript
-          addSpnToEnvironment: true
-          inlineScript: |
-            az acr login -n wfmnpacr
-            docker build -t wfmnpacr.azurecr.io/premierinc/wfm/ci/stf-mgr-ui:$(Build.BuildNumber) build/dist-bundles/docker/UI &&\
-            docker push wfmnpacr.azurecr.io/premierinc/wfm/ci/stf-mgr-ui:$(Build.BuildNumber)
-      - task: HelmInstaller@0
-        displayName: Install Helm
-        inputs:
-          helmVersion: 'latest'
-          installKubectl: false
-      - task: AzureCLI@2
-        displayName: Login to ACR
-        inputs:
-          azureSubscription: $(ArmConnectionNonProd)
-          scriptType: bash
-          scriptLocation: inlineScript
-          addSpnToEnvironment: true
-          inlineScript: |
-            helm registry login wfmnpacr.azurecr.io \
-            --username ${servicePrincipalId} \
-            --password ${servicePrincipalKey}
-      - bash: |
-          helm package build/dist-bundles/helm-charts/stf-mgr-ui --app-version $(Build.BuildNumber) --version $(Build.BuildNumber)
-          helm push stf-mgr-ui-$(Build.BuildNumber).tgz oci://wfmnpacr.azurecr.io/premierinc/wfm/ci/helm/
-        displayName: 'Publish Helm Chart'
-        env:
-          HELM_EXPERIMENTAL_OCI: 1
-  - job: BlackduckScan
-    dependsOn: ['WFMStaffMgrUIBuild']
-    displayName: Blackduck Scan
-    variables:
-      - group: 'SDLC Credentials'
-      - name: APP_VERSION
-        value: $[ stageDependencies.WFMStaffMgrUIBuild.WFMStaffMgrUIBuild.outputs['set_version.APP_VERSION'] ]
-    steps:
-    - bash: chmod +x ./gradlew
-    - template: blackduck-scan.yml@sdlc_templates
-      parameters:
-        BLACKDUCK_API_TOKEN: $(BLACKDUCK_API_TOKEN)
-        BRANCH_SCAN_LIST: "develop"
-        DISTRIBUTION: "SAAS"
-        PROJECT_NAME: "pcops:pco-staff-scheduler-ui"
-        SOURCE_PATH: "$(Build.SourcesDirectory)"
-        PROJECT_VERSION: "$(APP_VERSION)"
-        TEAM: "PCOPS"
-- stage: wfm_stf_mgr_ui_np_promotion
-  displayName: Promote CI Artifacts to Non-Prod ACR
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-  dependsOn: [ 'WFMStaffMgrUIBuild' ]
-  jobs:
-    - job: wfm_stf_mgr_ui_np_promotion
-      displayName: Promote CI Image to Non-Prod ACR
-      steps:
-        - template: ./pipelines/templates/image_promotion.yaml
-          parameters:
-            ArmServiceConnection: WFMDevacr-east_SC
-            SourceAcr: wfmnpacr
-            SourceRepository: premierinc/wfm/ci/stf-mgr-ui
-            SourceTag: $(Build.BuildNumber)
-            TargetAcr: wfmnpacr
-            TargetRepository: premierinc/wfm/np/stf-mgr-ui
-            TargetTag: $(Build.BuildNumber)
-    - job: wfm_stf_mgr_ui_np_helm_promotion
-      displayName: Promote CI Helm to Non-Prod ACR
-      steps:
-        - template: ./pipelines/templates/image_promotion.yaml
-          parameters:
-            ArmServiceConnection: WFMDevacr-east_SC
-            SourceAcr: wfmnpacr
-            SourceRepository: premierinc/wfm/ci/helm/stf-mgr-ui
-            SourceTag: $(Build.BuildNumber)
-            TargetAcr: wfmnpacr
-            TargetRepository: premierinc/wfm/np/helm/stf-mgr-ui
-            TargetTag: $(Build.BuildNumber)
-- template: ./pipelines/helm_deployment.yaml
-  parameters:
-    DependsOn: [ 'WFMStaffMgrUIBuild', 'wfm_stf_mgr_ui_np_promotion' ]
-    TargetEnvironment: wfm-staff-scheduler-ui-dev
-    Environment: dev
-    RunIf: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-    ArmConnection: $(ArmConnectionNonProd)
-    DeploymentVariables:
-      - group: "wfm-staff-scheduler-ui-dev"
-      - group: "wfm-ucp-np"
-      - name: AcrRegistryName
-        value: wfmnpacr
-      - name: AcrImageRepository
-        value: premierinc/wfm/np
-      - name: ArmConnection
-        value: WFMDevacr-east_SC
-      - name: HelmRepository
-        value: premierinc/wfm/np/helm
+  - template: aks/ci.yaml@wfm-templates
+    parameters:
+      Name: StfMgrUICI
+      GradleBuildTask: 'prepareRelease'
+      GradleBuildEnvironment:
+        JAVA_HOME: $(SYSTEM_JDK_11)
+        GRADLE_USER_HOME: $(GRADLE_USER_HOME)
+      BuildVariables:
+        - group: "wfm-ucp-np"
+        - group: "wfm-staff-scheduler-ui-dev"
+      ArmConnection: $(ArmConnectionNonProd)
+      Images:
+        - Name: stf-mgr-ui
+          ApplicationName: ''
+          ContextDirectory: build/dist-bundles/docker/UI
+      Charts:
+        - Name: stf-mgr-ui
+          ContextDirectory: build/dist-bundles/helm-charts/stf-mgr-ui
+  - template: aks/helm-deployment.yaml@wfm-templates
+    parameters:
+      Name: StfMgrUIDev
+      DependsOn: [ 'StfMgrUICI' ]
+      DeploymentVariables:
+        - group: "wfm-staff-scheduler-ui-dev"
+        - group: "wfm-ucp-np"
+      Environments:
+        - Name: dev
+          Target: wfm-staff-scheduler-ui-dev
+          EnvironmentName: dev
+          KubernetesServiceConnection: WFMwfm-dev-eastus
+      ArmConnection: $(ArmConnectionNonProd)
+      KubernetesNamespace: wfm-dev
+      ReleaseName: wfm-stf-mgr-ui
+      ChartRegistry: wfmnpacr
+      ChartName: stf-mgr-ui
+      ChartUri: oci://wfmnpacr.azurecr.io/premierinc/wfm/ci/helm/stf-mgr-ui
+      ChartVersion: $(Build.BuildNumber)
+      ChartValues: |
+        image.repository=wfmnpacr.azurecr.io/premierinc/wfm/ci/stf-mgr-ui
+        image.tag=$(Build.BuildNumber)
+#stages:
+#- stage: WFMStaffMgrUIBuild
+#  jobs:
+#  - job: WFMStaffMgrUIBuild
+#    variables:
+#      - group: "wfm-staff-scheduler-ui-dev"
+#      - group: "wfm-ucp-np"
+#    steps:
+#      - bash: |
+#          chmod +x ./gradlew && ./gradlew wrapper --no-daemon
+#          ./gradlew --no-daemon prepareRelease \
+#          -Pregistry.username=${registry_username} \
+#          -Pregistry.password=${registry_password}
+#        env:
+#          JAVA_HOME: $(SYSTEM_JDK_11)
+#          registry_username: $(ucp_username)
+#          registry_password: $(ucp_password)
+#        displayName: WFMStaffMgrUIBuild
+#      - bash: |
+#          cat build/git.properties
+#          version="$(grep 'git.build.version' build/git.properties | awk -F= '{print $2}')"
+#          echo "version is $version"
+#          echo "##vso[task.setvariable variable=APP_VERSION;isOutput=true]$version"
+#        displayName: extract version
+#        name: set_version
+#      - task: AzureCLI@2
+#        displayName: Build and Publish Image to ACR
+#        inputs:
+#          azureSubscription: $(ArmConnectionNonProd)
+#          scriptType: bash
+#          scriptLocation: inlineScript
+#          addSpnToEnvironment: true
+#          inlineScript: |
+#            az acr login -n wfmnpacr
+#            docker build -t wfmnpacr.azurecr.io/premierinc/wfm/ci/stf-mgr-ui:$(Build.BuildNumber) build/dist-bundles/docker/UI &&\
+#            docker push wfmnpacr.azurecr.io/premierinc/wfm/ci/stf-mgr-ui:$(Build.BuildNumber)
+#      - task: HelmInstaller@0
+#        displayName: Install Helm
+#        inputs:
+#          helmVersion: 'latest'
+#          installKubectl: false
+#      - task: AzureCLI@2
+#        displayName: Login to ACR
+#        inputs:
+#          azureSubscription: $(ArmConnectionNonProd)
+#          scriptType: bash
+#          scriptLocation: inlineScript
+#          addSpnToEnvironment: true
+#          inlineScript: |
+#            helm registry login wfmnpacr.azurecr.io \
+#            --username ${servicePrincipalId} \
+#            --password ${servicePrincipalKey}
+#      - bash: |
+#          helm package build/dist-bundles/helm-charts/stf-mgr-ui --app-version $(Build.BuildNumber) --version $(Build.BuildNumber)
+#          helm push stf-mgr-ui-$(Build.BuildNumber).tgz oci://wfmnpacr.azurecr.io/premierinc/wfm/ci/helm/
+#        displayName: 'Publish Helm Chart'
+#        env:
+#          HELM_EXPERIMENTAL_OCI: 1
+#  - job: BlackduckScan
+#    dependsOn: ['WFMStaffMgrUIBuild']
+#    displayName: Blackduck Scan
+#    variables:
+#      - group: 'SDLC Credentials'
+#      - name: APP_VERSION
+#        value: $[ stageDependencies.WFMStaffMgrUIBuild.WFMStaffMgrUIBuild.outputs['set_version.APP_VERSION'] ]
+#    steps:
+#    - bash: chmod +x ./gradlew
+#    - template: blackduck-scan.yml@sdlc_templates
+#      parameters:
+#        BLACKDUCK_API_TOKEN: $(BLACKDUCK_API_TOKEN)
+#        BRANCH_SCAN_LIST: "develop"
+#        DISTRIBUTION: "SAAS"
+#        PROJECT_NAME: "pcops:pco-staff-scheduler-ui"
+#        SOURCE_PATH: "$(Build.SourcesDirectory)"
+#        PROJECT_VERSION: "$(APP_VERSION)"
+#        TEAM: "PCOPS"
+#- stage: wfm_stf_mgr_ui_np_promotion
+#  displayName: Promote CI Artifacts to Non-Prod ACR
+#  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+#  dependsOn: [ 'WFMStaffMgrUIBuild' ]
+#  jobs:
+#    - job: wfm_stf_mgr_ui_np_promotion
+#      displayName: Promote CI Image to Non-Prod ACR
+#      steps:
+#        - template: ./pipelines/templates/image_promotion.yaml
+#          parameters:
+#            ArmServiceConnection: WFMDevacr-east_SC
+#            SourceAcr: wfmnpacr
+#            SourceRepository: premierinc/wfm/ci/stf-mgr-ui
+#            SourceTag: $(Build.BuildNumber)
+#            TargetAcr: wfmnpacr
+#            TargetRepository: premierinc/wfm/np/stf-mgr-ui
+#            TargetTag: $(Build.BuildNumber)
+#    - job: wfm_stf_mgr_ui_np_helm_promotion
+#      displayName: Promote CI Helm to Non-Prod ACR
+#      steps:
+#        - template: ./pipelines/templates/image_promotion.yaml
+#          parameters:
+#            ArmServiceConnection: WFMDevacr-east_SC
+#            SourceAcr: wfmnpacr
+#            SourceRepository: premierinc/wfm/ci/helm/stf-mgr-ui
+#            SourceTag: $(Build.BuildNumber)
+#            TargetAcr: wfmnpacr
+#            TargetRepository: premierinc/wfm/np/helm/stf-mgr-ui
+#            TargetTag: $(Build.BuildNumber)
+#- template: ./pipelines/helm_deployment.yaml
+#  parameters:
+#    DependsOn: [ 'WFMStaffMgrUIBuild', 'wfm_stf_mgr_ui_np_promotion' ]
+#    TargetEnvironment: wfm-staff-scheduler-ui-dev
+#    Environment: dev
+#    RunIf: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+#    ArmConnection: $(ArmConnectionNonProd)
+#    DeploymentVariables:
+#      - group: "wfm-staff-scheduler-ui-dev"
+#      - group: "wfm-ucp-np"
+#      - name: AcrRegistryName
+#        value: wfmnpacr
+#      - name: AcrImageRepository
+#        value: premierinc/wfm/np
+#      - name: ArmConnection
+#        value: WFMDevacr-east_SC
+#      - name: HelmRepository
+#        value: premierinc/wfm/np/helm
 #- stage: 'DEV_DEPLOY'
 #  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
 #  dependsOn: ['WFMStaffMgrUIBuild']
