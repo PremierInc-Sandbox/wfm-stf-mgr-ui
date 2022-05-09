@@ -210,7 +210,7 @@
       <td *ngFor="let staffSummary of staffVariance.staffVarianceSummaries; let summaryIndex = index" class="flex-column">
         <div class="row">
           <div class="col">
-            <input type="text" [tabindex]="getTabIndex(summaryIndex)" [disabled]="staffVariance.recordStatusKey===4|| staffVariance.planAlreadyInUse || staffVariance.disableFlag" (keypress)="numberAndDecimalOnly($event,summaryIndex)" class="oga-text-box" maxlength="5" [(ngModel)] = "staffSummary.offGridActivitiesHour">
+            <input class="oga-hours" type="text" [tabindex]="getTabIndex(summaryIndex)" [disabled]="staffVariance.recordStatusKey===4|| staffVariance.planAlreadyInUse || staffVariance.disableFlag" (keypress)="numberAndDecimalOnly($event,summaryIndex)" class="oga-text-box" maxlength="5" [(ngModel)] = "staffSummary.offGridActivitiesHour">
           </div>
         </div>
       </td>

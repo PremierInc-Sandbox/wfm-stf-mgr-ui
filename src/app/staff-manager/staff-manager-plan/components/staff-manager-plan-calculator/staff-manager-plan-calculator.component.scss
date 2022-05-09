@@ -521,21 +521,21 @@ input {
     .mat-tab-labels{
       display: block !important;
     }
-  } 
+  }
 }
 @media (min-width: 1024px) {
   .view-header, .card-container, .view-body, .staffing-matrix-container{
     // width: 992px !important;
     // padding: 20px 5px !important;
   }
-  
+
   .container-fluid, .card-header{
     padding: 0 !important;
   }
   .mat-form-field-infix{
     width: 170px !important;
   }
-  
+
 }
 @media (min-width: 1199px) {
   .view-header, .card-container, .view-body, .staffing-matrix-container{
@@ -567,4 +567,7 @@ input {
   .view-header, .card-container, .staffing-matrix-container{
     //width: 1550px !important;
   }
+}
+.oga-hours{
+  text-align: center;
 }
