@@ -1,26 +1,26 @@
 ---
 # Variables used:
-# bamboo_registry_image
-# bamboo_inject_version
-# bamboo_active_profiles
-# bamboo_env
-# bamboo_ucp_username
-# bamboo_network_pcops
-# bamboo_traefik_ntwk
+# registry_image
+# APP_VERSION
+# active_profiles
+# env
+# ucp_username
+# network_pcops
+# traefik_ntwk
 
 version: "3.5"
 services:
   pco-staff-scheduler-ui:
-    image: ${bamboo_registry_image}:${bamboo_inject_version}
+    image: ${registry_image}:${APP_VERSION}
     # compose env variables
     environment:
-      - SPRING_PROFILES_ACTIVE=${bamboo_active_profiles}
+      - SPRING_PROFILES_ACTIVE=${active_profiles}
       - CONFIG_URI=http://config-server:8888
-      - SPRING_CLOUD_CONFIG_LABEL=${bamboo_env}
-      - ENV_NAME=${bamboo_env}
+      - SPRING_CLOUD_CONFIG_LABEL=${env}
+      - ENV_NAME=${env}
       - SPRING_APPLICATION_NAME=pco-staff-scheduler-ui
       - PCO_LOG_MODE=console
-      - PCO_STATIC_CONTENT_SERVER_OPTS='${bamboo_jvm_options}'
+      - PCO_STATIC_CONTENT_SERVER_OPTS='${jvm_options}'
     networks:
       - pcops-ntwk
     healthcheck:
@@ -34,10 +34,10 @@ services:
       replicas: 2
       labels:
         # UCP Access Labels
-        - 'com.docker.ucp.access.owner=${bamboo_ucp_username}'
+        - 'com.docker.ucp.access.owner=${ucp_username}'
         - 'com.docker.ucp.access.label=/Shared/pcops'
-        - 'traefik.docker.network=${bamboo_traefik_ntwk}'
-        - 'com.docker.lb.network=${bamboo_traefik_ntwk}'
+        - 'traefik.docker.network=${traefik_ntwk}'
+        - 'com.docker.lb.network=${traefik_ntwk}'
         - 'traefik.sso.frontend.rule=Host:pco-gateway-qa.premierinc.com;PathPrefix=/pcops/staff-scheduler-ui'
         - 'traefik.sso.frontend.priority=200'
         - 'traefik.sso.port=8080'
@@ -65,4 +65,4 @@ services:
 networks:
   pcops-ntwk:
     external: true
-    name: "${bamboo_network_pcops}"
+    name: "${network_pcops}"

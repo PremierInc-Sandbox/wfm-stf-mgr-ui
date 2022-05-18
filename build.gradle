@@ -2,12 +2,13 @@ plugins {
   id "org.sonarqube" version "2.7"
   id "maven-publish"
   id "com.github.node-gradle.node" version "2.2.4"
+
   id "com.gorylenko.gradle-git-properties" version "2.3.1"
 }
 
 ext{
   group 'com.premierinc.pcops.stfs'
-  version '2.10.0-SNAPSHOT'
+  version '2.12.0.0'
 
   registry = 'dtr.premierinc.com'
   image = "${registry}/pcops_org/pco-staff-scheduler-ui:${version}"
@@ -22,7 +23,7 @@ node {
   download = true
   distBaseUrl = 'https://code.premierinc.com/artifacts/repository/nodejs/'
   version = '14.18.0'
-  npmVersion = '7.24.0'
+  npmVersion = '8.5.5'
 }
 
 sonarqube {
@@ -134,7 +135,7 @@ tasks.register("deletePackageLock", Delete) { t->
 
 tasks.register("createPackageLock", NpmTask) { t ->
   t.dependsOn("deletePackageLock")
-  t.args = [ "install", "--force", "--package-lock-only", "--info", "--ignore-scripts", '--registry=https://code.premierinc.com/artifacts/repository/npm/']
+  t.args = [ "ci", "--force", "--package-lock-only", "--info", "--ignore-scripts", '--registry=https://code.premierinc.com/artifacts/repository/npm/']
 }
 
 tasks.register("forceResolution", NpxTask) { t ->
