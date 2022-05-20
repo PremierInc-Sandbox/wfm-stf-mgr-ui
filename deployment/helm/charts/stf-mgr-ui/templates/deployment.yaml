@@ -1,6 +1,6 @@
 {{- $port := .Values.service.port }}
 {{- $adminPort := .Values.service.adminPort | default $port }}
-{{- $hasSecrets := ge (len (.Files.Glob "secrets/*")) 0 }}
+{{- $stfFullName := include "stf-mgr-ui.fullname" . }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -33,10 +33,6 @@ spec:
             - configMapRef:
                 name: {{ include "stf-mgr-ui.fullname" . }}
           volumeMounts:
-          {{- if $hasSecrets }}
-            - mountPath: /var/run/secrets/
-              name: app-secrets
-          {{- end }}
           {{- range .Values.storageClaims }}
             - mountPath: {{ .path | quote }}
               name: {{ .name | quote }}
@@ -52,11 +48,6 @@ spec:
           resources:
           {{- toYaml .Values.resources | nindent 12 }}
       volumes:
-        {{- if $hasSecrets }}
-        - name: app-secrets
-          secret:
-            secretName: {{ include "stf-mgr-ui.fullname" . }}
-        {{- end }}
         {{- range .Values.nasShares }}
         - name: {{.name}}
           nfs:

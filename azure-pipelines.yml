@@ -2,7 +2,7 @@
 # Add steps that build, run tests, deploy, and more:
 
 pool:
-  name: 'Premier QA Linux Agents'
+  name: 'Premier Linux Agents'
   demands:
   - SYSTEM_JDK_11
 
@@ -72,6 +72,28 @@ stages:
           KubernetesServiceConnection: WFMwfm-dev-eastus
       ArmConnection: $(ArmConnectionNonProd)
       KubernetesNamespace: wfm-dev
+      ReleaseName: wfm-stf-mgr-ui
+      ChartRegistry: wfmnpacr
+      ChartName: stf-mgr-ui
+      ChartUri: oci://wfmnpacr.azurecr.io/premierinc/wfm/ci/helm/stf-mgr-ui
+      ChartVersion: $(Build.BuildNumber)
+      ChartValues: |
+        image.repository=wfmnpacr.azurecr.io/premierinc/wfm/ci/stf-mgr-ui
+        image.tag=$(Build.BuildNumber)
+  - template: aks/helm-deployment.yaml@wfm-templates
+    parameters:
+      Name: StfMgrUIQA
+      DependsOn: [ 'StfMgrUIDev' ]
+      DeploymentVariables:
+        - group: "wfm-staff-scheduler-ui-qa"
+        - group: "wfm-ucp-np"
+      Environments:
+        - Name: qa
+          Target: wfm-staff-scheduler-ui-qa
+          EnvironmentName: qa
+          KubernetesServiceConnection: WFMwfm-qa-eastus
+      ArmConnection: $(ArmConnectionNonProd)
+      KubernetesNamespace: wfm-qa
       ReleaseName: wfm-stf-mgr-ui
       ChartRegistry: wfmnpacr
       ChartName: stf-mgr-ui
