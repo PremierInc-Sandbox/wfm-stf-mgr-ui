@@ -45,17 +45,14 @@
           <div class="card-title-value"
                *ngIf="(staffVariance.staffVarianceSummaries&&staffVariance.staffVarianceSummaries.length!= 0 && oASuggestedData !=null
                && oASuggestedData != undefined && getOGATotalhours()<getOGAPlanhours())">
-            <div *ngIf="(oASuggestedData.workHourPerUnitPrimary * getAverageCensus()) - (getOGAPlanhours() -
-              getOGATotalhours()) - getActualHour()<0">
+            <div *ngIf="(getActualHour() + (getOGAPlanhours() -
+              getOGATotalhours()) - (oASuggestedData.workHourPerUnitPrimary * getAverageCensus())) <= 0">
               <app-svg-icon name="check-circle" color="green" size="20"></app-svg-icon>
-              ({{-1 * (((oASuggestedData.workHourPerUnitPrimary * getAverageCensus()) - (getOGAPlanhours() -
-              getOGATotalhours()) - getActualHour()).toFixed(1) | number)}})
+              ({{-1 * ((getActualHour() + (getOGAPlanhours() - getOGATotalhours()) - (oASuggestedData.workHourPerUnitPrimary * getAverageCensus())).toFixed(1) | number)}})
             </div>
-            <div *ngIf="(oASuggestedData.workHourPerUnitPrimary * getAverageCensus()) - (getOGAPlanhours() -
-              getOGATotalhours()) - getActualHour()>=0">
+            <div *ngIf="(getActualHour() + (getOGAPlanhours() - getOGATotalhours()) - (oASuggestedData.workHourPerUnitPrimary * getAverageCensus())) > 0">
               <app-svg-icon name="x-circle" color="red" size="20"></app-svg-icon>
-                {{(((oASuggestedData.workHourPerUnitPrimary * getAverageCensus()) - (getOGAPlanhours() -
-              getOGATotalhours()) - getActualHour()).toFixed(1) | number)}}
+                {{((getActualHour() + (getOGAPlanhours() - getOGATotalhours()) - (oASuggestedData.workHourPerUnitPrimary * getAverageCensus())).toFixed(1) | number)}}
             </div>
           </div>
 
@@ -63,13 +60,13 @@
           <div class="card-title-value"
                *ngIf="(staffVariance.staffVarianceSummaries&&staffVariance.staffVarianceSummaries.length!= 0 && oASuggestedData !=null
                && oASuggestedData != undefined && getOGATotalhours() >= getOGAPlanhours())">
-            <div *ngIf="(oASuggestedData.workHourPerUnitPrimary * getAverageCensus()) - getActualHour() < 0">
+            <div *ngIf="getActualHour() - (oASuggestedData.workHourPerUnitPrimary * getAverageCensus()) <= 0">
               <app-svg-icon name="check-circle" color="green" size="20"></app-svg-icon>
-              ({{-1 *((((oASuggestedData.workHourPerUnitPrimary  * getAverageCensus()) - getActualHour()).toFixed(1) | number))}})
+              ({{-1 *(((getActualHour() - (oASuggestedData.workHourPerUnitPrimary  * getAverageCensus())).toFixed(1) | number))}})
             </div>
-            <div *ngIf="(oASuggestedData.workHourPerUnitPrimary * getAverageCensus()) - getActualHour() >= 0">
+            <div *ngIf="getActualHour() - (oASuggestedData.workHourPerUnitPrimary * getAverageCensus()) > 0">
               <app-svg-icon name="x-circle" color="red" size="20"></app-svg-icon>
-              {{((((oASuggestedData.workHourPerUnitPrimary * getAverageCensus()) - getActualHour()).toFixed(1) | number))}}
+              {{(((getActualHour() - (oASuggestedData.workHourPerUnitPrimary * getAverageCensus())).toFixed(1) | number))}}
             </div>
           </div>
         </div>

@@ -281,9 +281,8 @@
                   <div *ngIf="row.totalAnnualHoursVariance < 0">({{-1 * roundOf(row.totalAnnualHoursVariance) | number}})</div>
                 </div>
                 <div class="hour-variance">
-                  <app-svg-icon *ngIf="row.totalAnnualHoursVariance == 0" name="circle" color="#333333" size="20"></app-svg-icon>
-                  <app-svg-icon *ngIf="row.totalAnnualHoursVariance < 0" name="x-circle" color="red"  size="20"></app-svg-icon>
-                  <app-svg-icon *ngIf="row.totalAnnualHoursVariance > 0" name="check-circle" color="green" size="20"></app-svg-icon>
+                  <app-svg-icon *ngIf="row.totalAnnualHoursVariance > 0" name="x-circle" color="red"  size="20"></app-svg-icon>
+                  <app-svg-icon *ngIf="row.totalAnnualHoursVariance <= 0" name="check-circle" color="green" size="20"></app-svg-icon>
                 </div>
               </div>
             </td>
