@@ -267,12 +267,12 @@ export class StaffManagerPlanComponent implements OnInit {
             this.scheduleService.getOGATotalhours() + this.staffmanagerScoreCard.nonVarTotalhours;
           if (this.staffmanagerScoreCard.oASuggestedData !== null || this.staffmanagerScoreCard.oASuggestedData !== undefined) {
             if(this.staffmanagerCalculator.getOGATotalhours() < this.staffmanagerCalculator.ogatotalhours){
-              this.staffVariance.dailyVarianceHours = ((this.staffmanagerScoreCard.oASuggestedData.workHourPerUnitPrimary *
-                this.scheduleService.getAverageCensus()  + this.staffmanagerScoreCard.getPlannedMinusDailyHours()) - ( this.staffmanagerCalculator.ogatotalhours - this.staffmanagerCalculator.getOGATotalhours() ) - this.staffmanagerScoreCard.getActualHour());
+              this.staffVariance.dailyVarianceHours = (this.staffmanagerScoreCard.getActualHour() + (this.staffmanagerCalculator.ogatotalhours - this.staffmanagerCalculator.getOGATotalhours()) - (this.staffmanagerScoreCard.oASuggestedData.workHourPerUnitPrimary *
+                this.scheduleService.getAverageCensus()  + this.staffmanagerScoreCard.getPlannedMinusDailyHours()));
             }
             else{
-              this.staffVariance.dailyVarianceHours = ((this.staffmanagerScoreCard.oASuggestedData.workHourPerUnitPrimary *
-                this.scheduleService.getAverageCensus()  + this.staffmanagerScoreCard.getPlannedMinusDailyHours()) - this.staffmanagerScoreCard.getActualHour());
+              this.staffVariance.dailyVarianceHours = (this.staffmanagerScoreCard.getActualHour() - (this.staffmanagerScoreCard.oASuggestedData.workHourPerUnitPrimary *
+                this.scheduleService.getAverageCensus()  + this.staffmanagerScoreCard.getPlannedMinusDailyHours()));
             }
           }
 
@@ -364,12 +364,12 @@ export class StaffManagerPlanComponent implements OnInit {
     tempStaffVariance.actualHours = this.staffmanagerCalculator.getActualTotalForAllVariablePosition() + this.scheduleService.getOGATotalhours() + this.staffmanagerCalculator.nonVarTotalhours;
     if (!Util.isNullOrUndefined(this.staffmanagerScoreCard.oASuggestedData)) {
       if(this.staffmanagerCalculator.getOGATotalhours() < this.staffmanagerCalculator.ogatotalhours){
-        tempStaffVariance.dailyVarianceHours = ((this.staffmanagerScoreCard.oASuggestedData.workHourPerUnitPrimary *
-          this.scheduleService.getAverageCensus()  + this.staffmanagerScoreCard.getPlannedMinusDailyHours()) - ( this.staffmanagerCalculator.ogatotalhours - this.staffmanagerCalculator.getOGATotalhours() ) - this.staffmanagerScoreCard.getActualHour());
+        tempStaffVariance.dailyVarianceHours = (this.staffmanagerScoreCard.getActualHour() + (this.staffmanagerCalculator.ogatotalhours - this.staffmanagerCalculator.getOGATotalhours()) - (this.staffmanagerScoreCard.oASuggestedData.workHourPerUnitPrimary *
+          this.scheduleService.getAverageCensus()  + this.staffmanagerScoreCard.getPlannedMinusDailyHours()));
       }
       else{
-        tempStaffVariance.dailyVarianceHours = ((this.staffmanagerScoreCard.oASuggestedData.workHourPerUnitPrimary *
-          this.scheduleService.getAverageCensus()  + this.staffmanagerScoreCard.getPlannedMinusDailyHours()) - this.staffmanagerScoreCard.getActualHour());
+        tempStaffVariance.dailyVarianceHours = (this.staffmanagerScoreCard.getActualHour() - (this.staffmanagerScoreCard.oASuggestedData.workHourPerUnitPrimary *
+          this.scheduleService.getAverageCensus()  + this.staffmanagerScoreCard.getPlannedMinusDailyHours()));
       }
 
     }
@@ -481,12 +481,12 @@ export class StaffManagerPlanComponent implements OnInit {
     tempStaffVariance.actualHours = this.staffmanagerCalculator.getActualTotalForAllVariablePosition() + this.scheduleService.getOGATotalhours() + this.staffmanagerScoreCard.nonVarTotalhours
     if (!Util.isNullOrUndefined(this.staffmanagerScoreCard.oASuggestedData)) {
       if(this.staffmanagerCalculator.getOGATotalhours() < this.staffmanagerCalculator.ogatotalhours){
-        tempStaffVariance.dailyVarianceHours = ((this.staffmanagerScoreCard.oASuggestedData.workHourPerUnitPrimary *
-          this.scheduleService.getAverageCensus() + this.staffmanagerScoreCard.getPlannedMinusDailyHours()) - ( this.staffmanagerCalculator.ogatotalhours - this.staffmanagerCalculator.getOGATotalhours() ) - this.staffmanagerScoreCard.getActualHour());
+        tempStaffVariance.dailyVarianceHours = (this.staffmanagerScoreCard.getActualHour() + (this.staffmanagerCalculator.ogatotalhours - this.staffmanagerCalculator.getOGATotalhours()) - (this.staffmanagerScoreCard.oASuggestedData.workHourPerUnitPrimary *
+          this.scheduleService.getAverageCensus() + this.staffmanagerScoreCard.getPlannedMinusDailyHours()));
       }
       else{
-        tempStaffVariance.dailyVarianceHours = ((this.staffmanagerScoreCard.oASuggestedData.workHourPerUnitPrimary *
-          this.scheduleService.getAverageCensus() + this.staffmanagerScoreCard.getPlannedMinusDailyHours()) - this.staffmanagerScoreCard.getActualHour());
+        tempStaffVariance.dailyVarianceHours = (this.staffmanagerScoreCard.getActualHour() - (this.staffmanagerScoreCard.oASuggestedData.workHourPerUnitPrimary *
+          this.scheduleService.getAverageCensus() + this.staffmanagerScoreCard.getPlannedMinusDailyHours()));
       }
 
     }
