@@ -115,7 +115,7 @@ stages:
 
 - stage: 'QA_DEPLOY'
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
-  dependsOn: ['DEV_DEPLOY']
+  dependsOn: ['WFMStaffMgrUIBuild','DEV_DEPLOY']
   jobs:
   - deployment: QA_DEPLOY
     environment: wfm-staff-scheduler-ui-qa
@@ -205,7 +205,7 @@ stages:
 
 - stage: 'PERF_DEPLOY'
   condition: or(eq(variables['isrc'], 'true'), eq(variables['isRelease'], 'true'))
-  dependsOn: ['UAT_DEPLOY']
+  dependsOn: ['WFMStaffMgrUIBuild','UAT_DEPLOY']
   jobs:
   - deployment: PERF_DEPLOY
     environment: wfm-staff-scheduler-ui-perf
@@ -250,7 +250,7 @@ stages:
 
 - stage: 'PROD_DEPLOY'
   condition: eq(variables['isRelease'], 'true')
-  dependsOn: ['UAT_DEPLOY']
+  dependsOn: ['WFMStaffMgrUIBuild','UAT_DEPLOY']
   jobs:
   - deployment: PROD_DEPLOY
     environment: wfm-staff-scheduler-ui-prod
