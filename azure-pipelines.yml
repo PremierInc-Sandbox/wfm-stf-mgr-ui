@@ -61,7 +61,7 @@ stages:
     - template: blackduck-scan.yml@sdlc_templates
       parameters:
         BLACKDUCK_API_TOKEN: $(BLACKDUCK_API_TOKEN)
-        BRANCH_SCAN_LIST: "develop"
+        BRANCH_SCAN_LIST: "main*,*develop*"
         DISTRIBUTION: "SAAS"
         PROJECT_NAME: "pcops:pco-staff-scheduler-ui"
         SOURCE_PATH: "$(Build.SourcesDirectory)"
@@ -115,7 +115,7 @@ stages:
 
 - stage: 'QA_DEPLOY'
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
-  dependsOn: ['WFMStaffMgrUIBuild']
+  dependsOn: ['WFMStaffMgrUIBuild','DEV_DEPLOY']
   jobs:
   - deployment: QA_DEPLOY
     environment: wfm-staff-scheduler-ui-qa
@@ -205,7 +205,7 @@ stages:
 
 - stage: 'PERF_DEPLOY'
   condition: or(eq(variables['isrc'], 'true'), eq(variables['isRelease'], 'true'))
-  dependsOn: ['WFMStaffMgrUIBuild']
+  dependsOn: ['WFMStaffMgrUIBuild','UAT_DEPLOY']
   jobs:
   - deployment: PERF_DEPLOY
     environment: wfm-staff-scheduler-ui-perf
@@ -250,7 +250,7 @@ stages:
 
 - stage: 'PROD_DEPLOY'
   condition: eq(variables['isRelease'], 'true')
-  dependsOn: ['WFMStaffMgrUIBuild']
+  dependsOn: ['WFMStaffMgrUIBuild','UAT_DEPLOY']
   jobs:
   - deployment: PROD_DEPLOY
     environment: wfm-staff-scheduler-ui-prod
