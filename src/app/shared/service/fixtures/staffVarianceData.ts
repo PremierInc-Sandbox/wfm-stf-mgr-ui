@@ -135,7 +135,7 @@ export function staffVarianceData() {
         plannedCount: 0,
       }],
     }],
-
+    activeManagerUser:'padmin,usr',
     selectedDate: '',
     recordDateForFuture: '',
     planAlreadyInUse: false,
