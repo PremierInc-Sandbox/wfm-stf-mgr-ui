@@ -17,6 +17,18 @@ resources:
       name: PremierInc/shield-ado-templates
       endpoint: PremierInc
 
+trigger:
+  branches:
+    exclude:
+      - main
+      - release/*
+
+pr:
+  branches:
+    exclude:
+      - main
+      - release/*
+
 stages:
 - stage: WFMStaffMgrUIBuild
   jobs:
