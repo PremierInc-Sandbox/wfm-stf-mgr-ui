@@ -8,7 +8,7 @@ plugins {
 
 ext{
   group 'com.premierinc.pcops.stfs'
-  version '2.15.0.0'
+  version '2.16.0-SNAPSHOT'
 
   registry = 'dtr.premierinc.com'
   image = "${registry}/pcops_org/pco-staff-scheduler-ui:${version}"
