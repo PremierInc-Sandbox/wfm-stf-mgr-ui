@@ -113,13 +113,10 @@ describe('SubmitPlanModelComponent', () => {
   });
   it('should validate total value and return true', () => {
     expect(component.isError).toBe(true);
-    // testPlanDetailsData[0].staffScheduleList[0].planShiftList[0].staffGridCensuses[0].censusIndex;
-    expect(component.errormsg).toContain('Please update staffing grid for variable positions for census levels - ' +
-      "0,2. in the ' ' Schedule tab.");
   });
   it('should validate total value and return false', () => {
     spyOn(component, 'getTotal').and.returnValue('1');
-    expect(component.validateTotalvalue()).toBe(true);
+    expect(component.validateTotalvalue()).toBe(false);
     expect(component.isError).toBe(true);
     // testPlanDetailsData[0].staffScheduleList[0].planShiftList[0].staffGridCensuses[0].censusIndex;
   });
@@ -211,5 +208,15 @@ describe('SubmitPlanModelComponent', () => {
   it('should variable position is included', () => {
     component.planDetails = testPlanDetailsData[0];
     expect(component.checkIsIncluded(1)).toBe(true);
+  });
+  it('should getSumofRowandCol and return false', () => {
+    spyOn(component, 'getSumofRowandCol').and.returnValue(true);
+    expect(component.validateTotalvalue()).toBe(false);
+    expect(component.isError).toBe(true);
+  });
+  it('should getSumofRowandCol and return true', () => {
+    spyOn(component, 'getSumofRowandCol').and.returnValue(false);
+    expect(component.validateTotalvalue()).toBe(true);
+    expect(component.isError).toBe(true);
   });
 });
