@@ -73,7 +73,7 @@ stages:
     - template: blackduck-scan.yml@sdlc_templates
       parameters:
         BLACKDUCK_API_TOKEN: $(BLACKDUCK_API_TOKEN)
-        BRANCH_SCAN_LIST: "main*,*develop*"
+        BRANCH_SCAN_LIST: "main*,*develop*,WFM*"
         DISTRIBUTION: "SAAS"
         PROJECT_NAME: "pcops:pco-staff-scheduler-ui"
         SOURCE_PATH: "$(Build.SourcesDirectory)"
