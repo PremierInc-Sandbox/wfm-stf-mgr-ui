@@ -132,7 +132,10 @@ export class VariablePosComponent implements OnInit {
 
         if (index !== -1) {
           this.plan.variableDepartmentPositions.splice(index, 1);
-          this.isMaxIndex = false;
+          let isDuplicateDescription = this.checkForDuplicatesInVariablePosition();
+          if(!isDuplicateDescription){
+            this.error = new CustomError();
+          }
         }
       }
       document.body.classList.remove('pr-modal-open');

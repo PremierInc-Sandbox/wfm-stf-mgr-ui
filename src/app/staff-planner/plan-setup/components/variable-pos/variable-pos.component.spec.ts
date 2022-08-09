@@ -117,7 +117,7 @@ describe('VariablePosComponent', () => {
     component.plan.variableDepartmentPositions[0] = variableDeptpositionDataTest[0];
     component.deleteRow(variableDeptpositionDataTest[0]);
     expect(component.plan.variableDepartmentPositions.indexOf(component.plan.variableDepartmentPositions[0])).toBe(-1);
-    expect(component.isMaxIndex).toBe(false);
+    expect(component.isMaxIndex).toBe(true);
   });
   it('should not delete a row because it was not found ', () => {
     component.deleteRow(variableDeptpositionDataTest[0]);
@@ -141,7 +141,7 @@ describe('VariablePosComponent', () => {
     component.plan.totalAnnualHours = 1;
     confirmation.and.returnValues(true, false);
     component.deleteRow(variableDeptpositionDataTest[0]);
-    expect(component.isMaxIndex).toBe(false);
+    expect(component.isMaxIndex).toBe(true);
   });
   it('should not delete a row when second confirm box is confirmed', () => {
     component.plan.variableDepartmentPositions[0] = variableDeptpositionDataTest[0];
