@@ -207,11 +207,6 @@ describe('VariablePosComponent', () => {
     component.plan.variableDepartmentPositions = variableDepartmentpositionDataKey();
     expect(component.checkForDuplicatesInVariablePosition()).toBe(true);
   });
-  it('Should checkDuplicates for Variable positions', function(){
-    component.plan = planDetainsDataTest[0];
-    component.plan.variableDepartmentPositions = variableDepartmentpositionDataKey();
-    expect(component.checkForDuplicatesInVariablePosition()).toBe(true);
-  });
 });
 
 
