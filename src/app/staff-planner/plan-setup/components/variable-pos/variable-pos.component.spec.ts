@@ -6,7 +6,10 @@ import {Router} from '@angular/router';
 import {PlanService} from '../../../../shared/service/plan-service';
 import {of} from 'rxjs';
 import {jobCategoryData} from '../../../../shared/service/fixtures/job-category-data';
-import {variableDepartmentpositionData} from '../../../../shared/service/fixtures/variable-dept-position-data';
+import {
+  variableDepartmentpositionData,
+  variableDepartmentpositionDataKey
+} from '../../../../shared/service/fixtures/variable-dept-position-data';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import {FormsModule} from '@angular/forms';
@@ -198,6 +201,16 @@ describe('VariablePosComponent', () => {
   it('Shouls checkDuplicate', function(){
     component.checkDuplicate(selection, variableDeptpositionDataTest[0]);
     expect(component.checkDuplicate).toHaveBeenCalled;
+  });
+  it('Should checkDuplicates for Variable positions', function(){
+    component.plan = planDetainsDataTest[0];
+    component.plan.variableDepartmentPositions = variableDepartmentpositionDataKey();
+    expect(component.checkForDuplicatesInVariablePosition()).toBe(true);
+  });
+  it('Should checkDuplicates for Variable positions', function(){
+    component.plan = planDetainsDataTest[0];
+    component.plan.variableDepartmentPositions = variableDepartmentpositionDataKey();
+    expect(component.checkForDuplicatesInVariablePosition()).toBe(true);
   });
 });
 
