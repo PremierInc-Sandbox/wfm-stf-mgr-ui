@@ -215,9 +215,8 @@ export class CensusComponent implements OnInit {
     this.objSavePlanParams.validationErrorMessages= [];
     for (let index = 0; index < 100; index++) {
       if (Util.isEmpty(this.plan.censusRange.occurrenceNumber[index])) {
-        this.censusToggle = true;
-        this.objSavePlanParams.isCensusApplied = true;
-        this.objSavePlanParams.validationErrorMessages.push('Enter an Occurrence value.');
+        this.objSavePlanParams.isSaveNextBtnSubmitForCensus = true;
+        this.showOccuranceMsg = true;
         return;
       }
     }
