@@ -308,7 +308,7 @@
                         class="form-control"
                         #effStartDate="ngModel"
                         [(ngModel)]="plan.effectiveStartDate"
-                        (ngModelChange)="updateDataFromOA(true)" (focusout)="numberOnlyForDate($event)" maxlength="10">
+                        (ngModelChange)="updateDataFromOA(true)" (focusout)="numberOnlyForDate($event)" onkeydown="return false" maxlength="10">
                   <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
                   <mat-datepicker #startPicker></mat-datepicker>
                 </mat-form-field>
@@ -322,7 +322,7 @@
                         autocomplete="off"
                         class="form-control"
                         #effEndDate="ngModel"
-                        [(ngModel)]="plan.effectiveEndDate" (ngModelChange)="numberOnlyForEndDate1()" (focusout)="numberOnlyForEndDate($event)" maxlength="10">
+                        [(ngModel)]="plan.effectiveEndDate" (ngModelChange)="numberOnlyForEndDate1()" (focusout)="numberOnlyForEndDate($event)" onkeydown="return false" maxlength="10">
                   <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
                   <mat-datepicker #endPicker></mat-datepicker>
                 </mat-form-field>
