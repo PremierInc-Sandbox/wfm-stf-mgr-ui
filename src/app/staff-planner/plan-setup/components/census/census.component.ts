@@ -212,6 +212,15 @@ export class CensusComponent implements OnInit {
     return j;
   }
   applyCensus(): void {
+    this.objSavePlanParams.validationErrorMessages= [];
+    for (let index = 0; index < 100; index++) {
+      if (Util.isEmpty(this.plan.censusRange.occurrenceNumber[index])) {
+        this.censusToggle = true;
+        this.objSavePlanParams.isCensusApplied = true;
+        this.objSavePlanParams.validationErrorMessages.push('Enter an Occurrence value.');
+        return;
+      }
+    }
     this.onCensusMin();
     this.onCensusMax();
     this.isApplyButtonClicked = true;
