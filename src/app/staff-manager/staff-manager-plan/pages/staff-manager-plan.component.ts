@@ -407,15 +407,18 @@ export class StaffManagerPlanComponent implements OnInit {
     if (actualCount === 0 && !this.futureFlag) {
       this.alertBox.openAlert('exit-dialog', '175px', '450px',
         'Staffing Calculator', 'Enter actual values.');
+      this.isSaveButtonClicked = false;
     } else if (this.commentsError) {
       const alertMessage = 'Entered Comments should be less than 500 Characters';
 
       this.alertBox.openAlert('exit-dialog', '180px', '450px',
         'Staffing Calculator', alertMessage);
+      this.isSaveButtonClicked = false;
 
     } else if (scheduledCount === 0 && this.futureFlag) {
       this.alertBox.openAlert('exit-dialog', '175px', '450px',
         'Staffing Calculator', 'Enter scheduled values.');
+      this.isSaveButtonClicked = false;
     } else {
       if (tempStaffVariance.staffVarianceSummaries[0].shiftDetailKey && !this.isUserExiting && tempStaffVariance.recordStatusKey !== 4) {
         const dialogRef = this.alertBox.openAlertWithReturn('exit-dialog', '190px', '550px',
