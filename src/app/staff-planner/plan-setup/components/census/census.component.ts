@@ -220,6 +220,14 @@ export class CensusComponent implements OnInit {
     return j;
   }
   applyCensus(): void {
+    this.objSavePlanParams.validationErrorMessages= [];
+    for (let index = 0; index < 100; index++) {
+      if (Util.isEmpty(this.plan.censusRange.occurrenceNumber[index])) {
+        this.objSavePlanParams.isSaveNextBtnSubmitForCensus = true;
+        this.showOccuranceMsg = true;
+        return;
+      }
+    }
     this.onCensusMin();
     this.onCensusMax();
     this.isApplyButtonClicked = true;

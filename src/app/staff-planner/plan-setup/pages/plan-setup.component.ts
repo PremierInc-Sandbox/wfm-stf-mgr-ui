@@ -1344,6 +1344,10 @@ export class PlanSetupComponent implements OnInit, DeactivationGuarded {
     return startDate || endDate;
   }
 
+  checkDate(date: boolean): boolean {
+    return date ;
+  }
+
   checkDateRange(endDate: Date, startDate: Date): boolean {
     return endDate < startDate;
   }
