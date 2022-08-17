@@ -402,7 +402,16 @@ export class StaffScheduleComponent implements OnInit {
   }
 
   addSchedule(): void {
-    this.checkScheduledays(this.objSchedule);
+    let errorExist = false;
+    if (this.planDetails.staffScheduleList.length > 0) {
+      this.planDetails.staffScheduleList.forEach(ele => {
+        if (!Util.isNullOrUndefined(ele.errormsg) && ele.errormsg.length > 0) {
+          errorExist = true;
+        }
+      });
+    }
+    if (!errorExist) {
+      this.checkScheduledays(this.objSchedule);
 
     if (this.validateExistingSchedules()) {
       return;
@@ -446,6 +455,7 @@ export class StaffScheduleComponent implements OnInit {
         this.planDetails.staffScheduleList.push(objStaffSchedule);
       }, 200);
 
+      }
     }
   }
 
