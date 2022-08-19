@@ -219,6 +219,7 @@
                             #planUtilizedAvgVolume="ngModel"
                             required
                             (keypress)="numberOnly($event)"
+                                 (paste)="pasteNumberAndDecimalOnly($event)"
                                   [maxlength]="7"
                             min="1"
                             max="50"
@@ -233,6 +234,7 @@
                             type="text"
                             name="planUtilizedAvgVolumeAnnaul"
                             (keypress)="numberOnly($event)"
+                                   (paste)="pasteNumberAndDecimalOnly($event)"
                             #planUtilizedAvgVolumeAnnual="ngModel"
                             [maxlength]="10"
                             min="1"
@@ -242,8 +244,7 @@
                             class="ng-plan-vol plan-utilized-volume"
                             pattern='[0]*[1-9][0-9]*[.]*[1-9]{0,2}$'
                             [(ngModel)]="utilizedAverageVolumeAnnual"
-                            (ngModelChange)="updatePlanUtilizedAvgVolumeAnnual(utilizedAverageVolumeAnnual)" />
-
+                            (ngModelChange)="updatePlanUtilizedAvgVolumeAnnual(utilizedAverageVolumeAnnual)"/>
                         </div>
                         <div class="plan-utilized-volume-detail">
                             <small><strong>{{oASuggestedData.keyVolume === null ? 'KeyVolume: N/A' : oASuggestedData.keyVolume}}</strong> (current: <strong> {{ plan.currentAverageVolume === null ? '-' : plan.currentAverageVolume | number: '.2-2' }}</strong> |
@@ -272,7 +273,7 @@
                       maxlength="8"
                             min="0"
                       [class.is-invalid]="targetBudget.invalid && targetBudget.touched"
-                      (change)="numberAndDecimalOnly($event)" (keypress)="numberOnly($event)" pattern='\d+(\.\d{1,9})?'
+                      (change)="numberAndDecimalOnly($event)"  (paste)="pasteNumberAndDecimalOnly($event)" (keypress)="numberOnly($event)" pattern='\d+(\.\d{1,9})?'
                             (keyup)="nullCheck(targetBudget.value)" class="ng-plan-vol plan-utilized-volume"></div>
                     <div *ngIf="systemFlag" class="plan-utilized-volume-detail extend">
                         <small><strong>WHpU - E&O</strong> (primary target: <strong>{{plan.primaryWHpU === null ? '-' : plan.primaryWHpU | number: '.4-4'}}</strong> |
@@ -329,7 +330,7 @@
                   <mat-error *ngIf="(checkDate(effEndDate.invalid))">Invalid Input</mat-error>
                 </mat-form-field>
               <div *ngIf="(checkSaveCondition() && checkDates(effStartDate.invalid,effEndDate.invalid))" class="invalid-feedback d-block ligher-font">
-                Enter both a start date and an end date.
+                Enter both start date and end date.
               </div>
               <div *ngIf="checkDateRange(effEndDate.value,effStartDate.value)" class="invalid-feedback d-block ligher-font">
                 Select an End Date that occurs after the Start Date.

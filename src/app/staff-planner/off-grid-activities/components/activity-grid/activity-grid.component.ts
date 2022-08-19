@@ -73,6 +73,16 @@ export class ActivityGridComponent implements OnInit {
 
   }
 
+  pasteNumberOnly(event:ClipboardEvent):boolean{
+    let shiftHours=event.clipboardData;
+    let a=shiftHours.getData("text");
+    if((!(/^[+]?\d*$/.test(a)))){
+      return false;
+    }else {
+      return true;
+    }
+  }
+
   activityTyped(lastIndex: number) {
     if (this.planDetails.offGridActivities.filter(val => val.name !== null && val.name.toUpperCase() ===
       this.Listoffgridactivity[lastIndex].name.toUpperCase()).length > 1) {

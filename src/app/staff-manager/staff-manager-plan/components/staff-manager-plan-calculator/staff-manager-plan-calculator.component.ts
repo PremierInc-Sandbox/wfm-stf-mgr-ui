@@ -364,6 +364,17 @@ export class StaffManagerPlanCalculatorComponent implements OnInit {
       }
     }
   }
+
+  pasteNumberAndDecimalOnly(event:ClipboardEvent):boolean{
+    let OGAHours=event.clipboardData;
+    let a=OGAHours.getData("text");
+    if((!(/^[+]?\d*\.?\d*$/.test(a)))){
+      return false;
+    }else {
+      return true;
+    }
+  }
+
   numberOnlyforSchedCount(event, i: number, summaryIndex: number): boolean {
     const charCode = (event.which) ? event.which : event.keyCode;
     if (charCode > 31 && (charCode < 48 && charCode !== 46 || charCode > 57)) {

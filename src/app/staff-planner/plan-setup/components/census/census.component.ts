@@ -162,6 +162,16 @@ export class CensusComponent implements OnInit {
     return true;
   }
 
+  pasteNumberOnly(event:ClipboardEvent):boolean{
+    let Occurrence=event.clipboardData;
+    let a=Occurrence.getData("text");
+    if((!(/^[+]?\d*$/.test(a)))){
+      return false;
+    }else {
+      return true;
+    }
+  }
+
   ngOnInit() {
     if(this.plan.censusRange.maximumCensus === 0){
       this.plan.censusRange.maximumCensus = 2;
@@ -548,7 +558,7 @@ export class CensusComponent implements OnInit {
       }
     }
   }
-  
+
   onPasteMinCensus(event){
     let clipboardData = event.clipboardData;
     let pastedText = clipboardData.getData('text');
@@ -562,7 +572,7 @@ export class CensusComponent implements OnInit {
     let trimmedText = pastedText.replace(/[^0-9]/g, '');
     this.plan.censusRange.maximumCensus = trimmedText;
   }
-  
+
 }
 export class Occurrence {
   census: number;

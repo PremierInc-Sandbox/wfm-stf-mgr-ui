@@ -31,10 +31,11 @@
           <input [disabled]="plan.planCompleted "  type="text"  [(ngModel)]="staff.shiftHours"
              (keypress)="numberOnlyCheck($event);"
              (change)="numberOnly($event,i);"
+                 (paste)="pasteNumberAndDecimalOnly($event)"
               [maxlength]="5"
               class="shift-hours-input"
               (ngModelChange)="checkEmpty(plan.nonVariableDepartmentPositions)"
-             >
+              >
         </td>
         <td class='week-days' >
           <div class="form-check check-weekdays" *ngFor="let d of staff.weekDays" id="weekdays" >

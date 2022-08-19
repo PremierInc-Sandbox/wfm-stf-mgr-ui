@@ -45,10 +45,10 @@
 
                 </td>
                 <td  class="trow-vertical-center">
-                    <input type="text" [disabled]="planDetails.planCompleted || planDetails.planBeingUpdated" (keypress)="numberOnly($event)" maxlength="6" class="input-numberbox" [(ngModel)]="activity.shiftHours" />
+                    <input type="text" [disabled]="planDetails.planCompleted || planDetails.planBeingUpdated" (keypress)="numberOnly($event)" (paste)="pasteNumberOnly($event)" maxlength="6" class="input-numberbox" [(ngModel)]="activity.shiftHours" />
                 </td >
                 <td *ngFor="let vardepat of activity.variableDepartmentList" class="input-number-mgmt">
-                    <input type="text" [disabled]="planDetails.planCompleted || planDetails.planBeingUpdated" (keypress)="numberOnly($event)" maxlength="3" class="input-numberbox1" [(ngModel)]="vardepat.staffCount"/>
+                    <input type="text" [disabled]="planDetails.planCompleted || planDetails.planBeingUpdated" (keypress)="numberOnly($event)" (paste)="pasteNumberOnly($event)" maxlength="3" class="input-numberbox1" [(ngModel)]="vardepat.staffCount"/>
                 </td>
 
                 <td class="trow-vertical-center">
