@@ -22,7 +22,7 @@
             <input type="text" [tabindex]="getTabIndex(i)" [disabled]="staffVariance.recordStatusKey===4 || staffVariance.planAlreadyInUse"
                    name="{{'census-'+i}}" appAutofocus id="{{'census-'+i}}" (keypress)="numberOnlyForCensus($event)"
                    class="actual-text-box-m width-census input-cancel"
-                   (keyup)="censusDialog(i,staffSummary.censusValue)" [value]=staffSummary.censusValue
+                   (keyup)="censusDialog(i,staffSummary.censusValue)" (paste)="pasteNumberOnlyForCensus($event)" [value]=staffSummary.censusValue
                    [(ngModel)]=staffSummary.censusValue maxlength="2" data-clear-btn="true">
             <button *ngIf="staffSummary.censusValue&&staffVariance.recordStatusKey!==4" [disabled]="staffVariance.planAlreadyInUse" (click)="clear(i)" class="button-cancel-margin">x</button>
           </div>
