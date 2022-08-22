@@ -14,7 +14,6 @@ import {UserService} from "../../../../shared/service/user.service";
 import {OASuggestedData} from "../../../../shared/domain/OASuggestedData";
 import {Util} from "../../../../shared/util/util";
 
-
 @Component({
   selector: 'app-staff-manager-plan-calculator',
   templateUrl: './staff-manager-plan-calculator.component.html',
@@ -325,7 +324,6 @@ export class StaffManagerPlanCalculatorComponent implements OnInit {
       return false;
     }
   }
-
   getSelectedVal() {
     let selectedValue = '';
     if (!Util.isNullOrUndefined(event)) {

@@ -29,7 +29,6 @@ export class AlertBox {
   oASuggestedData = new OASuggestedData();
   oaService: OAService;
   objScheudleErrors: ScheudleErrors = new ScheudleErrors();
-
   constructor(private dialog: MatDialog) {
   }
 
@@ -41,15 +40,14 @@ export class AlertBox {
     });
 
   }
-
-  openAlertWithReturnNoConfirm(panelClass: string, height: string, width: string, headerText: string, alertMessage: string) {
-    const dialogConfig = this.makeDialogConfig(panelClass, height, width, headerText, alertMessage, false);
-    const dialogRef = this.dialog.open(PromptDialogComponent, dialogConfig);
-    return dialogRef;
-    dialogRef.afterClosed().subscribe(result => {
-      document.body.classList.remove('pr-modal-open');
-    });
-  }
+    openAlertWithReturnNoConfirm(panelClass: string, height: string, width: string, headerText: string, alertMessage: string) {
+        const dialogConfig = this.makeDialogConfig(panelClass, height, width, headerText, alertMessage, false);
+        const dialogRef = this.dialog.open(PromptDialogComponent, dialogConfig);
+        return dialogRef;
+        dialogRef.afterClosed().subscribe(result => {
+            document.body.classList.remove('pr-modal-open');
+        });
+    }
 
   openAlertOnSaveConfirm(panelClass: string, height: string, width: string, headerText: string, alertMessage: string) {
     const dialogConfig = this.makeDialogConfig(panelClass, height, width, headerText, alertMessage, false);
@@ -65,7 +63,6 @@ export class AlertBox {
     const dialogRef = this.dialog.open(PromptDialogComponent, dialogConfig);
     return dialogRef;
   }
-
   openAlertWithSaveAndReturn(panelClass: string, height: string, width: string, headerText: string, alertMessage: string) {
     const dialogConfig = this.makeDialogConfig(panelClass, height, width, headerText, alertMessage, true);
     const dialogRef = this.dialog.open(PromptDialogSaveComponent, dialogConfig);
@@ -80,7 +77,7 @@ export class AlertBox {
     const actvPlnEndtDt = moment(planData.effectiveEndDate, 'YYYY-MM-DD');
 
     if (((effStartDate.isSameOrAfter(actvPlnStrtDt) && effStartDate.isSameOrBefore(actvPlnEndtDt)) ||
-        (effEndDate.isSameOrAfter(actvPlnStrtDt) && effEndDate.isSameOrBefore(actvPlnEndtDt))) ||
+      (effEndDate.isSameOrAfter(actvPlnStrtDt) && effEndDate.isSameOrBefore(actvPlnEndtDt))) ||
       ((actvPlnStrtDt.isSameOrAfter(effStartDate) && actvPlnStrtDt.isSameOrBefore(effEndDate)) ||
         (actvPlnEndtDt.isSameOrAfter(effStartDate) && actvPlnEndtDt.isSameOrBefore(effEndDate)))) {
       isPlanActive = true;
@@ -120,7 +117,7 @@ export class AlertBox {
 
         }
         this.alertMessage = this.alertMessage + '\n' +
-          'Click Yes if you are sure you want to continue.\n';
+        'Click Yes if you are sure you want to continue.\n';
         this.width = '600px';
         this.height = '190px';
       }
@@ -138,7 +135,7 @@ export class AlertBox {
     return objshifttime;
   }
 
-  isTotalHoursExceed(planShiftList) {
+  isTotalHoursExceed(planShiftList){
     const earlierShift = [], latestShift = [];
     planShiftList.forEach(shift => {
       const time = parseFloat(shift.startTime.replace(':', '.'));
@@ -147,15 +144,11 @@ export class AlertBox {
     });
     const startTime = Math.min(...earlierShift);
     const endTime = Math.max(...latestShift);
-    if ((endTime - startTime) > 24) {
-      return true
-    } else {
-      return false
-    }
-    ;
+    if((endTime - startTime) > 24){ return true }
+    else{ return false};
   }
 
-  getMaxShiftIndex(planShiftList) {
+  getMaxShiftIndex(planShiftList){
     let latestShiftList = [], earlierShiftList = [], shiftIndex = [];
     planShiftList.map(shift => {
       let start = parseFloat(shift.startTime.replace(':', '.'));
@@ -163,8 +156,8 @@ export class AlertBox {
       latestShiftList.push(start + shift.hours);
     });
     const startTime = Math.min(...earlierShiftList);
-    latestShiftList.map((endTime, index) => {
-      if ((endTime - startTime) > 24) {
+    latestShiftList.map((endTime, index) =>{
+      if((endTime - startTime) > 24){
         shiftIndex.push(index);
       }
     });
@@ -172,64 +165,64 @@ export class AlertBox {
     //return shiftList.indexOf(Math.max(...shiftList));
   }
 
-  isTimeOverlaps(tempShift: shift, tempshifttime: shifttime, objshifttime: shifttime): boolean {
+  isTimeOverlaps( tempShift: shift , tempshifttime: shifttime, objshifttime: shifttime): boolean {
     let isShifttimeOverlaps = false;
 
     if (tempshifttime && objshifttime) {
-      const punchCard: boolean[] = [];
+    const punchCard: boolean[] = [];
 
-      // initiate the array
-      for (let i = 0; i < 24; i++) {
-        punchCard.push(false);
+    // initiate the array
+    for (let i = 0; i < 24; i++) {
+      punchCard.push(false);
+    }
+    // fill the punchCard for existing shift
+    let starthour = 0;
+    let idx = 0
+    let hours: number = objshifttime.endTime.hours - objshifttime.startTime.hours;
+    while (starthour <= hours) {
+      let index: number = objshifttime.startTime.hours + starthour;
+      if (index > 23) {
+        index = index - 24;
+        idx = index;
       }
-      // fill the punchCard for existing shift
-      let starthour = 0;
-      let idx = 0
-      let hours: number = objshifttime.endTime.hours - objshifttime.startTime.hours;
-      while (starthour <= hours) {
-        let index: number = objshifttime.startTime.hours + starthour;
-        if (index > 23) {
-          index = index - 24;
-          idx = index;
-        }
-        punchCard[index] = true;
-        starthour++;
-      }
-      if (hours === 23) {
-        punchCard[idx] = false;
-      }
+      punchCard[index] = true;
+      starthour++;
+    }
+    if(hours === 23){
+      punchCard[idx] = false;
+    }
 
-      // fill the puch card for another shift to identify the overlap
-      starthour = 0;
-      hours = tempshifttime.endTime.hours - tempshifttime.startTime.hours;
-      while (starthour <= hours) {
-        let index: number = tempshifttime.startTime.hours + starthour;
-        // if 24 hours crossed reset hours
-        if (index > 23) {
-          index = index - 24;
-        }
-        if (!punchCard[index]) {
-          punchCard[index] = true;
+    // fill the puch card for another shift to identify the overlap
+    starthour = 0;
+    hours = tempshifttime.endTime.hours - tempshifttime.startTime.hours;
+    while (starthour <= hours) {
+      let index: number = tempshifttime.startTime.hours + starthour;
+      // if 24 hours crossed reset hours
+      if (index > 23) {
+        index = index - 24;
+      }
+      if (!punchCard[index]) {
+      punchCard[index] = true;
+      } else {
+         let newIndex = index + 1 >= 24 ? (index+1) - 24 :(index+1);
+        if (punchCard[newIndex] && starthour + 1 <= hours) {
+          isShifttimeOverlaps = true;
         } else {
-          let newIndex = index + 1 >= 24 ? (index + 1) - 24 : (index + 1);
-          if (punchCard[newIndex] && starthour + 1 <= hours) {
-            isShifttimeOverlaps = true;
-          } else {
-            if (objshifttime.startTime.hours < tempshifttime.startTime.hours) {
-              if (tempshifttime.endTime.mins < objshifttime.endTime.mins) {
-                isShifttimeOverlaps = true;
-              }
-            }
-            if (objshifttime.startTime.hours > tempshifttime.startTime.hours) {
-              if (tempshifttime.endTime.mins > objshifttime.endTime.mins) {
-                isShifttimeOverlaps = true;
-              }
-            }
+          if (objshifttime.startTime.hours < tempshifttime.startTime.hours) {
+          if (tempshifttime.endTime.mins < objshifttime.endTime.mins) {
+          isShifttimeOverlaps = true;
+          }
+          }
+          if (objshifttime.startTime.hours > tempshifttime.startTime.hours) {
+          if (tempshifttime.endTime.mins > objshifttime.endTime.mins) {
+          isShifttimeOverlaps = true;
+          }
           }
         }
-        starthour++;
       }
+      starthour++;
     }
+  }
     return isShifttimeOverlaps;
   }
 
@@ -275,13 +268,13 @@ export class AlertBox {
       localStorage.setItem('plankey', planDetails.key);
       switch (selectedIndex) {
         case 0:
-          // this.router.navigate(['/plan-setup']);
+         // this.router.navigate(['/plan-setup']);
           break;
         case 1:
           // this.router.navigate(['/off-grid-activities']);
           break;
         case 2:
-          // this.router.navigate(['/staff-schedule']);
+         // this.router.navigate(['/staff-schedule']);
           break;
         case 3:
           // this.router.navigate(['/staffing-grid'], {queryParams: {plankey: this.planDetails.key}});
@@ -312,15 +305,15 @@ export class AlertBox {
     return dialogConfig;
   }
 
-  checkForLandingPage(nextUrl: string, plannerFlag: boolean) {
+  checkForLandingPage(nextUrl: string,plannerFlag: boolean) {
 
     let removeAttribute = true;
-    if (!Util.isNullOrUndefined(nextUrl)) {
+    if(!Util.isNullOrUndefined(nextUrl)){
       let homePage = nextUrl.includes('plan-list') || nextUrl.includes('home') || nextUrl.includes('staff-manager')
-      if (plannerFlag) {
+      if(plannerFlag){
         homePage = homePage || nextUrl.includes('plan-manager');
       }
-      removeAttribute = homePage ? true : false;
+      removeAttribute = homePage?true:false;
     }
     return removeAttribute;
   }
@@ -356,10 +349,10 @@ export class AlertBox {
   getPlannedhoursForCensus(staffVariance: StaffVariance, staffSummaryIndex: number, censusIndex: number, varPosIndex: number, minCensus: number, maxCensus: number): any {
     const staffSummary: StaffVarianceSummary = staffVariance.staffVarianceSummaries[staffSummaryIndex];
     if (staffSummary) {
-      if (!Util.isNullOrUndefined(staffSummary.plannedShifts) && staffSummary.plannedShifts.length > 0) {
-        let total: number = 0;
+      if (!Util.isNullOrUndefined(staffSummary.plannedShifts) && staffSummary.plannedShifts.length>0) {
+        let total :number = 0;
         let isCensusIdentified = false;
-        for (const shiftMins of staffSummary.plannedShifts) {
+        for (const shiftMins  of staffSummary.plannedShifts) {
           let minutes: number;
           minutes = Number(shiftMins.objshift.startTime.split(':')[1]);
           if (shiftMins.objshift.staffGridCensuses) {
@@ -370,9 +363,9 @@ export class AlertBox {
                 isCensusIdentified = true;
                 if (!Util.isNullOrUndefined(census.staffToPatientList[varPosIndex]) && !Util.isNullOrUndefined(census.staffToPatientList[varPosIndex].staffCount)) {
                   if (shiftMins.timestart) {
-                    total += ((60 - minutes) / 60) * census.staffToPatientList[varPosIndex].staffCount;
+                    total += ((60 - minutes) / 60) *  census.staffToPatientList[varPosIndex].staffCount;
                   } else if (shiftMins.timeEnds) {
-                    total += (minutes / 60) * census.staffToPatientList[varPosIndex].staffCount;
+                    total += (minutes / 60) *  census.staffToPatientList[varPosIndex].staffCount;
                   } else {
                     total += census.staffToPatientList[varPosIndex].staffCount;
                   }
@@ -411,7 +404,7 @@ export class AlertBox {
           staffVarianceDetail.plannedCount = null;
         }
         return '-';
-      }
+    }
     }
   }
 
@@ -461,130 +454,129 @@ export class AlertBox {
   }
 
   handleWindowPerformance(performance: Performance, planService: PlanService,
-                          productHelp: ProductHelp, pageRedirectionService: PageRedirectionService, userService: UserService): void {
-    if (performance) {
-      console.info('window.performance works fine on this browser');
-      console.info(performance.navigation.type);
-      if (performance.navigation.type == performance.navigation.TYPE_RELOAD) {
-        console.info('This page is reloaded');
-      } else {
-        console.info('This page is not reloaded');
-        if (Util.isNullOrUndefined(sessionStorage.getItem('reload'))) {
-          sessionStorage.setItem('reload', 'false');
-          return;
-        } else {
-          sessionStorage.removeItem('reload');
+                            productHelp: ProductHelp, pageRedirectionService: PageRedirectionService, userService: UserService): void {
+        if (performance) {
+            console.info('window.performance works fine on this browser');
+            console.info(performance.navigation.type);
+            if (performance.navigation.type == performance.navigation.TYPE_RELOAD) {
+                console.info('This page is reloaded');
+            } else {
+                console.info('This page is not reloaded');
+                if (Util.isNullOrUndefined(sessionStorage.getItem('reload'))) {
+                    sessionStorage.setItem('reload', 'false');
+                    return;
+                } else {
+                    sessionStorage.removeItem('reload');
+                }
+                userService.logout().subscribe(() => {
+                    Log.info('User logged out successfully.');
+                    planService.getRedirectUrl().subscribe(data => {
+                        productHelp.logoutUrl = data.logoutUrl;
+                        productHelp.environmentName = data.environmentName;
+                        pageRedirectionService.redirectToExternalPage(productHelp.logoutUrl);
+                    });
+                }, error => {
+                    Log.error('Error logging user out.');
+                    pageRedirectionService.redirectToLogout();
+                }, () => {
+                });
+            }
         }
-        userService.logout().subscribe(() => {
-          Log.info('User logged out successfully.');
-          planService.getRedirectUrl().subscribe(data => {
-            productHelp.logoutUrl = data.logoutUrl;
-            productHelp.environmentName = data.environmentName;
-            pageRedirectionService.redirectToExternalPage(productHelp.logoutUrl);
-          });
-        }, error => {
-          Log.error('Error logging user out.');
-          pageRedirectionService.redirectToLogout();
-        }, () => {
-        });
-      }
     }
-  }
 
-  filter(value: string, corpDetailsCodeList: Array<string>, corpDetails: CorpDetails[]): CorpDetails[] {
-    for (const corpList of corpDetails) {
-      const list = corpList.code + '-' + corpList.name;
-      corpDetailsCodeList.push(list);
+    filter(value: string, corpDetailsCodeList: Array<string>, corpDetails: CorpDetails[]): CorpDetails[] {
+        for (const corpList of corpDetails) {
+            const list = corpList.code + '-' + corpList.name;
+            corpDetailsCodeList.push(list);
+        }
+        const filterValue = value.toLowerCase();
+        for (const corp of corpDetailsCodeList) {
+            if (corp.toLowerCase() === filterValue) {
+                return corpDetails;
+            }
+        }
+        return corpDetails.filter(clients => clients.name.toLowerCase().includes(filterValue)
+            || clients.code.toLowerCase().includes(filterValue));
     }
-    const filterValue = value.toLowerCase();
-    for (const corp of corpDetailsCodeList) {
-      if (corp.toLowerCase() === filterValue) {
-        return corpDetails;
-      }
+
+    filterEnt(value: string, entityDetails: EntityDetails[], entDetailsCodeList: Array<string>): EntityDetails[] {
+        for (const entList of entityDetails) {
+            const list = entList.code + '-' + entList.name;
+            entDetailsCodeList.push(list);
+        }
+        const filterValue = value.toLowerCase();
+        for (const ent of entDetailsCodeList) {
+            if (ent.toLowerCase() === filterValue) {
+                return entityDetails;
+            }
+        }
+        return entityDetails.filter(clients => clients.name.toLowerCase().includes(filterValue)
+            || clients.code.toLowerCase().includes(filterValue));
     }
-    return corpDetails.filter(clients => clients.name.toLowerCase().includes(filterValue)
-      || clients.code.toLowerCase().includes(filterValue));
-  }
 
-  filterEnt(value: string, entityDetails: EntityDetails[], entDetailsCodeList: Array<string>): EntityDetails[] {
-    for (const entList of entityDetails) {
-      const list = entList.code + '-' + entList.name;
-      entDetailsCodeList.push(list);
+    getUpdatedDate(updated: Date): string {
+        const updatedDate = new Date(updated);
+        let day = updatedDate.getDate().toString();
+        let month = (updatedDate.getMonth() + 1).toString();
+        const year = updatedDate.getFullYear().toString();
+        if (parseInt(day, 10) < 10) {
+            day = '0' + day;
+        }
+        if (parseInt(month, 10) < 10) {
+            month = '0' + month;
+        }
+        const today = month + '/' + day + '/' + +year;
+        return today;
     }
-    const filterValue = value.toLowerCase();
-    for (const ent of entDetailsCodeList) {
-      if (ent.toLowerCase() === filterValue) {
-        return entityDetails;
-      }
+
+    getUpdatedTime(updated: Date): string {
+        const updatedTime = new Date(updated);
+        let hours = updatedTime.getHours();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours > 12 ? hours - 12 : hours;
+        let hour = hours.toString();
+        let minutes = updatedTime.getMinutes().toString();
+        let seconds = updatedTime.getSeconds().toString();
+        hour = parseInt(hour, 10) > 9 ? hour : '0' + hour;
+        minutes = parseInt(minutes, 10) > 9 ? minutes : '0' + minutes;
+        seconds = parseInt(seconds, 10) > 9 ? seconds : '0' + seconds;
+        const time = hour + ':' + minutes + ':' + seconds + '' + ampm;
+        return time;
     }
-    return entityDetails.filter(clients => clients.name.toLowerCase().includes(filterValue)
-      || clients.code.toLowerCase().includes(filterValue));
-  }
 
-  getUpdatedDate(updated: Date): string {
-    const updatedDate = new Date(updated);
-    let day = updatedDate.getDate().toString();
-    let month = (updatedDate.getMonth() + 1).toString();
-    const year = updatedDate.getFullYear().toString();
-    if (parseInt(day, 10) < 10) {
-      day = '0' + day;
+    isNullOrUndefined(value){
+      return (value === null || value === undefined);
     }
-    if (parseInt(month, 10) < 10) {
-      month = '0' + month;
+
+    updateCorporationModel(corpDetails: CorpDetails[]): string {
+        let corpModel: string;
+        if (sessionStorage.getItem('corpName') != null
+            && !Util.isNullOrUndefined(corpDetails.find(entity => entity.code + '-' + entity.name === (sessionStorage.getItem('corpName'))))) {
+            corpModel = sessionStorage.getItem('corpName');
+        } else {
+            corpModel = corpDetails[0].code + '-' + corpDetails[0].name;
+        }
+        return corpModel;
     }
-    const today = month + '/' + day + '/' + +year;
-    return today;
-  }
 
-  getUpdatedTime(updated: Date): string {
-    const updatedTime = new Date(updated);
-    let hours = updatedTime.getHours();
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours > 12 ? hours - 12 : hours;
-    let hour = hours.toString();
-    let minutes = updatedTime.getMinutes().toString();
-    let seconds = updatedTime.getSeconds().toString();
-    hour = parseInt(hour, 10) > 9 ? hour : '0' + hour;
-    minutes = parseInt(minutes, 10) > 9 ? minutes : '0' + minutes;
-    seconds = parseInt(seconds, 10) > 9 ? seconds : '0' + seconds;
-    const time = hour + ':' + minutes + ':' + seconds + '' + ampm;
-    return time;
-  }
-
-  isNullOrUndefined(value) {
-    return (value === null || value === undefined);
-  }
-
-  updateCorporationModel(corpDetails: CorpDetails[]): string {
-    let corpModel: string;
-    if (sessionStorage.getItem('corpName') != null
-      && !Util.isNullOrUndefined(corpDetails.find(entity => entity.code + '-' + entity.name === (sessionStorage.getItem('corpName'))))) {
-      corpModel = sessionStorage.getItem('corpName');
-    } else {
-      corpModel = corpDetails[0].code + '-' + corpDetails[0].name;
+    public getTimeZoneFlag(): boolean {
+        const timezone = moment().tz('America/New_York');
+        const hours = timezone.format('hh');
+        const ampm = timezone.format('a');
+        let timeZoneFlag = true;
+        if (timezone.hours() === 6 && timezone.minutes() === 0 && ampm.indexOf('am') >= 0) {
+            timeZoneFlag = true;
+        } else {
+            timeZoneFlag = false;
+        }
+        return timeZoneFlag;
     }
-    return corpModel;
-  }
 
-  public getTimeZoneFlag(): boolean {
-    const timezone = moment().tz('America/New_York');
-    const hours = timezone.format('hh');
-    const ampm = timezone.format('a');
-    let timeZoneFlag = true;
-    if (timezone.hours() === 6 && timezone.minutes() === 0 && ampm.indexOf('am') >= 0) {
-      timeZoneFlag = true;
-    } else {
-      timeZoneFlag = false;
+    public triggerTimeZoneFlag(): void {
+        setInterval(() => {
+            this.getTimeZoneFlag();
+        }, 60000);
     }
-    return timeZoneFlag;
-  }
-
-  public triggerTimeZoneFlag(): void {
-    setInterval(() => {
-      this.getTimeZoneFlag();
-    }, 60000);
-  }
-
   validateshift(objnewShift: shift): void {
     // check name
     if (objnewShift.name === '') {
