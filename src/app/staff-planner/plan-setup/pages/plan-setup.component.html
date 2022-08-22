@@ -219,7 +219,7 @@
                             #planUtilizedAvgVolume="ngModel"
                             required
                             (keypress)="numberOnly($event)"
-                                 (paste)="pasteNumberAndDecimalOnly($event)"
+                                 (paste)=alertBox.pasteNumberAndDecimalOnly($event)
                                   [maxlength]="7"
                             min="1"
                             max="50"
@@ -234,7 +234,7 @@
                             type="text"
                             name="planUtilizedAvgVolumeAnnaul"
                             (keypress)="numberOnly($event)"
-                                   (paste)="pasteNumberAndDecimalOnly($event)"
+                                   (paste)=alertBox.pasteNumberAndDecimalOnly($event)
                             #planUtilizedAvgVolumeAnnual="ngModel"
                             [maxlength]="10"
                             min="1"
@@ -273,7 +273,7 @@
                       maxlength="8"
                             min="0"
                       [class.is-invalid]="targetBudget.invalid && targetBudget.touched"
-                      (change)="numberAndDecimalOnly($event)"  (paste)="pasteNumberAndDecimalOnly($event)" (keypress)="numberOnly($event)" pattern='\d+(\.\d{1,9})?'
+                      (change)="numberAndDecimalOnly($event)"  (paste)=alertBox.pasteNumberAndDecimalOnly($event) (keypress)="numberOnly($event)" pattern='\d+(\.\d{1,9})?'
                             (keyup)="nullCheck(targetBudget.value)" class="ng-plan-vol plan-utilized-volume"></div>
                     <div *ngIf="systemFlag" class="plan-utilized-volume-detail extend">
                         <small><strong>WHpU - E&O</strong> (primary target: <strong>{{plan.primaryWHpU === null ? '-' : plan.primaryWHpU | number: '.4-4'}}</strong> |

@@ -514,17 +514,6 @@ export class PlanSetupComponent implements OnInit, DeactivationGuarded {
     }
   }
 
-  pasteNumberAndDecimalOnly(event:ClipboardEvent):boolean{
-    let budgetDaily=event.clipboardData;
-    let a=budgetDaily.getData("text");
-    if((!(/^[+]?\d*\.?\d*$/.test(a)))){
-      return false;
-    }else {
-      return true;
-    }
-  }
-
-
   numberAndDecimalOnly(event): boolean {
     if (Util.isNullOrUndefined(event)) {
       return false;

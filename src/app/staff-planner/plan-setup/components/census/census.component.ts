@@ -162,16 +162,6 @@ export class CensusComponent implements OnInit {
     return true;
   }
 
-  pasteNumberOnly(event:ClipboardEvent):boolean{
-    let Occurrence=event.clipboardData;
-    let a=Occurrence.getData("text");
-    if((!(/^[+]?\d*$/.test(a)))){
-      return false;
-    }else {
-      return true;
-    }
-  }
-
   ngOnInit() {
     if(this.plan.censusRange.maximumCensus === 0){
       this.plan.censusRange.maximumCensus = 2;

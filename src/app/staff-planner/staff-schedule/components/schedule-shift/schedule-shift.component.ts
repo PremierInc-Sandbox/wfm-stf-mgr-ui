@@ -344,16 +344,6 @@ export class ScheduleShiftComponent implements OnInit, OnChanges {
     return true;
   }
 
-  pasteNumberOnly(event:ClipboardEvent):boolean{
-    let shiftHours=event.clipboardData;
-    let a=shiftHours.getData("text");
-    if((!(/^[+]?\d*$/.test(a)))){
-      return false;
-    }else {
-      return true;
-    }
-  }
-
   numberOnlyForTime(event): boolean {
     const charCode = (event.which) ? event.which : event.keyCode;
     if (charCode > 31 && (charCode < 48 || charCode > 57)) {

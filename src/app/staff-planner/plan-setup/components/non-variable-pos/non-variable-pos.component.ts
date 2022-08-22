@@ -139,16 +139,6 @@ export class NonVariablePosComponent implements OnInit {
       }
   }
 
-  pasteNumberAndDecimalOnly(event:ClipboardEvent):boolean{
-    let shiftHours=event.clipboardData;
-    let a=shiftHours.getData("text");
-    if((!(/^[+]?\d*\.?\d*$/.test(a)))){
-      return false;
-    }else {
-      return true;
-    }
-  }
-
   numberOnly(event, summaryIndex: number): boolean {
     this.isShowError = false;
     const charCode = (event.which) ? event.which : event.keyCode;

@@ -31,7 +31,7 @@
           <input [disabled]="plan.planCompleted "  type="text"  [(ngModel)]="staff.shiftHours"
              (keypress)="numberOnlyCheck($event);"
              (change)="numberOnly($event,i);"
-                 (paste)="pasteNumberAndDecimalOnly($event)"
+                 (paste)=alertBox.pasteNumberAndDecimalOnly($event)
               [maxlength]="5"
               class="shift-hours-input"
               (ngModelChange)="checkEmpty(plan.nonVariableDepartmentPositions)"
