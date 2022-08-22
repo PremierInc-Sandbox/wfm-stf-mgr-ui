@@ -625,4 +625,13 @@ export class AlertBox {
       return false;
     }
   }
+  pasteNumberOnlyForCensus(event: ClipboardEvent): boolean {
+    let census = event.clipboardData;
+    let a = census.getData("text");
+    if ((!(/^[+]?\d*$/.test(a)))) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 }
