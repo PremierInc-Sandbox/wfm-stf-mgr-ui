@@ -68,6 +68,10 @@ export class CensusComponent implements OnInit {
   }
 
   validateMinLength(event): boolean {
+    const charCode = (event.which) ? event.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      return false;
+    }
     this.objSavePlanParams.isSaveNextBtnSubmitForCensus = false;
     if (this.plan.censusRange.minimumCensus && this.plan.censusRange.minimumCensus.toString().length > 1) {
       return false;
@@ -76,6 +80,10 @@ export class CensusComponent implements OnInit {
   }
 
   validateMaxLength(event): boolean {
+    const charCode = (event.which) ? event.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      return false;
+    }
     this.objSavePlanParams.isSaveNextBtnSubmitForCensus = false;
     if (this.plan.censusRange.maximumCensus && this.plan.censusRange.maximumCensus.toString().length > 2 ) {
       return false;
@@ -212,6 +220,14 @@ export class CensusComponent implements OnInit {
     return j;
   }
   applyCensus(): void {
+    this.objSavePlanParams.validationErrorMessages= [];
+    for (let index = 0; index < 100; index++) {
+      if (Util.isEmpty(this.plan.censusRange.occurrenceNumber[index])) {
+        this.objSavePlanParams.isSaveNextBtnSubmitForCensus = true;
+        this.showOccuranceMsg = true;
+        return;
+      }
+    }
     this.onCensusMin();
     this.onCensusMax();
     this.isApplyButtonClicked = true;
@@ -532,6 +548,21 @@ export class CensusComponent implements OnInit {
       }
     }
   }
+  
+  onPasteMinCensus(event){
+    let clipboardData = event.clipboardData;
+    let pastedText = clipboardData.getData('text');
+    let trimmedText = pastedText.replace(/[^0-9]/g, '');
+    this.plan.censusRange.minimumCensus = trimmedText;
+  }
+
+  onPasteMaxCensus(event){
+    let clipboardData = event.clipboardData;
+    let pastedText = clipboardData.getData('text');
+    let trimmedText = pastedText.replace(/[^0-9]/g, '');
+    this.plan.censusRange.maximumCensus = trimmedText;
+  }
+  
 }
 export class Occurrence {
   census: number;
