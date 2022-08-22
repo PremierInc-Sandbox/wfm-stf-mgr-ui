@@ -232,13 +232,13 @@ export function planDetailsData() {
           censusValue: 0,
           productivityIndex: 0,
           totalPlanWHpU: 0,
-          staffToPatientList: [{
-            variablePositionKey: 2,
-            variablePositionCategoryAbbreviation: '',
-            variablePositionCategoryDescription: 'varpos Dexcription',
+          staffToPatientList: [ {
+            variablePositionKey: 11,
+            variablePositionCategoryAbbreviation: "NursePract",
             staffCount: 0,
-            activeFlag: false
-          }],
+            variablePositionCategoryDescription: "APRN",
+            activeFlag: true
+        }],
         },
           {
             key: 'key',
@@ -248,11 +248,11 @@ export function planDetailsData() {
             productivityIndex: 0,
             totalPlanWHpU: 0,
             staffToPatientList: [{
-              variablePositionKey: 2,
-              variablePositionCategoryAbbreviation: '',
-              variablePositionCategoryDescription: 'varpos Dexcription',
-              staffCount: 0,
-              activeFlag: false
+              variablePositionKey: 11,
+              variablePositionCategoryAbbreviation: "NursePract",
+              staffCount: 1,
+              variablePositionCategoryDescription: "APRN",
+              activeFlag: true
             }],
           }],
         staffGrid: [

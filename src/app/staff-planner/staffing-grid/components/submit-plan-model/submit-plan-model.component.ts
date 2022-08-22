@@ -123,36 +123,40 @@ export class SubmitPlanModelComponent implements OnInit {
 
   validateTotalvalue(): boolean {
     let isvalid = true;
-
-
     for (const schedule of this.planDetails.staffScheduleList) {
       this.getEnabledVarpos(schedule);
       let zeroCensuslevels = '';
+      let outterArray = [];
       for (const shift of schedule.planShiftList) {
-
+        let innerArray = [];
         for (const objStaffGridCensuses of shift.staffGridCensuses) {
-          if (Number(this.getTotal(objStaffGridCensuses)) === 0) {
-            this.isError = true;
-            isvalid = false;
-            if (zeroCensuslevels === '') {
-              zeroCensuslevels = objStaffGridCensuses.censusIndex.toString();
-            } else {
-              if (zeroCensuslevels.split(',').filter(x => x === objStaffGridCensuses.censusIndex.toString()).length < 1) {
-                zeroCensuslevels = zeroCensuslevels + ',' + objStaffGridCensuses.censusIndex.toString();
-              }
-            }
-          }
+          const activePatientArr = this.getActivePatientList(objStaffGridCensuses);
+          innerArray.push(activePatientArr);
         }
-
+        outterArray.push(innerArray);
       }
+     
+      let result  = outterArray.reduce((r, a) => a.map((v, i) => [...(r[i] || []), ...v]), []);
+      let rowSum = result.map(r => r.reduce((a, b) => parseInt(a) + parseInt(b)));
+      let colSum = result.reduce((a, b) => a.map((x, i) => parseInt(x) + parseInt(b[i]))); 
+      let rowSumFlag =this.getSumofRowandCol(rowSum);
+      let colSumFlag = this.getSumofRowandCol(colSum);
+
+      if(rowSumFlag == true || colSumFlag ==true){
+         isvalid = false;
+         this.isError = true;
+      }
+
       if (zeroCensuslevels !== '') {
         this.errormsg.push('Please update staffing grid for variable positions for census levels - ' +
           zeroCensuslevels + '. in the \'' + schedule.name + ' \' Schedule tab.');
       }
+
       this.isIncluded  = false;
       this.enabledStaffToPatientVarpos = []
-    }
 
+     
+    }
     return isvalid;
   }
 
@@ -241,5 +245,22 @@ export class SubmitPlanModelComponent implements OnInit {
 
     return isIncluded;
   }
+ 
+ getActivePatientList(objstaffGridCensus: StaffGridCensus): any {
+  const activePatientArr = [];
+  for (const objstaffToPatient of objstaffGridCensus.staffToPatientList.filter(v => v.activeFlag == true)) {
+      activePatientArr.push(objstaffToPatient.staffCount);
+  }
+  return activePatientArr;
+ }
+
+ getSumofRowandCol(array):boolean{
+  if(array.includes(0)){
+    return true;
+  }
+  return false;
+ }
+
+
 
 }
