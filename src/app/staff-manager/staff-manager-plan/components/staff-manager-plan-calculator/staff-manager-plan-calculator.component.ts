@@ -14,6 +14,7 @@ import {UserService} from "../../../../shared/service/user.service";
 import {OASuggestedData} from "../../../../shared/domain/OASuggestedData";
 import {Util} from "../../../../shared/util/util";
 
+
 @Component({
   selector: 'app-staff-manager-plan-calculator',
   templateUrl: './staff-manager-plan-calculator.component.html',
@@ -322,16 +323,6 @@ export class StaffManagerPlanCalculatorComponent implements OnInit {
     const charCode = (event.which) ? event.which : event.keyCode;
     if (charCode > 31 && (charCode < 48 || charCode > 57)) {
       return false;
-    }
-  }
-
-  pasteNumberOnlyForCensus(event:ClipboardEvent):boolean{
-    let census=event.clipboardData;
-    let a=census.getData("text");
-    if((!(/^[+]?\d*$/.test(a)))){
-      return false;
-    }else {
-      return true;
     }
   }
 
