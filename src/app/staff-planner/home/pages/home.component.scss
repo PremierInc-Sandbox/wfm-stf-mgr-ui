@@ -476,6 +476,11 @@ td.mat-column-hours {
   .mat-sort-header-arrow{
     margin: 0 !important;
   }
+  .planStatusContainer{
+    .mat-sort-header-arrow{
+      margin-top: -7px !important;
+    }
+  }
   .table-block{
     & tbody{
       width: 100%;
@@ -526,13 +531,13 @@ td.mat-column-hours {
     width: 3px;
   }
   &::-webkit-scrollbar-track {
-    background: #fff; 
-  }  
+    background: #fff;
+  }
   &::-webkit-scrollbar-thumb {
-    background: #005C72; 
+    background: #005C72;
   }
   &::-webkit-scrollbar-thumb:hover {
-    background: #1c6d89; 
+    background: #1c6d89;
   }
 }
 .mat-header-cell.mat-sort-header-sorted {
