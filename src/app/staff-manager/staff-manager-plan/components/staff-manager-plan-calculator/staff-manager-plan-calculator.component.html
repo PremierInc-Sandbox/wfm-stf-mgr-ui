@@ -67,10 +67,10 @@
       <td *ngFor="let staffSummary of staffVariance.staffVarianceSummaries;let summaryIndex=index" class="flex-column">
         <div class="row">
           <div class="col"*ngIf="!dateCheck">
-            <input type="text" [tabindex]="getTabIndex(summaryIndex)" [disabled]="!staffSummary.isCensusvalid || staffVariance.recordStatusKey===4 || staffVariance.planAlreadyInUse" (keypress)="numberOnly($event,i,summaryIndex)" class="actual-text-box" [(ngModel)] = "staffSummary.staffVarianceDetails[i].actualCount" maxlength="5">
+            <input type="text" [tabindex]="getTabIndex(summaryIndex)" [disabled]="!staffSummary.isCensusvalid || staffVariance.recordStatusKey===4 || staffVariance.planAlreadyInUse" (keypress)="numberOnly($event,i,summaryIndex)" (paste)=alertBox.pasteNumberAndDecimalOnly($event) class="actual-text-box" [(ngModel)] = "staffSummary.staffVarianceDetails[i].actualCount" maxlength="5">
           </div>
           <div class="col" *ngIf="dateCheck">
-            <input type="text" [tabindex]="getTabIndex(summaryIndex)" [disabled]="!staffSummary.isCensusvalid || staffVariance.recordStatusKey===4|| staffVariance.planAlreadyInUse" (keypress)="numberOnlyforSchedCount($event,i,summaryIndex)" class="actual-text-box" [(ngModel)] = "staffSummary.staffVarianceDetails[i].scheduleCount" maxlength="5">
+            <input type="text" [tabindex]="getTabIndex(summaryIndex)" [disabled]="!staffSummary.isCensusvalid || staffVariance.recordStatusKey===4|| staffVariance.planAlreadyInUse" (keypress)="numberOnlyforSchedCount($event,i,summaryIndex)" (paste)=alertBox.pasteNumberAndDecimalOnly($event) class="actual-text-box" [(ngModel)] = "staffSummary.staffVarianceDetails[i].scheduleCount" maxlength="5">
           </div>
           <div class="col">
             {{this.alertBox.getPlannedhoursForCensus(staffVariance,summaryIndex,staffSummary.censusValue,i,planDetails.censusRange.minimumCensus,planDetails.censusRange.maximumCensus)}}
@@ -128,7 +128,7 @@
       <td *ngFor="let staffSummary of staffVariance.staffVarianceSummaries; let add=index" class="flex-column">
         <div class="row">
           <div class = "col">
-            <input type="text" [tabindex]="getTabIndex(add)" [disabled]="!staffSummary.isCensusvalid || staffVariance.recordStatusKey===4 ||  staffVariance.planAlreadyInUse" (keypress)="numberAndDecOnly($event,add)"  class="actual-text-box" [(ngModel)] = "staffSummary.additionalStaffHours" [value]= staffSummary.additionalStaffHours maxlength="5">
+            <input type="text" [tabindex]="getTabIndex(add)" [disabled]="!staffSummary.isCensusvalid || staffVariance.recordStatusKey===4 ||  staffVariance.planAlreadyInUse" (keypress)="numberAndDecOnly($event,add)" (paste)=alertBox.pasteNumberAndDecimalOnly($event) class="actual-text-box" [(ngModel)] = "staffSummary.additionalStaffHours" [value]= staffSummary.additionalStaffHours maxlength="5">
           </div>
           <div class = "col">
             0.00
@@ -213,7 +213,7 @@
       <td *ngFor="let staffSummary of staffVariance.staffVarianceSummaries; let summaryIndex = index" class="flex-column">
         <div class="row">
           <div class="col">
-            <input  type="text" [tabindex]="getTabIndex(summaryIndex)" [disabled]="staffVariance.recordStatusKey===4|| staffVariance.planAlreadyInUse || staffVariance.disableFlag" (keypress)="numberAndDecimalOnly($event,summaryIndex)" class="oga-text-box" maxlength="5" [(ngModel)] = "staffSummary.offGridActivitiesHour">
+            <input  type="text" [tabindex]="getTabIndex(summaryIndex)" [disabled]="staffVariance.recordStatusKey===4|| staffVariance.planAlreadyInUse || staffVariance.disableFlag" (keypress)="numberAndDecimalOnly($event,summaryIndex)" (paste)=alertBox.pasteNumberAndDecimalOnly($event) class="oga-text-box" maxlength="5" [(ngModel)] = "staffSummary.offGridActivitiesHour">
           </div>
         </div>
       </td>
