@@ -138,6 +138,7 @@ export class NonVariablePosComponent implements OnInit {
         return true;
       }
   }
+
   numberOnly(event, summaryIndex: number): boolean {
     this.isShowError = false;
     const charCode = (event.which) ? event.which : event.keyCode;
