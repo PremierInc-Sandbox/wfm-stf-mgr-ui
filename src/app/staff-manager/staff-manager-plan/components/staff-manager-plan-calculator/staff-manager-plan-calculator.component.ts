@@ -364,6 +364,7 @@ export class StaffManagerPlanCalculatorComponent implements OnInit {
       }
     }
   }
+
   numberOnlyforSchedCount(event, i: number, summaryIndex: number): boolean {
     const charCode = (event.which) ? event.which : event.keyCode;
     if (charCode > 31 && (charCode < 48 && charCode !== 46 || charCode > 57)) {

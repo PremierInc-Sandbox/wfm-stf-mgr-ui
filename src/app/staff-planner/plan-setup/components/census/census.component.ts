@@ -548,7 +548,7 @@ export class CensusComponent implements OnInit {
       }
     }
   }
-  
+
   onPasteMinCensus(event){
     let clipboardData = event.clipboardData;
     let pastedText = clipboardData.getData('text');
@@ -562,7 +562,7 @@ export class CensusComponent implements OnInit {
     let trimmedText = pastedText.replace(/[^0-9]/g, '');
     this.plan.censusRange.maximumCensus = trimmedText;
   }
-  
+
 }
 export class Occurrence {
   census: number;
