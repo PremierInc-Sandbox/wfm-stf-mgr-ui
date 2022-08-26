@@ -96,7 +96,6 @@ stages:
           IQ_API_TOKEN: $(IQ_API_TOKEN)
           ARTIFACT_VERSION: "$(APP_VERSION)"
           DISTRIBUTION: Hosted
-          SCAN_TARGETS: build.gradle, *, **, **/**, */*/*, */*/*/*, */*/*/*/*, *.iml, **/module.xml, *.jar, */*.jar, */*/*.jar, */*/*/*.jar, */*/*/*/*.jar, gradle/wrapper/*, */*/*/*/*.xml, */*.js, */*.*.js, */*.ts, */*/*.ts, */*/*/*.ts, */*/*/*/*.ts, package.json, package-lock.json, tsconfig.json, tslint.json, Dockerfile, angular.json, */*.json, */*.*.json
 
 - stage: 'DEV_DEPLOY'
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
