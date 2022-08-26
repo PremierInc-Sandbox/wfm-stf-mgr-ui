@@ -86,7 +86,7 @@ stages:
     variables:
       - group: 'SDLC Credentials'
       - name: APP_VERSION
-        value: $[ dependencies.WFMStaffMgrUIBuild.outputs['project_properties.PROJECT_VERSION'] ]
+        value: $[ stageDependencies.WFMStaffMgrUIBuild.WFMSyncBenchmarkingBuild.outputs['set_version.APP_VERSION'] ]
     steps:
       - bash: |
           chmod +x ./gradlew
