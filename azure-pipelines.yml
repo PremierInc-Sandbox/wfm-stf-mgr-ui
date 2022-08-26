@@ -94,7 +94,7 @@ stages:
       - template: lifecycle-scan.yml@sdlc_templates
         parameters:
           IQ_API_TOKEN: $(IQ_API_TOKEN)
-          ARTIFACT_VERSION: "$(APP_VERSION)"
+          ARTIFACT_VERSION: "$(ARTIFACT_VERSION)"
           DISTRIBUTION: Hosted
 
 - stage: 'DEV_DEPLOY'
