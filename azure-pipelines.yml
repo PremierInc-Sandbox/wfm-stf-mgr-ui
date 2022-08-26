@@ -86,7 +86,7 @@ stages:
     variables:
       - group: 'SDLC Credentials'
       - name: APP_VERSION
-        value: $[ stageDependencies.WFMStaffMgrUIBuild.outputs['set_version.APP_VERSION'] ]
+        value: $[ Dependencies.WFMStaffMgrUIBuild.WFMStaffMgrUIBuild.outputs['set_version.APP_VERSION'] ]
     steps:
       - bash: |
           chmod +x ./gradlew
@@ -94,8 +94,9 @@ stages:
       - template: lifecycle-scan.yml@sdlc_templates
         parameters:
           IQ_API_TOKEN: $(IQ_API_TOKEN)
-          ARTIFACT_VERSION: "$(ARTIFACT_VERSION)"
+          ARTIFACT_VERSION: "$(APP_VERSION)"
           DISTRIBUTION: Hosted
+          SCAN_TARGETS: build.gradle, *, **, **/**, */*/*, */*/*/*, */*/*/*/*, */*/*/*/*/*, */*/*/*/*/*/*, */*/*/*/*/*/*/*
 
 - stage: 'DEV_DEPLOY'
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
