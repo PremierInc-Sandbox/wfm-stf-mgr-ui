@@ -61,24 +61,42 @@ stages:
         artifact: wfm_artifacts
         displayName: Publish Artifacts
 
-  - job: BlackduckScan
+  # - job: BlackduckScan
+  #   dependsOn: ['WFMStaffMgrUIBuild']
+  #   displayName: Blackduck Scan
+  #   variables:
+  #     - group: 'SDLC Credentials'
+  #     - name: APP_VERSION
+  #       value: $[ stageDependencies.WFMStaffMgrUIBuild.WFMStaffMgrUIBuild.outputs['set_version.APP_VERSION'] ]
+  #   steps:
+  #   - bash: chmod +x ./gradlew
+  #   - template: blackduck-scan.yml@sdlc_templates
+  #     parameters:
+  #       BLACKDUCK_API_TOKEN: $(BLACKDUCK_API_TOKEN)
+  #       BRANCH_SCAN_LIST: "main*,*develop*"
+  #       DISTRIBUTION: "SAAS"
+  #       PROJECT_NAME: "pcops:pco-staff-scheduler-ui"
+  #       SOURCE_PATH: "$(Build.SourcesDirectory)"
+  #       PROJECT_VERSION: "$(APP_VERSION)"
+  #       TEAM: "PCOPS"
+
+  - job: NexusLifecycle_Scan
+    displayName: Nexus Lifecycle Scan
     dependsOn: ['WFMStaffMgrUIBuild']
-    displayName: Blackduck Scan
     variables:
       - group: 'SDLC Credentials'
       - name: APP_VERSION
-        value: $[ stageDependencies.WFMStaffMgrUIBuild.WFMStaffMgrUIBuild.outputs['set_version.APP_VERSION'] ]
+        value: $[ dependencies.WFMStaffMgrUIBuild.outputs['project_properties.PROJECT_VERSION'] ]
     steps:
-    - bash: chmod +x ./gradlew
-    - template: blackduck-scan.yml@sdlc_templates
-      parameters:
-        BLACKDUCK_API_TOKEN: $(BLACKDUCK_API_TOKEN)
-        BRANCH_SCAN_LIST: "main*,*develop*"
-        DISTRIBUTION: "SAAS"
-        PROJECT_NAME: "pcops:pco-staff-scheduler-ui"
-        SOURCE_PATH: "$(Build.SourcesDirectory)"
-        PROJECT_VERSION: "$(APP_VERSION)"
-        TEAM: "PCOPS"
+      - bash: |
+          chmod +x ./gradlew
+    
+      - template: lifecycle-scan.yml@sdlc_templates
+        parameters:
+          IQ_API_TOKEN: $(IQ_API_TOKEN)
+          ARTIFACT_VERSION: "$(APP_VERSION)"
+          DISTRIBUTION: Hosted
+          SCAN_TARGETS: build.gradle, *, **, **/**, */*/*, */*/*/*, */*/*/*/*, *.iml, **/module.xml, *.jar, */*.jar, */*/*.jar, */*/*/*.jar, */*/*/*/*.jar, gradle/wrapper/*, */*/*/*/*.xml, */*.js, */*.*.js, */*.ts, */*/*.ts, */*/*/*.ts, */*/*/*/*.ts, package.json, package-lock.json, tsconfig.json, tslint.json, Dockerfile, angular.json, */*.json, */*.*.json
 
 - stage: 'DEV_DEPLOY'
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
