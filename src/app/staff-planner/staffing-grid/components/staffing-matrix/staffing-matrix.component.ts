@@ -456,7 +456,7 @@ checkPatientToStaffEnabled(shiftObj: shift, timePeriod: shift): boolean {
     for (const staffToPatientData of shiftObj.staffToPatientList) {
         for (const stp of timePeriod.staffToPatientList) {
           if (timePeriod.key !== shiftObj.key) {
-            if (staffToPatientData.variablePositionKey === stp.variablePositionKey && (staffToPatientData.staffCount <0)) {
+            if (staffToPatientData.variablePositionKey === stp.variablePositionKey && staffToPatientData.variablePositionCategoryDescription === stp.variablePositionCategoryDescription) {
               if ((staffToPatientData.activeFlag && !stp.activeFlag) || (!staffToPatientData.activeFlag && stp.activeFlag)) {
                   return true;
               } else {
