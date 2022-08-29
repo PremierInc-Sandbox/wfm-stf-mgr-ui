@@ -1350,7 +1350,8 @@ export class StaffManagerPlanComponent implements OnInit {
         if(this.staffManagerService){
           this.staffManagerService.planAlreadyInUse = true;
         }
-        this.alertBox.openAlert('exit-dialog', '175px', '450px', 'Cannot update plan at this time', 'Plan is currently being edited by another user');
+        let alertMessage: string = 'Plan is currently being edited by ' + this.staffVariance.activeManagerUser;
+        this.alertBox.openAlert('exit-dialog', '175px', '450px', 'Cannot update plan at this time', alertMessage);
         document.body.classList.add('pr-modal-open');
         window.clearInterval(this.staffManagerService.autoSaveInterval);
         window.clearInterval(this.staffManagerService.autoRedirectInterval);

@@ -17,6 +17,17 @@ resources:
       name: PremierInc/shield-ado-templates
       endpoint: PremierInc
 
+trigger:
+  branches:
+    exclude:
+      - release/*
+
+pr:
+  branches:
+    exclude:
+      - main
+      - release/*
+
 stages:
 - stage: WFMStaffMgrUIBuild
   jobs:
@@ -27,7 +38,15 @@ stages:
     steps:
       - bash: |
           chmod +x ./gradlew && ./gradlew wrapper
-          ./gradlew release -Pregistry.username=${registry_username} -Pregistry.password=${registry_password}
+          echo "SourceBranch: $(Build.SourceBranch)"
+          if [[ $(Build.SourceBranch) =~ ^refs/heads/develop$|^refs/heads/release/.*|^refs/heads/rc/.*|refs/heads/hotfix/.* ]]; then
+            echo "running release"
+            ./gradlew release -Pregistry.username=${registry_username} -Pregistry.password=${registry_password}
+          else
+            echo "running prepareRelease"
+            ./gradlew prepareRelease -Pregistry.username=${registry_username} -Pregistry.password=${registry_password}
+          fi
+
         env:
           JAVA_HOME: $(SYSTEM_JDK_11)
           registry_username: $(ucp_username)
