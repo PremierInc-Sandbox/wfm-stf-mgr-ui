@@ -193,7 +193,7 @@
      testStaffScheduleData[0].planShiftList[0].staffGridCensuses = [];
      component.planDetails.censusRange.maximumCensus = 3;
      component.populateData();
-     expect(component.cenRange[0]).toBe(0);
+     expect(component.cenRange[0]).toBe(1);
    });
 
    it('should populate data', () => {
@@ -202,14 +202,14 @@
      testStaffScheduleData[0].planShiftList[0].staffGridCensuses = [];
      component.planDetails.censusRange.maximumCensus = 3;
      component.populateData();
-     expect(component.cenRange[0]).toBe(0);
+     expect(component.cenRange[0]).toBe(1);
    });
    it('should not populate data', () => {
      testStaffScheduleData[0].planShiftList[0].staffToPatientList[0].staffCount = 0;
      component.scheduleData.planShiftList[0] = testStaffScheduleData[0].planShiftList[0];
      testStaffScheduleData[0].planShiftList[0].staffGridCensuses = [];
      component.populateData();
-     expect(component.cenRange[0]).toBe(0);
+     expect(component.cenRange[0]).toBe(1);
    });
    it('should not populate data', () => {
      component.planDetails.censusRange = null;
