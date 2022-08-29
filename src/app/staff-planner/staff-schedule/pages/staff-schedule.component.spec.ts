@@ -294,6 +294,7 @@ describe('StaffScheduleComponent', () => {
   it('should add schedule', () => {
     spyOn(component, 'validateExistingSchedules').and.returnValue(false);
     component.planDetails.staffScheduleList[0] = staffScheduleDataTest[0];
+    component.planDetails.staffScheduleList[0].errormsg = null;
     component.planDetails.variableDepartmentPositions[0] = planDetailsDataTest[0].variableDepartmentPositions[0];
     component.addSchedule();
     expect(component.planDetails.staffScheduleList[0].IsMaximized).toBe(false);

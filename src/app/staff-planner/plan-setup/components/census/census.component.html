@@ -28,6 +28,7 @@
                min="1"
                max="100"
                value="1"
+               (paste)="onPasteMinCensus($event);$event.preventDefault()"
                (keypress)="validateMinLength($event)"
                [(ngModel)]="plan.censusRange.minimumCensus"
                (ngModelChange) = "checkCensusValues(plan.censusRange.minimumCensus);"
@@ -48,6 +49,7 @@
                min="2"
                value="2"
                max="100"
+               (paste)="onPasteMaxCensus($event);$event.preventDefault()"
                (keypress)="validateMaxLength($event)"
                [(ngModel)]="plan.censusRange.maximumCensus"
                [class.is-invalid]="censusRangeMax.invalid && censusRangeMax.touched"
@@ -100,6 +102,7 @@
               <input  class="annual-census-div-input-data" type="text"
                         (keypress)="numberOnly($event);"
                         (keyup)="getCensusVal();"
+                        (paste)=alertBox.pasteNumberOnly($event)
                         maxlength="3"
                         [disabled]="(((i*10)+j+1)<minCensus ||((i*10)+j+1)>maxCensus||((i*10)+j+1)>applyValMax && maxCensus>100||censusRangeMax.value>999 || isApplyButton ==false)||plan.planCompleted "
                         required

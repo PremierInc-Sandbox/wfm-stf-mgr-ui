@@ -6,7 +6,10 @@ import {Router} from '@angular/router';
 import {PlanService} from '../../../../shared/service/plan-service';
 import {of} from 'rxjs';
 import {jobCategoryData} from '../../../../shared/service/fixtures/job-category-data';
-import {variableDepartmentpositionData} from '../../../../shared/service/fixtures/variable-dept-position-data';
+import {
+  variableDepartmentpositionData,
+  variableDepartmentpositionDataKey
+} from '../../../../shared/service/fixtures/variable-dept-position-data';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import {FormsModule} from '@angular/forms';
@@ -114,7 +117,7 @@ describe('VariablePosComponent', () => {
     component.plan.variableDepartmentPositions[0] = variableDeptpositionDataTest[0];
     component.deleteRow(variableDeptpositionDataTest[0]);
     expect(component.plan.variableDepartmentPositions.indexOf(component.plan.variableDepartmentPositions[0])).toBe(-1);
-    expect(component.isMaxIndex).toBe(false);
+    expect(component.isMaxIndex).toBe(true);
   });
   it('should not delete a row because it was not found ', () => {
     component.deleteRow(variableDeptpositionDataTest[0]);
@@ -138,7 +141,7 @@ describe('VariablePosComponent', () => {
     component.plan.totalAnnualHours = 1;
     confirmation.and.returnValues(true, false);
     component.deleteRow(variableDeptpositionDataTest[0]);
-    expect(component.isMaxIndex).toBe(false);
+    expect(component.isMaxIndex).toBe(true);
   });
   it('should not delete a row when second confirm box is confirmed', () => {
     component.plan.variableDepartmentPositions[0] = variableDeptpositionDataTest[0];
@@ -198,6 +201,11 @@ describe('VariablePosComponent', () => {
   it('Shouls checkDuplicate', function(){
     component.checkDuplicate(selection, variableDeptpositionDataTest[0]);
     expect(component.checkDuplicate).toHaveBeenCalled;
+  });
+  it('Should checkDuplicates for Variable positions', function(){
+    component.plan = planDetainsDataTest[0];
+    component.plan.variableDepartmentPositions = variableDepartmentpositionDataKey();
+    expect(component.checkForDuplicatesInVariablePosition()).toBe(true);
   });
 });
 

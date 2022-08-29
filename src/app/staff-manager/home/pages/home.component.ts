@@ -485,13 +485,15 @@ export class StaffManagerComponent implements OnInit, DoCheck {
   }
 
   getActiveLink(statusKey: number, createdDate: Date): number {
-    const createDate = new Date(createdDate);
-    const presentDate = new Date();
+    //remove the IST offset and compare EST present date and EST create date and if date difference less than 1 show the hyperlink
+    const offsetDate = createdDate.toLocaleString().slice(0,-6);
+    const createDate = new Date(offsetDate);
+    const presentDate = new Date(new Date().toLocaleString("en-US", {timeZone: "America/New_York"}));
     const insertedDate = (createDate.getDate() + '-' + (createDate.getMonth() + 1) + '-' + createDate.getFullYear());
     const currentDate = (presentDate.getDate() + '-' + (presentDate.getMonth() + 1) + '-' + presentDate.getFullYear());
     const difference = this.compareTwoDates(createDate, presentDate);
     this.timeZoneFlag = this.alertBox.getTimeZoneFlag();
-    if ((statusKey === 2 || statusKey === 5) && (difference.localeCompare('1') === 0 || difference.localeCompare(('0')) === 0) && !this.timeZoneFlag) {
+    if ((statusKey === 2 || statusKey === 5) && (presentDate.getHours() < 6 && difference < 1) && !this.timeZoneFlag) {
       return 1;
     } else if ((statusKey === 2 || statusKey === 5) && insertedDate.localeCompare(currentDate) === 0) {
       return 1;
@@ -628,14 +630,14 @@ export class StaffManagerComponent implements OnInit, DoCheck {
     sessionStorage.setItem('pageSizeSM', event.pageSize);
   }
 
-  private compareTwoDates(createdDate: Date, selectedDate: Date): string {
+  private compareTwoDates(createdDate: Date, currentDate: Date): number {
 // To calculate the time difference of two dates
-    const differenceInTime = createdDate.getTime() - selectedDate.getTime();
+    const differenceInTime = createdDate.getTime() - currentDate.getTime();
 
 // To calculate the no. of days between two dates
     const differenceInDays = differenceInTime / (1000 * 3600 * 24);
 
-    return Math.abs(differenceInDays).toFixed(0);
+    return Math.abs(differenceInDays);
   }
 
   private openScreenRefreshDialog(): void {

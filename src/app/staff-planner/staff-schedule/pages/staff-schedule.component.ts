@@ -402,7 +402,16 @@ export class StaffScheduleComponent implements OnInit {
   }
 
   addSchedule(): void {
-    this.checkScheduledays(this.objSchedule);
+    let errorExist = false;
+    if (this.planDetails.staffScheduleList.length > 0) {
+      this.planDetails.staffScheduleList.forEach(ele => {
+        if (!Util.isNullOrUndefined(ele.errormsg) && ele.errormsg.length > 0) {
+          errorExist = true;
+        }
+      });
+    }
+    if (!errorExist) {
+      this.checkScheduledays(this.objSchedule);
 
     if (this.validateExistingSchedules()) {
       return;
@@ -446,6 +455,7 @@ export class StaffScheduleComponent implements OnInit {
         this.planDetails.staffScheduleList.push(objStaffSchedule);
       }, 200);
 
+      }
     }
   }
 
@@ -579,6 +589,7 @@ export class StaffScheduleComponent implements OnInit {
           this.addSchedule();
         }
         this.validateExistingSchedules();
+        this.checkErrorInSchedule();
       }
       document.body.classList.remove('pr-modal-open');
     });
@@ -677,7 +688,26 @@ export class StaffScheduleComponent implements OnInit {
       return true;
     }
   }
+  checkErrorInSchedule(): void{
+    let isErrorFound = false;
+    this.planDetails.staffScheduleList.forEach(schedule => {
+      this.planDetails.staffScheduleList.forEach(sched => {
+        if(sched.key != schedule.key) {
+          for (let i = 0; i < 7; i++) {
+            if (sched.scheduleDays[i] == schedule.scheduleDays[i]) {
+              isErrorFound = true;
+            }
+          }
+        }
+      })
+      })
+    if(!isErrorFound){
+      this.planDetails.staffScheduleList.forEach(schedule => {
+        this.removeFromScheduleErrors(this.objScheudleErrors.errmsg_duplicate_scheduledays, schedule);
+      })
+    }
 
+  }
   loadplandetails(): void {
     let palnkey = localStorage.getItem('plankey');
     if ((!palnkey) || palnkey === '') {
