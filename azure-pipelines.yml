@@ -96,7 +96,7 @@ stages:
           IQ_API_TOKEN: $(IQ_API_TOKEN)
           ARTIFACT_VERSION: "$(APP_VERSION)"
           DISTRIBUTION: Hosted
-          SCAN_TARGETS: build.gradle, *, **, **/**, */*/*, */*/*/*, */*/*/*/*, */*/*/*/*/*, */*/*/*/*/*/*, */*/*/*/*/*/*/*
+          SCAN_TARGETS: build.gradle, package.json, package-lock.json
 
 - stage: 'DEV_DEPLOY'
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
