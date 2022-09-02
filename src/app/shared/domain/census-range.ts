@@ -1,6 +1,6 @@
 export class CensusRange {
-  public minimumCensus = 1;
-  public maximumCensus = 2;
+  public minimumCensus = 0;
+  public maximumCensus = 0;
   public censusKey: number;
   public planKey: string;
   // public occurNum: number;

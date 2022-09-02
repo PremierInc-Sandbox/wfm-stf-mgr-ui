@@ -22,14 +22,14 @@ export class CensusComponent implements OnInit {
   showOccuranceMsg: boolean;
   year: number;
   censusDays = 0;
-  minCensus = 1;
-  maxCensus = 2;
+  minCensus = 0;
+  maxCensus = 0;
   addErrorMessage = true;
   previousCensusMax = 0;
   previousCensusMin = 0;
   previuosOccurnum: string[] = [];
-  cmin = 1;
-  cmax = 2;
+  cmin = 0;
+  cmax = 0;
   applyValMax = 0;
   applyValMin = 0;
   censusToggle : boolean = false;
