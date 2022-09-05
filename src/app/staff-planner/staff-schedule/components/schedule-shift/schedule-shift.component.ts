@@ -195,6 +195,15 @@ export class ScheduleShiftComponent implements OnInit, OnChanges {
     if(!this.objShift.staffToPatientList[index].activeFlag){
       this.objShift.staffToPatientList[index].staffCount = 0;
     }
+      // Check for atleast one role
+      this.objSchedule.planShiftList.forEach( shift => {
+        if(shift.staffToPatientList.filter(e => e.activeFlag).length <= 0){
+          shift.HasError = true;
+          this.alertBox.addToShiftErrors(this.objScheudleErrors.errmsg_require_minimum_one_role, shift);
+        }else {
+          shift.HasError = this.alertBox.removeFromShiftErrors(this.objScheudleErrors.errmsg_require_minimum_one_role, shift);
+        }
+      });
   }
 
   validatehour(objshift: shift): boolean {

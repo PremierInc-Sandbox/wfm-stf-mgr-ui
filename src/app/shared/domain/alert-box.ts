@@ -625,4 +625,24 @@ export class AlertBox {
       return false;
     }
   }
+
+  pasteNumberAndDecimalOnly(event: ClipboardEvent): boolean {
+    let Hours = event.clipboardData;
+    let a = Hours.getData("text");
+    if ((!(/^[+]?\d*\.?\d*$/.test(a)))) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  pasteNumberOnly(event:ClipboardEvent):boolean{
+    let shift_occur=event.clipboardData;
+    let a=shift_occur.getData("text");
+    if((!(/^[+]?\d*$/.test(a)))){
+      return false;
+    }else {
+      return true;
+    }
+  }
 }
