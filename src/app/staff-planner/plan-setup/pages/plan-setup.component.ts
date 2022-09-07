@@ -1499,8 +1499,13 @@ export class PlanSetupComponent implements OnInit, DeactivationGuarded {
       if (this.staffSchedules.length > 0) {
         this.router.navigate([command], {queryParams: {plankey: this.plan.key}});
       } else {
-        this.alertBox.openAlert('exit-dialog', '175px', '350px', 'Staff Planner', 'Submit schedule and shift details?');
-        this.pageGroup.selectedIndex = this.previousIndex;
+        if((this.pageGroup.selectedIndex==2) || (this.pageGroup.selectedIndex==3)){
+          this.alertBox.openAlert('exit-dialog', '175px', '350px', 'Staff Planner', 'Submit schedule and shift details?');
+          this.pageGroup.selectedIndex = this.previousIndex;
+        }
+        else{
+          this.router.navigate([command], {queryParams: {plankey: this.plan.key}});
+        }
       }
     } else {
       this.alertBox.openAlert('exit-dialog', '175px', '350px', 'Staff Planner', 'Submit schedule and shift details?');
