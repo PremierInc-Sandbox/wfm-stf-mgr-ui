@@ -90,6 +90,7 @@
   "overrides": {
     "ansi-html": "https://code.premierinc.com/artifacts/repository/npm/ansi-html-community/-/ansi-html-community-0.0.8.tgz",
     "ansi-regex": "5.0.1",
+    "glob-parent": "6.0.2",
     "browserslist": {
       ".": "4.20.0",
       "electron-to-chromium": "1.3.52"
