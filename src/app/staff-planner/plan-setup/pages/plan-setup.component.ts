@@ -98,8 +98,8 @@ export class PlanSetupComponent implements OnInit, DeactivationGuarded {
   currentDepartment: Department = null;
   oAPlanDataEntity = new OAPlanData();
   oASuggestedData = new OASuggestedData();
-  cmin = 0;
-  cmax = 0;
+  cmin = 1;
+  cmax = 2;
   staffGridCalculator: StaffGridCalculator = new StaffGridCalculator();
   tabSelected = [false, true, true, true];
   previousIndex = 0;
