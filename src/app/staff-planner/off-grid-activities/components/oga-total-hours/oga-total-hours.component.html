@@ -20,8 +20,7 @@
         <div class="col2">
           <div class="title">OGA TARGET HRS</div>
           <div class="titleValue">
-            <span *ngIf="planDetails.dailyFlag==true">{{((planDetails.oAStaffingMetric.educationOrientationTargetPaid * planDetails.targetBudget*planDetails.utilizedAverageVolume*this.leapDays)/100).toFixed(0)}} </span>
-            <span *ngIf="planDetails.dailyFlag==false">{{((planDetails.oAStaffingMetric.educationOrientationTargetPaid * planDetails.targetBudget*planDetails.utilizedAverageVolume)/100).toFixed(0)}} </span>
+            <span>{{getOgaTargetHours()}}</span>
             <sub>annual</sub>
           </div>
         </div>
