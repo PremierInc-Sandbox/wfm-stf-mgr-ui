@@ -85,18 +85,26 @@ stages:
     dependsOn: ['WFMStaffMgrUIBuild']
     variables:
       - group: 'SDLC Credentials'
+      - group: "wfm-staff-scheduler-ui-dev"
+      - group: "wfm-ucp-np"
       - name: APP_VERSION
         value: $[ Dependencies.WFMStaffMgrUIBuild.WFMStaffMgrUIBuild.outputs['set_version.APP_VERSION'] ]
     steps:
       - bash: |
-          chmod +x ./gradlew
+          chmod +x ./gradlew && ./gradlew wrapper
+          ./gradlew release -Pregistry.username=${registry_username} -Pregistry.password=${registry_password}
+        env:
+          JAVA_HOME: $(SYSTEM_JDK_11)
+          registry_username: $(ucp_username)
+          registry_password: $(ucp_password)
+        displayName: WFMStaffMgrUIBuild
     
       - template: lifecycle-scan.yml@sdlc_templates
         parameters:
           IQ_API_TOKEN: $(IQ_API_TOKEN)
           ARTIFACT_VERSION: "$(APP_VERSION)"
           DISTRIBUTION: Hosted
-          SCAN_TARGETS: build.gradle, package.json, package-lock.json
+          SCAN_TARGETS: build.gradle, package.json, package-lock.json, **/*.jar, *, **/node_modules, **/*.zip, **/*.tgz, **/*.js, **/*.ts
 
 - stage: 'DEV_DEPLOY'
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
