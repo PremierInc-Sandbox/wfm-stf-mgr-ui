@@ -120,6 +120,9 @@ export class NonVariablePosComponent implements OnInit {
           this.plan.nonVariableDepartmentPositions.splice(index, 1);
           this.isMaxIndex = false;
           this.isShowError = false;
+          this.emptyErrorFlag = false;
+          this.emptySelectFlag = false;
+          this.emptyHourFlag = false;
         }
       }
       document.body.classList.remove('pr-modal-open');

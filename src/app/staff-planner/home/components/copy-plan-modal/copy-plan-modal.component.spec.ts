@@ -156,12 +156,11 @@ describe('CopyPlanModalComponent', () => {
     localStorage.setItem('planId', '138');
     component.saveCopyingPlan('testDifferentName');
     expect(planServiceSpyObj.getPlandetails).toHaveBeenCalled();
+    expect(planServiceSpyObj.removePlanKeyFromSessionAttributeSubscribe).toHaveBeenCalled();
     expect(component.newPlan.name).toEqual('testDifferentName');
     expect(component.newPlan.isnewlycreated).toBe(true);
     expect(component.newPlan.key).toBe(null);
-    expect(scheduleServiceSpyObj.getScheduleDetails).toHaveBeenCalled();
-    expect(scheduleServiceSpyObj.createSchedule).toHaveBeenCalled();
-    expect(component.showMsg).toBe(true);
+    expect(component.showMsg).toBe(false);
     expect(component.isHide).toBe(false);
   });
   it('should load plans', () => {
