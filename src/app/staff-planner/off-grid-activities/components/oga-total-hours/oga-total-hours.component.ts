@@ -57,4 +57,14 @@ export class OgaTotalHoursComponent implements OnInit, DoCheck {
     }
     return 0;
   }
+
+  getOgaTargetHours(){
+    let ogaHours;
+    if(this.planDetails.dailyFlag){
+      ogaHours=Math.ceil((this.planDetails.utilizedAverageVolume*this.planDetails.targetBudget*this.planDetails.oAStaffingMetric?.educationOrientationTargetPaid*this.leapDays)/100);
+    }else{
+      ogaHours=Math.ceil((this.planDetails.utilizedAverageVolume*this.planDetails.targetBudget*this.planDetails.oAStaffingMetric?.educationOrientationTargetPaid)/100);
+    }
+    return ogaHours;
+  }
 }
