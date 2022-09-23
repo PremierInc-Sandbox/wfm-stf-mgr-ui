@@ -174,8 +174,8 @@ stages:
     ChartValues: |
       image.repository=wfmprdacr.azurecr.io/premierinc/wfm/prod/stf-mgr-ui
       image.tag=$(Build.BuildNumber)
-- template: aks/helm-deployment.yaml@wfm-templates
-  parameters:
+  - template: aks/helm-deployment.yaml@wfm-templates
+    parameters:
       Name: StfMgrUIProd
       DisplayName: Prod StfMgr UI
       Condition: and(succeeded(), eq(variables['IsRelease'], 'true'), eq(variables['restart_prod'], 'N'))
