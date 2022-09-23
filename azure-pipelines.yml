@@ -29,6 +29,7 @@ trigger:
   batch: "true"
   branches:
     include:
+      - main
       - develop
       - rc/*
       - release/*
@@ -130,7 +131,16 @@ stages:
     ChartValues: |
       image.repository=wfmprdacr.azurecr.io/premierinc/wfm/prod/stf-mgr-ui
       image.tag=$(Build.BuildNumber)
-
+    PreDeploySteps:
+      - template: aks/promote-acr-artifact.yaml@wfm-templates
+        parameters:
+          ArmServiceConnection: $(ArmConnectionProd)
+          SourceAcr: wfmnpacr
+          SourceRepository: premierinc/wfm/np/ci/docker
+          SourceTag: $(Build.BuildNumber)
+          TargetAcr: wfmprdacr
+          TargetRepository: premierinc/wfm/prod/docker
+          TargetTag: $(Build.BuildNumber)
   - template: aks/helm-deployment.yaml@wfm-templates
     parameters:
       Name: StfMgrUIPerf
