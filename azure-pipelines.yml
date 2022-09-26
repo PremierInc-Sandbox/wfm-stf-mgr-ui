@@ -55,7 +55,6 @@ stages:
         - group: "wfm-ucp-np"
         - group: "wfm-staff-scheduler-ui-dev"
       ArmConnection: $(ArmConnectionNonProd)
-      ${{ if eq(variables.IsNotPr, 'true') }}:
       Images:
         - Name: stf-mgr-ui
           ApplicationName: ''
@@ -63,7 +62,6 @@ stages:
       Charts:
         - Name: stf-mgr-ui
           ContextDirectory: build/dist-bundles/helm-charts/stf-mgr-ui
-  - ${{ if eq(variables.IsNotPr, 'true') }}:
   - template: aks/helm-deployment.yaml@wfm-templates
     parameters:
       Name: StfMgrUIDev
