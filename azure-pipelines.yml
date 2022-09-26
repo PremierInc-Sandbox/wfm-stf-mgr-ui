@@ -47,6 +47,7 @@ stages:
   - template: aks/ci.yaml@wfm-templates
     parameters:
       Name: StfMgrUICI
+      Condition: eq(variables['restart_prod'], 'N')
       GradleBuildTask: 'prepareRelease'
       GradleBuildEnvironment:
         JAVA_HOME: $(SYSTEM_JDK_11)
@@ -65,6 +66,7 @@ stages:
   - template: aks/helm-deployment.yaml@wfm-templates
     parameters:
       Name: StfMgrUIDev
+      Condition: and(succeeded(), eq(variables['IsDevelop'], 'true'))
       DisplayName: DEV StfMgr UI
       DependsOn: [ 'StfMgrUICI' ]
       DeploymentVariables:
@@ -88,6 +90,7 @@ stages:
   - template: aks/helm-deployment.yaml@wfm-templates
     parameters:
       Name: StfMgrUIQA
+      Condition: and(succeeded(), eq(variables['IsDevelop'], 'true'))
       DisplayName: QA StfMgr UI
       DependsOn: [ 'StfMgrUIDev' ]
       DeploymentVariables:
