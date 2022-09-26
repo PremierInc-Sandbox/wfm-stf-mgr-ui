@@ -24,6 +24,7 @@ resources:
       type: github
       name: PremierInc/wfm-ado-templates
       endpoint: PremierInc
+      ref: refs/heads/feature/WFM-37701
 
 trigger:
   batch: "true"
@@ -55,6 +56,7 @@ stages:
         - group: "wfm-ucp-np"
         - group: "wfm-staff-scheduler-ui-dev"
       ArmConnection: $(ArmConnectionNonProd)
+    ${{ if eq(variables.IsNotPr, 'true') }}:
       Images:
         - Name: stf-mgr-ui
           ApplicationName: ''
@@ -62,6 +64,7 @@ stages:
       Charts:
         - Name: stf-mgr-ui
           ContextDirectory: build/dist-bundles/helm-charts/stf-mgr-ui
+${{ if eq(variables.IsNotPr, 'true') }}:
   - template: aks/helm-deployment.yaml@wfm-templates
     parameters:
       Name: StfMgrUIDev
@@ -135,14 +138,24 @@ stages:
         image.repository=wfmprdacr.azurecr.io/premierinc/wfm/prod/stf-mgr-ui
         image.tag=$(Build.BuildNumber)
       PreDeploySteps:
-        - template: aks/promote-acr-artifact.yaml@wfm-templates
+        - template: aks/promote-image.yaml@wfm-templates
           parameters:
             ArmServiceConnection: $(ArmConnectionProd)
             SourceAcr: wfmnpacr
-            SourceRepository: premierinc/wfm/np/ci/docker
+            SourceRepository: premierinc/wfm/ci/docker/stf-mgr-ui
             SourceTag: $(Build.BuildNumber)
             TargetAcr: wfmprdacr
-            TargetRepository: premierinc/wfm/prod/docker
+            TargetRepository: premierinc/wfm/prod/docker/stf-mgr-ui
+            TargetTag: $(Build.BuildNumber)
+        - template: aks/promote-helm-chart.yaml@wfm-templates
+          parameters:
+            ArmServiceConnection: $(ArmConnectionProd)
+            ChartName: stf-mgr-ui
+            SourceAcr: wfmnpacr
+            SourceRepository: premierinc/wfm/ci/helm
+            SourceTag: $(Build.BuildNumber)
+            TargetAcr: wfmprdacr
+            TargetRepository: premierinc/wfm/prod/helm
             TargetTag: $(Build.BuildNumber)
   - template: aks/helm-deployment.yaml@wfm-templates
     parameters:
