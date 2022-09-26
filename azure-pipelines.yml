@@ -56,7 +56,6 @@ stages:
         - group: "wfm-ucp-np"
         - group: "wfm-staff-scheduler-ui-dev"
       ArmConnection: $(ArmConnectionNonProd)
-    ${{ if eq(variables.IsNotPr, 'true') }}:
       Images:
         - Name: stf-mgr-ui
           ApplicationName: ''
