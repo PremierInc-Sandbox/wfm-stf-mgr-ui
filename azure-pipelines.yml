@@ -64,7 +64,6 @@ stages:
       Charts:
         - Name: stf-mgr-ui
           ContextDirectory: build/dist-bundles/helm-charts/stf-mgr-ui
-${{ if eq(variables.IsNotPr, 'true') }}:
   - template: aks/helm-deployment.yaml@wfm-templates
     parameters:
       Name: StfMgrUIDev
