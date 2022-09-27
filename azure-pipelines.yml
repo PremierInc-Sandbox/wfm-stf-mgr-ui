@@ -48,7 +48,6 @@ stages:
   - template: aks/ci.yaml@wfm-templates
     parameters:
       Name: StfMgrUICI
-      Condition: eq(variables['restart_prod'], 'N')
       GradleBuildTask: 'prepareRelease'
       GradleBuildEnvironment:
         JAVA_HOME: $(SYSTEM_JDK_11)
