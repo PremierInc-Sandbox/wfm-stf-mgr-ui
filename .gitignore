@@ -48,5 +48,5 @@ Thumbs.db
 .gradle
 reports
 src/coverage
-
+buildSrc/build
 build

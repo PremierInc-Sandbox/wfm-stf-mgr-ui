@@ -1,0 +1,21 @@
+parameters:
+  - name: ArmServiceConnection
+  - name: SourceAcr
+  - name: SourceRepository
+  - name: SourceTag
+  - name: TargetAcr
+  - name: TargetRepository
+  - name: TargetTag
+
+steps:
+  - task: AzureCLI@2
+    displayName: Build and push to ACR
+    inputs:
+      azureSubscription: ${{parameters.ArmServiceConnection}}
+      scriptType: bash
+      scriptLocation: inlineScript
+      addSpnToEnvironment: true
+      inlineScript: |
+        az acr import -n ${{parameters.TargetAcr}} \
+        --source ${{parameters.SourceAcr}}.azurecr.io/${{parameters.SourceRepository}}:${{parameters.SourceTag}} \
+        -t ${{parameters.TargetRepository}}:${{parameters.TargetTag}}

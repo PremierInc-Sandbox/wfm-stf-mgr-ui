@@ -1,0 +1,37 @@
+image:
+  repository: "##placeholder"
+  pullPolicy: IfNotPresent
+  tag: "##placeholder"
+
+service:
+  type: ClusterIP
+  port: 8080
+  adminPort: 8081
+
+ingress:
+  enabled: false
+  className: "nginx"
+  hosts: []
+
+livenessProbe:
+  httpGet:
+    port: admin
+    path: /padmin/health
+  periodSeconds: 10
+  timeoutSeconds: 1
+
+readinessProbe:
+  httpGet:
+    port: admin
+    path: /padmin/health
+  periodSeconds: 10
+  timeoutSeconds: 1
+
+appinsights:
+  enabled: false
+
+env:
+  SERVER_SERVLET_CONTEXTPATH: '/pcops/staff-scheduler-ui'
+storageClaims: []
+nasShares: []
+resources: {}
