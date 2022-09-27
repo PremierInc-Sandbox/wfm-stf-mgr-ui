@@ -78,7 +78,7 @@ stages:
       ChartUri: oci://wfmnpacr.azurecr.io/premierinc/wfm/ci/helm/stf-mgr-ui
       ChartVersion: $(Build.BuildNumber)
       ChartValues: |
-        image.repository=wfmnpacr.azurecr.io/premierinc/wfm/ci/stf-mgr-ui
+        image.repository=wfmnpacr.azurecr.io/premierinc/wfm/ci/docker/stf-mgr-ui
         image.tag=$(Build.BuildNumber)
   - template: aks/helm-deployment.yaml@wfm-templates
     parameters:
@@ -100,7 +100,7 @@ stages:
       ChartUri: oci://wfmnpacr.azurecr.io/premierinc/wfm/ci/helm/stf-mgr-ui
       ChartVersion: $(Build.BuildNumber)
       ChartValues: |
-        image.repository=wfmnpacr.azurecr.io/premierinc/wfm/ci/stf-mgr-ui
+        image.repository=wfmnpacr.azurecr.io/premierinc/wfm/ci/docker/stf-mgr-ui
         image.tag=$(Build.BuildNumber)
 #stages:
 #- stage: WFMStaffMgrUIBuild
