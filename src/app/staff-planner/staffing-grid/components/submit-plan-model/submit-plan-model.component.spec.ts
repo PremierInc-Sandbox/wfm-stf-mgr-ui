@@ -14,6 +14,11 @@ import SpyObj = jasmine.SpyObj;
 import {of} from 'rxjs';
 import {deptDetails} from '../../../../shared/service/fixtures/dept-details-data';
 import {staffScheduleData} from '../../../../shared/service/fixtures/staff-schedule-data';
+import {
+  variableDepartmentpositionData,
+  variableDepartmentpositionDataKey
+} from "../../../../shared/service/fixtures/variable-dept-position-data";
+import {staffToPatientData} from "../../../../shared/service/fixtures/staffToPatientList-data";
 
 describe('SubmitPlanModelComponent', () => {
   let component: SubmitPlanModelComponent;
@@ -27,6 +32,8 @@ describe('SubmitPlanModelComponent', () => {
   let testPlanDetailsData = planDetailsData();
   let testStaffSchedule = staffScheduleData();
   let testDeptDetailsData = deptDetails();
+  const variableDepartmentDataTest = variableDepartmentpositionDataKey();
+  const teststaffToPatientData = staffToPatientData();
   const departmentServiceSpyObj: SpyObj<DepartmentService> = jasmine.createSpyObj(['getDepts']);
   const planServiceSpyObj: SpyObj<PlanService> = jasmine.createSpyObj(['updatePlanAsActive', 'getPlans']);
   const staffGridServiceSpyObj: SpyObj<StaffGridService> = jasmine.createSpyObj(['saveStaffGridDetails']);
@@ -106,13 +113,10 @@ describe('SubmitPlanModelComponent', () => {
   });
   it('should validate total value and return true', () => {
     expect(component.isError).toBe(true);
-    // testPlanDetailsData[0].staffScheduleList[0].planShiftList[0].staffGridCensuses[0].censusIndex;
-    expect(component.errormsg).toContain('Please update staffing grid for variable positions for census levels - ' +
-      "0,2. in the ' ' Schedule tab.");
   });
   it('should validate total value and return false', () => {
     spyOn(component, 'getTotal').and.returnValue('1');
-    expect(component.validateTotalvalue()).toBe(true);
+    expect(component.validateTotalvalue()).toBe(false);
     expect(component.isError).toBe(true);
     // testPlanDetailsData[0].staffScheduleList[0].planShiftList[0].staffGridCensuses[0].censusIndex;
   });
@@ -168,14 +172,22 @@ describe('SubmitPlanModelComponent', () => {
   });
 
 
-  it('should get total and return 0.0 when variable position is not included', () => {
+  it('should get total and return 2.0 when minimum of one variable position is included', () => {
+    component.isIncluded = true;
+    testPlanDetailsData[0].staffScheduleList[0].planShiftList[0].staffGridCensuses[0].staffToPatientList[0]=teststaffToPatientData[1]
+    testPlanDetailsData[0].variableDepartmentPositions[0] = variableDepartmentDataTest[1];
     testPlanDetailsData[0].staffScheduleList[0].planShiftList[0].staffGridCensuses[0].staffToPatientList[0].staffCount = 2;
-    expect(component.getTotal(testPlanDetailsData[0].staffScheduleList[0].planShiftList[0].staffGridCensuses[0])).toEqual('0.0');
+    expect(component.getTotal(testPlanDetailsData[0].staffScheduleList[0].planShiftList[0].staffGridCensuses[0])).toEqual('2.0');
   });
   it('should get total and return 2.0 planShiftList variable position is included', () => {
+    component.isIncluded = true;
     testPlanDetailsData[0].staffScheduleList[0].planShiftList[0].staffGridCensuses[0].staffToPatientList[0].staffCount = 2;
-    spyOn(component, 'checkIsIncluded').and.returnValue(true);
     expect(component.getTotal(testPlanDetailsData[0].staffScheduleList[0].planShiftList[0].staffGridCensuses[0])).toEqual('2.0');
+  });
+  it('should get total and return 0.0 when no variable position is included', () => {
+    testPlanDetailsData[0].variableDepartmentPositions[0] = variableDepartmentDataTest[0];
+    testPlanDetailsData[0].staffScheduleList[0].planShiftList[0].staffGridCensuses[0].staffToPatientList[0].staffCount = 2;
+    expect(component.getTotal(testPlanDetailsData[0].staffScheduleList[0].planShiftList[0].staffGridCensuses[0])).toEqual('0.0');
   });
   it('should check if date range is overlapping', () => {
     testPlanDetailsData[0].effectiveStartDate = 1;
@@ -196,5 +208,15 @@ describe('SubmitPlanModelComponent', () => {
   it('should variable position is included', () => {
     component.planDetails = testPlanDetailsData[0];
     expect(component.checkIsIncluded(1)).toBe(true);
+  });
+  it('should getSumofRowandCol and return false', () => {
+    spyOn(component, 'getSumofRowandCol').and.returnValue(true);
+    expect(component.validateTotalvalue()).toBe(false);
+    expect(component.isError).toBe(true);
+  });
+  it('should getSumofRowandCol and return true', () => {
+    spyOn(component, 'getSumofRowandCol').and.returnValue(false);
+    expect(component.validateTotalvalue()).toBe(true);
+    expect(component.isError).toBe(true);
   });
 });

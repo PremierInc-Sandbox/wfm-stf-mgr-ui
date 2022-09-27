@@ -265,7 +265,7 @@ describe('PlanSetupComponent', () => {
     expect(localStorage.getItem('Departmentid')).toBe('');
     expect(localStorage.getItem('Enitityid')).toBe('');
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/home']);
-    expect(component.plan.censusRange.minimumCensus).toBe(component.cmin);
+    expect(component.plan.censusRange.minimumCensus).toBeLessThan(component.cmin);
 
   });
   it('should open dialog ', () => {

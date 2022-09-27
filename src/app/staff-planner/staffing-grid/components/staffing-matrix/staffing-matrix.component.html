@@ -147,8 +147,8 @@
                           <tr>
                             <td class="shiftColCell" *ngFor="let stp of cen.staffToPatientList; let k = index" [ngClass]="{'hide':!stp.activeFlag,'singleShiftRowBorderBottom':getColSpan(shift) == 1 || getColSpan(shift) == 2}">
                               <div  *ngIf="stp.activeFlag" matTooltip="{{planDetails.variableDepartmentPositions[k].categoryDescription}}">
-                              <input [disabled]="planDetails.planCompleted" type="number" pattern="[0-9]" (keypress)="numberOnly($event);" maxlength="2" placeholder="0" [(ngModel)]="stp.staffCount" class="staffNoInputBox"
-                                    id="{{'grid-'+i+j+k}}" appAutofocus #inputs  />
+                              <input [disabled]="planDetails.planCompleted" type="text" min="0" pattern="[0-9]" (keypress)="numberOnly($event);" maxlength="2" placeholder="0" [(ngModel)]="stp.staffCount" class="staffNoInputBox"
+                                    id="{{'grid-'+i+j+k}}" appAutofocus #inputs (paste)="(false)"/>
                               </div>
                             </td>
                             <td *ngIf="shift.activeFlag" class="b-right shiftColCell" [ngClass]="getColSpan(shift) == 2? 'singleShiftRowBorderBottom' : ''">

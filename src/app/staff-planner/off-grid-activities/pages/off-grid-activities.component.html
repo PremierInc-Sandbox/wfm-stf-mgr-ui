@@ -41,26 +41,7 @@
           <button id='save-exit' class="submitBtn rdcorn"  (click)="saveAndExitPlanDetails()" target="secondary">{{btnExittxt}}</button>&nbsp;&nbsp;
         </div>
       </div>
-    </div>  
-    <!--div class="clearfix pdt-10">
-      <div class="off-grid-tab w-75">
-        <mat-tab-group (selectedTabChange)="checkTabChange()" #pageGroup  [selectedIndex]="previousIndex">
-          <mat-tab label="Staffing Plan Setup" [disabled]="false">
-          </mat-tab>
-          <mat-tab label="Off Grid Activities" [disabled]="false">
-          </mat-tab>
-          <mat-tab label="Grid Setup" [disabled]="false">
-          </mat-tab>
-          <mat-tab label="Staffing Grid" [disabled]="false">
-          </mat-tab>
-        </mat-tab-group>
-      </div>
-      <div class="button-group w-25 align-right" *ngIf="btnExittxt">
-        <button id='plan-next' *ngIf="false"class="submitBtn rdcorn" color="primary" (click)="saveAndNextPlanDetails()">{{btnNexttxt}}</button>
-        <button [hidden]="planDetails.planCompleted" class="submitBtn btn-back"(click)="clickonbackbutton()" target="secondary">Cancel</button>&nbsp;&nbsp;
-        <button id='save-exit' class="submitBtn rdcorn"  (click)="saveAndExitPlanDetails()" target="secondary">{{btnExittxt}}</button>&nbsp;&nbsp;
-      </div>
-    </div-->
+    </div>
   </div>
 </div>
 <div class="view-content">
@@ -78,10 +59,9 @@
       </mat-tab-group>
     </div>
     <div *ngIf="btnExittxt" class="div-align w30 align-right">
-      <button class="rdcorn" (click)="openDialog()" target="secondary">Cancel</button>
-      <button id='save-exit' class="rdcorn" (click)="onSubmit('Save-Exit')" target="secondary">{{btnExittxt}}</button>
-      <button class="submitBtn pointer rdcorn margin-left" target="secondary" (click)="onSubmit('Save')"> Save
-      </button>
+      <button id='plan-next' *ngIf="false"class="submitBtn rdcorn" color="primary" (click)="saveAndNextPlanDetails()">{{btnNexttxt}}</button>
+      <button [hidden]="planDetails.planCompleted" class="submitBtn btn-back"(click)="clickonbackbutton()" target="secondary">Cancel</button>&nbsp;&nbsp;
+      <button id='save-exit' class="submitBtn rdcorn"  (click)="saveAndExitPlanDetails()" target="secondary">{{btnExittxt}}</button>&nbsp;&nbsp;
     </div>
   </div>
   <div class="offGridContainer">

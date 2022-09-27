@@ -26,4 +26,5 @@ export class StaffVariance {
   public planAlreadyInUse = false;
   public disableFlag = false;
   public commentsUpdatedBy: string;
+  public activeManagerUser: string;
 }

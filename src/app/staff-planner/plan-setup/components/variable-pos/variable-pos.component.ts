@@ -132,7 +132,10 @@ export class VariablePosComponent implements OnInit {
 
         if (index !== -1) {
           this.plan.variableDepartmentPositions.splice(index, 1);
-          this.isMaxIndex = false;
+          let isDuplicateDescription = this.checkForDuplicatesInVariablePosition();
+          if(!isDuplicateDescription){
+            this.error = new CustomError();
+          }
         }
       }
       document.body.classList.remove('pr-modal-open');
@@ -156,14 +159,17 @@ export class VariablePosComponent implements OnInit {
         errorMessage: 'The description already exists.'
       };
       this.isMaxIndex = true;
-    }
-    else{
-      this.error=new CustomError();
+    } else{
+      let isDuplicateDescription = this.checkForDuplicatesInVariablePosition();
+      if(!isDuplicateDescription){
+        this.error = new CustomError();
+      }
     }
 
 
   }
   changeCategory(selection, index, staff: VariableDepartmentPosition): void {
+
     this.isSaveNextBtnSubmit = false;
     this.showError = false;
       const objjob: JobCategory = this.jobCatgData.filter(dat => dat.key.toString() === selection.target.value.toString())[0];
@@ -172,16 +178,34 @@ export class VariablePosComponent implements OnInit {
       staff.categoryDescription = objjob.description;
     this.strVariablePosition = JSON.stringify(this.plan.variableDepartmentPositions);
 
-      if(this.plan.variableDepartmentPositions.filter(ele => ele.categoryKey === objjob.key && ele.categoryDescription.toUpperCase() === objjob.description.toUpperCase()).length > 1)
-      {
+
+    if (this.plan.variableDepartmentPositions.filter(ele => ele.categoryKey === objjob.key && ele.categoryDescription.toUpperCase() === objjob.description.toUpperCase()).length > 1) {
+      this.error = {
+        isError: true,
+        errorMessage: 'Duplicate description exists.'
+      };
+      this.isMaxIndex = true;
+    } else {
+      let isDuplicateDescription = this.checkForDuplicatesInVariablePosition();
+      if(!isDuplicateDescription){
+        this.error = new CustomError();
+      }
+    }
+  }
+
+  checkForDuplicatesInVariablePosition(): Boolean {
+    let isDuplicateDescription: Boolean;
+    this.plan.variableDepartmentPositions.forEach(element => {
+      if (this.plan.variableDepartmentPositions.filter(ele => ele.categoryKey === element.categoryKey && ele.categoryDescription.toUpperCase() ===
+        element.categoryDescription.toUpperCase()).length > 1) {
+        isDuplicateDescription = true;
         this.error = {
           isError: true,
           errorMessage: 'Duplicate description exists.'
         };
         this.isMaxIndex = true;
       }
-      else{
-          this.error =new CustomError();}
-
-}
+    });
+    return isDuplicateDescription;
+  }
 }
