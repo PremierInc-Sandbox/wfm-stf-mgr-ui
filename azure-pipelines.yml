@@ -58,178 +58,178 @@ stages:
         - group: "wfm-staff-scheduler-ui-dev"
       ArmConnection: $(ArmConnectionNonProd)
       ${{ if eq(variables.IsNotPr, 'true') }}:
-      Images:
-        - Name: stf-mgr-ui
-          ApplicationName: ''
-          ContextDirectory: build/dist-bundles/docker/UI
-      Charts:
-        - Name: stf-mgr-ui
-          ContextDirectory: build/dist-bundles/helm-charts/stf-mgr-ui
+        Images:
+          - Name: stf-mgr-ui
+            ApplicationName: ''
+            ContextDirectory: build/dist-bundles/docker/UI
+        Charts:
+          - Name: stf-mgr-ui
+            ContextDirectory: build/dist-bundles/helm-charts/stf-mgr-ui
   - ${{ if eq(variables.IsNotPr, 'true') }}:
       - template: aks/helm-deployment.yaml@wfm-templates
         parameters:
-        Name: StfMgrUIDev
-        Condition: and(succeeded(), eq(variables['IsDevelop'], 'true'))
-        DisplayName: DEV StfMgr UI
-        DependsOn: [ 'StfMgrUICI' ]
-        DeploymentVariables:
-          - group: "wfm-staff-scheduler-ui-dev"
-          - group: "wfm-ucp-np"
-        Environments:
-        - Name: dev
-          Target: wfm-staff-scheduler-ui-dev
-          EnvironmentName: dev
-          KubernetesServiceConnection: WFMwfm-dev-eastus
-        ArmConnection: $(ArmConnectionNonProd)
-        KubernetesNamespace: wfm-dev
-        ReleaseName: wfm-stf-mgr-ui
-        ChartRegistry: wfmnpacr
-        ChartName: stf-mgr-ui
-        ChartUri: oci://wfmnpacr.azurecr.io/premierinc/wfm/ci/helm/stf-mgr-ui
-        ChartVersion: $(Build.BuildNumber)
-        ChartValues: |
-          image.repository=wfmnpacr.azurecr.io/premierinc/wfm/ci/stf-mgr-ui
-          image.tag=$(Build.BuildNumber)
-  - template: aks/helm-deployment.yaml@wfm-templates
-    parameters:
-      Name: StfMgrUIQA
-      Condition: and(succeeded(), eq(variables['IsDevelop'], 'true'))
-      DisplayName: QA StfMgr UI
-      DependsOn: [ 'StfMgrUIDev' ]
-      DeploymentVariables:
-        - group: "wfm-staff-scheduler-ui-qa"
-        - group: "wfm-ucp-np"
-      Environments:
-        - Name: qa
-          Target: wfm-staff-scheduler-ui-qa
-          EnvironmentName: qa
-          KubernetesServiceConnection: WFMwfm-qa-eastus
-      ArmConnection: $(ArmConnectionNonProd)
-      KubernetesNamespace: wfm-qa
-      ReleaseName: wfm-stf-mgr-ui
-      ChartRegistry: wfmnpacr
-      ChartName: stf-mgr-ui
-      ChartUri: oci://wfmnpacr.azurecr.io/premierinc/wfm/ci/helm/stf-mgr-ui
-      ChartVersion: $(Build.BuildNumber)
-      ChartValues: |
-        image.repository=wfmnpacr.azurecr.io/premierinc/wfm/ci/stf-mgr-ui
-        image.tag=$(Build.BuildNumber)
-  - template: aks/helm-deployment.yaml@wfm-templates
-    parameters:
-      Name: StfMgrUIUAT
-      DisplayName: UAT StfMgr UI
-      DependsOn: [ 'StfMgrUICI' ]
-      Condition: and(succeeded(), or(eq(variables['IsRc'], 'true'), eq(variables['IsRelease'], 'true')), eq(variables['restart_prod'], 'N'))
-      DeploymentVariables:
-        - group: "wfm-staff-scheduler-ui-uat"
-        - group: "wfm-ucp-prod"
-      Environments:
-        - Name: uat
-          Target: wfm-staff-scheduler-ui-uat
-          EnvironmentName: uat
-          KubernetesServiceConnection: WFMwfm-uat-eastus
-      ArmConnection: $(ArmConnectionProd)
-      KubernetesNamespace: wfm-uat
-      ReleaseName: wfm-stf-mgr-ui
-      ChartRegistry: wfmprdacr
-      ChartName: stf-mgr-ui
-      ChartUri: oci://wfmprdacr.azurecr.io/premierinc/wfm/prod/helm/stf-mgr-ui
-      ChartVersion: $(Build.BuildNumber)
-      ChartValues: |
-        image.repository=wfmprdacr.azurecr.io/premierinc/wfm/prod/stf-mgr-ui
-        image.tag=$(Build.BuildNumber)
-      PreDeploySteps:
-        - template: aks/promote-image.yaml@wfm-templates
-          parameters:
-            ArmServiceConnection: $(ArmConnectionProd)
-            SourceAcr: wfmnpacr
-            SourceRepository: premierinc/wfm/ci/docker/stf-mgr-ui
-            SourceTag: $(Build.BuildNumber)
-            TargetAcr: wfmprdacr
-            TargetRepository: premierinc/wfm/prod/docker/stf-mgr-ui
-            TargetTag: $(Build.BuildNumber)
-        - template: aks/promote-helm-chart.yaml@wfm-templates
-          parameters:
-            ArmServiceConnection: $(ArmConnectionProd)
-            ChartName: stf-mgr-ui
-            SourceAcr: wfmnpacr
-            SourceRepository: premierinc/wfm/ci/helm
-            SourceTag: $(Build.BuildNumber)
-            TargetAcr: wfmprdacr
-            TargetRepository: premierinc/wfm/prod/helm
-            TargetTag: $(Build.BuildNumber)
-  - template: aks/helm-deployment.yaml@wfm-templates
-    parameters:
-      Name: StfMgrUIPerf
-      DisplayName: Perf StfMgr UI
-      DependsOn: [ 'StfMgrUIUAT' ]
-      Condition: and(succeeded(), or(eq(variables['IsRc'], 'true'), eq(variables['IsRelease'], 'true')), eq(variables['restart_prod'], 'N'))
-      DeploymentVariables:
-        - group: "wfm-staff-scheduler-ui-perf"
-        - group: "wfm-ucp-prod"
-      Environments:
-        - Name: perf
-          Target: wfm-staff-scheduler-ui-perf
-          EnvironmentName: perf
-          KubernetesServiceConnection: WFMwfm-perf-eastus
-      ArmConnection: $(ArmConnectionProd)
-      KubernetesNamespace: wfm-perf
-      ReleaseName: wfm-stf-mgr-ui
-      ChartRegistry: wfmprdacr
-      ChartName: stf-mgr-ui
-      ChartUri: oci://wfmprdacr.azurecr.io/premierinc/wfm/prod/helm/stf-mgr-ui
-      ChartVersion: $(Build.BuildNumber)
-      ChartValues: |
-        image.repository=wfmprdacr.azurecr.io/premierinc/wfm/prod/stf-mgr-ui
-        image.tag=$(Build.BuildNumber)
-  - template: aks/helm-deployment.yaml@wfm-templates
-    parameters:
-      Name: StfMgrUIProd
-      DisplayName: Prod StfMgr UI
-      DependsOn: [ 'StfMgrUIUAT' ]
-      Condition: and(succeeded(), eq(variables['IsRelease'], 'true'), eq(variables['restart_prod'], 'N'))
-      DeploymentVariables:
-        - group: "wfm-staff-scheduler-ui-prod"
-        - group: "wfm-ucp-prod"
-      Environments:
-        - Name: prod
-          Target: wfm-staff-scheduler-ui-prod
-          EnvironmentName: prod
-          KubernetesServiceConnection: WFMwfm-prd-eastus
-      ArmConnection: $(ArmConnectionProd)
-      KubernetesNamespace: wfm-prod
-      ReleaseName: wfm-stf-mgr-ui
-      ChartRegistry: wfmprdacr
-      ChartName: stf-mgr-ui
-      ChartUri: oci://wfmprdacr.azurecr.io/premierinc/wfm/prod/helm/stf-mgr-ui
-      ChartVersion: $(Build.BuildNumber)
-      ChartValues: |
-        image.repository=wfmprdacr.azurecr.io/premierinc/wfm/prod/stf-mgr-ui
-        image.tag=$(Build.BuildNumber)
-  - template: aks/helm-deployment.yaml@wfm-templates
-    parameters:
-      Name: StfMgrUIProdRestart
-      DisplayName: Prod StfMgr UI Restart
-      DependsOn: [ 'StfMgrUIUAT' ]
-      Condition: eq(variables['restart_prod'], 'Y')
-      DeploymentVariables:
-        - group: "wfm-staff-scheduler-ui-prod"
-        - group: "wfm-ucp-prod"
-      Environments:
-        - Name: prod
-          Target: wfm-staff-scheduler-ui-prod
-          EnvironmentName: prod
-          KubernetesServiceConnection: WFMwfm-prd-eastus
-      ArmConnection: $(ArmConnectionProd)
-      KubernetesNamespace: wfm-prod
-      ReleaseName: wfm-stf-mgr-ui
-      ChartRegistry: wfmprdacr
-      ChartName: stf-mgr-ui
-      ChartUri: oci://wfmprdacr.azurecr.io/premierinc/wfm/prod/helm/stf-mgr-ui
-      ChartVersion: $(Build.BuildNumber)
-      ChartValues: |
-        image.repository=wfmprdacr.azurecr.io/premierinc/wfm/prod/stf-mgr-ui
-        image.tag=$(Build.BuildNumber)
+          Name: StfMgrUIDev
+          Condition: and(succeeded(), eq(variables['IsDevelop'], 'true'))
+          DisplayName: DEV StfMgr UI
+          DependsOn: [ 'StfMgrUICI' ]
+          DeploymentVariables:
+            - group: "wfm-staff-scheduler-ui-dev"
+            - group: "wfm-ucp-np"
+          Environments:
+            - Name: dev
+              Target: wfm-staff-scheduler-ui-dev
+              EnvironmentName: dev
+              KubernetesServiceConnection: WFMwfm-dev-eastus
+          ArmConnection: $(ArmConnectionNonProd)
+          KubernetesNamespace: wfm-dev
+          ReleaseName: wfm-stf-mgr-ui
+          ChartRegistry: wfmnpacr
+          ChartName: stf-mgr-ui
+          ChartUri: oci://wfmnpacr.azurecr.io/premierinc/wfm/ci/helm/stf-mgr-ui
+          ChartVersion: $(Build.BuildNumber)
+          ChartValues: |
+            image.repository=wfmnpacr.azurecr.io/premierinc/wfm/ci/stf-mgr-ui
+            image.tag=$(Build.BuildNumber)
+      - template: aks/helm-deployment.yaml@wfm-templates
+        parameters:
+          Name: StfMgrUIQA
+          Condition: and(succeeded(), eq(variables['IsDevelop'], 'true'))
+          DisplayName: QA StfMgr UI
+          DependsOn: [ 'StfMgrUIDev' ]
+          DeploymentVariables:
+            - group: "wfm-staff-scheduler-ui-qa"
+            - group: "wfm-ucp-np"
+          Environments:
+            - Name: qa
+              Target: wfm-staff-scheduler-ui-qa
+              EnvironmentName: qa
+              KubernetesServiceConnection: WFMwfm-qa-eastus
+          ArmConnection: $(ArmConnectionNonProd)
+          KubernetesNamespace: wfm-qa
+          ReleaseName: wfm-stf-mgr-ui
+          ChartRegistry: wfmnpacr
+          ChartName: stf-mgr-ui
+          ChartUri: oci://wfmnpacr.azurecr.io/premierinc/wfm/ci/helm/stf-mgr-ui
+          ChartVersion: $(Build.BuildNumber)
+          ChartValues: |
+            image.repository=wfmnpacr.azurecr.io/premierinc/wfm/ci/stf-mgr-ui
+            image.tag=$(Build.BuildNumber)
+      - template: aks/helm-deployment.yaml@wfm-templates
+        parameters:
+          Name: StfMgrUIUAT
+          DisplayName: UAT StfMgr UI
+          DependsOn: [ 'StfMgrUICI' ]
+          Condition: and(succeeded(), or(eq(variables['IsRc'], 'true'), eq(variables['IsRelease'], 'true')), eq(variables['restart_prod'], 'N'))
+          DeploymentVariables:
+            - group: "wfm-staff-scheduler-ui-uat"
+            - group: "wfm-ucp-prod"
+          Environments:
+            - Name: uat
+              Target: wfm-staff-scheduler-ui-uat
+              EnvironmentName: uat
+              KubernetesServiceConnection: WFMwfm-uat-eastus
+          ArmConnection: $(ArmConnectionProd)
+          KubernetesNamespace: wfm-uat
+          ReleaseName: wfm-stf-mgr-ui
+          ChartRegistry: wfmprdacr
+          ChartName: stf-mgr-ui
+          ChartUri: oci://wfmprdacr.azurecr.io/premierinc/wfm/prod/helm/stf-mgr-ui
+          ChartVersion: $(Build.BuildNumber)
+          ChartValues: |
+            image.repository=wfmprdacr.azurecr.io/premierinc/wfm/prod/stf-mgr-ui
+            image.tag=$(Build.BuildNumber)
+          PreDeploySteps:
+            - template: aks/promote-image.yaml@wfm-templates
+              parameters:
+                ArmServiceConnection: $(ArmConnectionProd)
+                SourceAcr: wfmnpacr
+                SourceRepository: premierinc/wfm/ci/docker/stf-mgr-ui
+                SourceTag: $(Build.BuildNumber)
+                TargetAcr: wfmprdacr
+                TargetRepository: premierinc/wfm/prod/docker/stf-mgr-ui
+                TargetTag: $(Build.BuildNumber)
+            - template: aks/promote-helm-chart.yaml@wfm-templates
+              parameters:
+                ArmServiceConnection: $(ArmConnectionProd)
+                ChartName: stf-mgr-ui
+                SourceAcr: wfmnpacr
+                SourceRepository: premierinc/wfm/ci/helm
+                SourceTag: $(Build.BuildNumber)
+                TargetAcr: wfmprdacr
+                TargetRepository: premierinc/wfm/prod/helm
+                TargetTag: $(Build.BuildNumber)
+      - template: aks/helm-deployment.yaml@wfm-templates
+        parameters:
+          Name: StfMgrUIPerf
+          DisplayName: Perf StfMgr UI
+          DependsOn: [ 'StfMgrUIUAT' ]
+          Condition: and(succeeded(), or(eq(variables['IsRc'], 'true'), eq(variables['IsRelease'], 'true')), eq(variables['restart_prod'], 'N'))
+          DeploymentVariables:
+            - group: "wfm-staff-scheduler-ui-perf"
+            - group: "wfm-ucp-prod"
+          Environments:
+            - Name: perf
+              Target: wfm-staff-scheduler-ui-perf
+              EnvironmentName: perf
+              KubernetesServiceConnection: WFMwfm-perf-eastus
+          ArmConnection: $(ArmConnectionProd)
+          KubernetesNamespace: wfm-perf
+          ReleaseName: wfm-stf-mgr-ui
+          ChartRegistry: wfmprdacr
+          ChartName: stf-mgr-ui
+          ChartUri: oci://wfmprdacr.azurecr.io/premierinc/wfm/prod/helm/stf-mgr-ui
+          ChartVersion: $(Build.BuildNumber)
+          ChartValues: |
+            image.repository=wfmprdacr.azurecr.io/premierinc/wfm/prod/stf-mgr-ui
+            image.tag=$(Build.BuildNumber)
+      - template: aks/helm-deployment.yaml@wfm-templates
+        parameters:
+          Name: StfMgrUIProd
+          DisplayName: Prod StfMgr UI
+          DependsOn: [ 'StfMgrUIUAT' ]
+          Condition: and(succeeded(), eq(variables['IsRelease'], 'true'), eq(variables['restart_prod'], 'N'))
+          DeploymentVariables:
+            - group: "wfm-staff-scheduler-ui-prod"
+            - group: "wfm-ucp-prod"
+          Environments:
+            - Name: prod
+              Target: wfm-staff-scheduler-ui-prod
+              EnvironmentName: prod
+              KubernetesServiceConnection: WFMwfm-prd-eastus
+          ArmConnection: $(ArmConnectionProd)
+          KubernetesNamespace: wfm-prod
+          ReleaseName: wfm-stf-mgr-ui
+          ChartRegistry: wfmprdacr
+          ChartName: stf-mgr-ui
+          ChartUri: oci://wfmprdacr.azurecr.io/premierinc/wfm/prod/helm/stf-mgr-ui
+          ChartVersion: $(Build.BuildNumber)
+          ChartValues: |
+            image.repository=wfmprdacr.azurecr.io/premierinc/wfm/prod/stf-mgr-ui
+            image.tag=$(Build.BuildNumber)
+      - template: aks/helm-deployment.yaml@wfm-templates
+        parameters:
+          Name: StfMgrUIProdRestart
+          DisplayName: Prod StfMgr UI Restart
+          DependsOn: [ 'StfMgrUIUAT' ]
+          Condition: eq(variables['restart_prod'], 'Y')
+          DeploymentVariables:
+            - group: "wfm-staff-scheduler-ui-prod"
+            - group: "wfm-ucp-prod"
+          Environments:
+            - Name: prod
+              Target: wfm-staff-scheduler-ui-prod
+              EnvironmentName: prod
+              KubernetesServiceConnection: WFMwfm-prd-eastus
+          ArmConnection: $(ArmConnectionProd)
+          KubernetesNamespace: wfm-prod
+          ReleaseName: wfm-stf-mgr-ui
+          ChartRegistry: wfmprdacr
+          ChartName: stf-mgr-ui
+          ChartUri: oci://wfmprdacr.azurecr.io/premierinc/wfm/prod/helm/stf-mgr-ui
+          ChartVersion: $(Build.BuildNumber)
+          ChartValues: |
+            image.repository=wfmprdacr.azurecr.io/premierinc/wfm/prod/stf-mgr-ui
+            image.tag=$(Build.BuildNumber)
 #stages:
 #- stage: WFMStaffMgrUIBuild
 #  jobs:
