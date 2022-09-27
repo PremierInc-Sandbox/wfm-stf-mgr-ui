@@ -66,30 +66,30 @@ stages:
         - Name: stf-mgr-ui
           ContextDirectory: build/dist-bundles/helm-charts/stf-mgr-ui
   - ${{ if eq(variables.IsNotPr, 'true') }}:
-  - template: aks/helm-deployment.yaml@wfm-templates
-    parameters:
-      Name: StfMgrUIDev
-      Condition: and(succeeded(), eq(variables['IsDevelop'], 'true'))
-      DisplayName: DEV StfMgr UI
-      DependsOn: [ 'StfMgrUICI' ]
-      DeploymentVariables:
-        - group: "wfm-staff-scheduler-ui-dev"
-        - group: "wfm-ucp-np"
-      Environments:
+      - template: aks/helm-deployment.yaml@wfm-templates
+        parameters:
+        Name: StfMgrUIDev
+        Condition: and(succeeded(), eq(variables['IsDevelop'], 'true'))
+        DisplayName: DEV StfMgr UI
+        DependsOn: [ 'StfMgrUICI' ]
+        DeploymentVariables:
+          - group: "wfm-staff-scheduler-ui-dev"
+          - group: "wfm-ucp-np"
+        Environments:
         - Name: dev
           Target: wfm-staff-scheduler-ui-dev
           EnvironmentName: dev
           KubernetesServiceConnection: WFMwfm-dev-eastus
-      ArmConnection: $(ArmConnectionNonProd)
-      KubernetesNamespace: wfm-dev
-      ReleaseName: wfm-stf-mgr-ui
-      ChartRegistry: wfmnpacr
-      ChartName: stf-mgr-ui
-      ChartUri: oci://wfmnpacr.azurecr.io/premierinc/wfm/ci/helm/stf-mgr-ui
-      ChartVersion: $(Build.BuildNumber)
-      ChartValues: |
-        image.repository=wfmnpacr.azurecr.io/premierinc/wfm/ci/stf-mgr-ui
-        image.tag=$(Build.BuildNumber)
+        ArmConnection: $(ArmConnectionNonProd)
+        KubernetesNamespace: wfm-dev
+        ReleaseName: wfm-stf-mgr-ui
+        ChartRegistry: wfmnpacr
+        ChartName: stf-mgr-ui
+        ChartUri: oci://wfmnpacr.azurecr.io/premierinc/wfm/ci/helm/stf-mgr-ui
+        ChartVersion: $(Build.BuildNumber)
+        ChartValues: |
+          image.repository=wfmnpacr.azurecr.io/premierinc/wfm/ci/stf-mgr-ui
+          image.tag=$(Build.BuildNumber)
   - template: aks/helm-deployment.yaml@wfm-templates
     parameters:
       Name: StfMgrUIQA
