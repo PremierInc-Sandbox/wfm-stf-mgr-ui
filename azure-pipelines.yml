@@ -7,10 +7,10 @@ pool:
   - SYSTEM_JDK_11
 
 variables:
-  IsDevelop: $[eq( variables['Build.SourceBranch'], 'refs/heads/develop' )]
+  IsDevelop: ${{ eq( variables['Build.SourceBranch'], 'refs/heads/develop' ) }}
+  IsRc: ${{ contains( variables['Build.SourceBranch'], 'refs/heads/rc' ) }}
+  IsRelease: ${{ contains( variables['Build.SourceBranch'], 'refs/heads/release' ) }}
   IsNotPr: ${{ ne( variables['Build.Reason'], 'PullRequest' ) }}
-  IsRc: $[contains( variables['Build.SourceBranch'], 'refs/heads/rc' )]
-  IsRelease: $[contains( variables['Build.SourceBranch'], 'refs/heads/release' )]
   ArmConnectionNonProd: WFMDevacr-east_SC
   ArmConnectionProd: SC_wfmprdacr
 
