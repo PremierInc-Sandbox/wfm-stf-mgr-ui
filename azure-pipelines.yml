@@ -68,24 +68,24 @@ stages:
         artifact: wfm_artifacts
         displayName: Publish Artifacts
 
-  - job: BlackduckScan
-    dependsOn: ['WFMStaffMgrUIBuild']
-    displayName: Blackduck Scan
-    variables:
-      - group: 'SDLC Credentials'
-      - name: APP_VERSION
-        value: $[ stageDependencies.WFMStaffMgrUIBuild.WFMStaffMgrUIBuild.outputs['set_version.APP_VERSION'] ]
-    steps:
-    - bash: chmod +x ./gradlew
-    - template: blackduck-scan.yml@sdlc_templates
-      parameters:
-        BLACKDUCK_API_TOKEN: $(BLACKDUCK_API_TOKEN)
-        BRANCH_SCAN_LIST: "main*,*develop*"
-        DISTRIBUTION: "SAAS"
-        PROJECT_NAME: "pcops:pco-staff-scheduler-ui"
-        SOURCE_PATH: "$(Build.SourcesDirectory)"
-        PROJECT_VERSION: "$(APP_VERSION)"
-        TEAM: "PCOPS"
+  #- job: BlackduckScan
+    #dependsOn: ['WFMStaffMgrUIBuild']
+    #displayName: Blackduck Scan
+    #variables:
+      #- group: 'SDLC Credentials'
+      #- name: APP_VERSION
+        #value: $[ stageDependencies.WFMStaffMgrUIBuild.WFMStaffMgrUIBuild.outputs['set_version.APP_VERSION'] ]
+    #steps:
+    #- bash: chmod +x ./gradlew
+    #- template: blackduck-scan.yml@sdlc_templates
+      #parameters:
+        #BLACKDUCK_API_TOKEN: $(BLACKDUCK_API_TOKEN)
+        #BRANCH_SCAN_LIST: "main*,*develop*"
+        #DISTRIBUTION: "SAAS"
+        #PROJECT_NAME: "pcops:pco-staff-scheduler-ui"
+        #SOURCE_PATH: "$(Build.SourcesDirectory)"
+        #PROJECT_VERSION: "$(APP_VERSION)"
+        #TEAM: "PCOPS"
 
 - stage: 'DEV_DEPLOY'
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
