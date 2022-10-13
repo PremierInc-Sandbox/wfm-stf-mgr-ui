@@ -113,7 +113,7 @@ stages:
       parameters:
         Name: StfMgrUIUAT
         DisplayName: UAT StfMgr UI
-        Condition: and(succeeded(), or(eq(variables['IsRc'], 'true'), eq(variables['IsRelease'], 'true')), eq(variables['restart_prod'], 'N'))
+        Condition: and(succeeded(), or(eq(variables['IsRc'], 'true'), eq(variables['IsRelease'], 'true')))
         DependsOn: [ 'StfMgrUICI' ]
         DeploymentVariables:
           - group: "keyvault-credentials-prod"
@@ -156,7 +156,7 @@ stages:
       parameters:
         Name: StfMgrUIPerf
         DisplayName: Perf StfMgr UI
-        Condition: and(succeeded(), or(eq(variables['IsRc'], 'true'), eq(variables['IsRelease'], 'true')), eq(variables['restart_prod'], 'N'))
+        Condition: and(succeeded(), or(eq(variables['IsRc'], 'true'), eq(variables['IsRelease'], 'true')))
         DependsOn: [ 'StfMgrUIUAT' ]
         DeploymentVariables:
           - group: "keyvault-credentials-prod"
@@ -179,7 +179,7 @@ stages:
       parameters:
         Name: StfMgrUIProd
         DisplayName: Prod StfMgr UI
-        Condition: and(succeeded(), eq(variables['IsRelease'], 'true'), eq(variables['restart_prod'], 'N'))
+        Condition: and(succeeded(), eq(variables['IsRelease'], 'true'))
         DependsOn: [ 'StfMgrUIUAT' ]
         DeploymentVariables:
           - group: "keyvault-credentials-prod"
