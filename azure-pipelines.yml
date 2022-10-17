@@ -189,7 +189,7 @@ stages:
             EnvironmentName: prod
             KubernetesServiceConnection: WFMwfm-prd-eastus
         ArmConnection: $(ArmConnectionProd)
-        KubernetesNamespace: wfm-prod
+        KubernetesNamespace: wfm-prd
         ReleaseName: wfm-stf-mgr-ui
         ChartRegistry: wfmprdacr
         ChartName: stf-mgr-ui
