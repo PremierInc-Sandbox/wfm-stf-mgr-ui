@@ -1,5 +1,8 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": "37f5214e-287b-4c34-b740-e88d4d9d28ca"
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
@@ -13,6 +16,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "sourceMap": true,
             "aot": true,
             "baseHref": "/pcops/staff-scheduler-ui/",
             "deployUrl": "/pcops/staff-scheduler-ui/",
@@ -21,6 +25,7 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
+            "sourceMap": true,
             "assets": [
               "src/favicon.ico",
               "src/assets"

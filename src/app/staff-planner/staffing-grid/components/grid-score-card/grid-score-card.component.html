@@ -37,13 +37,11 @@
         <div class="col">
           <div class="title">annual total hrs. variance</div>
           <div class="titleValue" *ngIf="isAnnualTotalHoursVariencepositive">
-              <app-svg-icon *ngIf="!isAnnualTotalHoursVariencepositive" name="x-circle" color="red"  size="20"></app-svg-icon>
-              <app-svg-icon *ngIf="isAnnualTotalHoursVariencepositive" name="check-circle" color="green" size="20"></app-svg-icon>
+              <app-svg-icon name="x-circle" color="red"  size="20"></app-svg-icon>
             {{ isNumber(annualTotalHoursVarience) | number }}<sub>({{ check(annualTotalHoursVarienceFte)?annualTotalHoursVarienceFte.toFixed(2):'-'}} FTEs)</sub>
           </div>
           <div class="titleValue" *ngIf="!isAnnualTotalHoursVariencepositive">
-            <app-svg-icon *ngIf="!isAnnualTotalHoursVariencepositive" name="x-circle" color="red"  size="20"></app-svg-icon>
-            <app-svg-icon *ngIf="isAnnualTotalHoursVariencepositive" name="check-circle" color="green" size="20"></app-svg-icon>
+            <app-svg-icon name="check-circle" color="green" size="20"></app-svg-icon>
             ({{(-1 * annualTotalHoursVarience) | number}})<sub>({{ check(annualTotalHoursVarienceFte)?annualTotalHoursVarienceFte.toFixed(2):'-'}} FTEs)</sub>
           </div>
         </div>

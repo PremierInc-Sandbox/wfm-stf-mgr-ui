@@ -858,6 +858,11 @@ table{
       width: 100%;
     }
   }
+  td.mat-column-dateUpdated,td.leftAlign{
+    label{
+      display: block;
+    }
+  }
 }
 .mat-column-dept_nm{
   word-wrap: break-word !important;

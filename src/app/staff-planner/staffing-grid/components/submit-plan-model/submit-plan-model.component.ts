@@ -6,12 +6,13 @@ import {Router} from '@angular/router';
 import {StaffGridService} from '../../../../shared/service/Staffgrid-service';
 import {
   StaffGrid,
-  StaffGridCensus,
+  StaffGridCensus, StaffSchedule,
 } from '../../../../shared/domain/staff-schedule';
 import {DepartmentService} from '../../../../shared/service/department-service';
 import {DeptDetails} from '../../../../shared/domain/DeptDetails';
 import * as moment from 'moment';
 import {AlertBox} from '../../../../shared/domain/alert-box';
+import {VariableDepartmentPosition} from "../../../../shared/domain/var-pos";
 
 @Component({
   selector: 'app-submit-plan-model',
@@ -30,7 +31,9 @@ export class SubmitPlanModelComponent implements OnInit {
               public  dialogRef: MatDialogRef<SubmitPlanModelComponent>) {
     this.alertBox = new AlertBox(this.dialog);
   }
-
+  enabledStaffToPatientVarpos: VariableDepartmentPosition[] = [];
+  isIncluded = false
+  isIncludedInStafftoPatient = false;
   isPlanActive = false;
   isError = false;
   errormsg: string[] = [];
@@ -120,33 +123,40 @@ export class SubmitPlanModelComponent implements OnInit {
 
   validateTotalvalue(): boolean {
     let isvalid = true;
-
-
     for (const schedule of this.planDetails.staffScheduleList) {
+      this.getEnabledVarpos(schedule);
       let zeroCensuslevels = '';
+      let outterArray = [];
       for (const shift of schedule.planShiftList) {
-
+        let innerArray = [];
         for (const objStaffGridCensuses of shift.staffGridCensuses) {
-          if (Number(this.getTotal(objStaffGridCensuses)) === 0) {
-            this.isError = true;
-            isvalid = false;
-            if (zeroCensuslevels === '') {
-              zeroCensuslevels = objStaffGridCensuses.censusIndex.toString();
-            } else {
-              if (zeroCensuslevels.split(',').filter(x => x === objStaffGridCensuses.censusIndex.toString()).length < 1) {
-                zeroCensuslevels = zeroCensuslevels + ',' + objStaffGridCensuses.censusIndex.toString();
-              }
-            }
-          }
+          const activePatientArr = this.getActivePatientList(objStaffGridCensuses);
+          innerArray.push(activePatientArr);
         }
-
+        outterArray.push(innerArray);
       }
+     
+      let result  = outterArray.reduce((r, a) => a.map((v, i) => [...(r[i] || []), ...v]), []);
+      let rowSum = result.map(r => r.reduce((a, b) => parseInt(a) + parseInt(b)));
+      let colSum = result.reduce((a, b) => a.map((x, i) => parseInt(x) + parseInt(b[i]))); 
+      let rowSumFlag =this.getSumofRowandCol(rowSum);
+      let colSumFlag = this.getSumofRowandCol(colSum);
+
+      if(rowSumFlag == true || colSumFlag ==true){
+         isvalid = false;
+         this.isError = true;
+      }
+
       if (zeroCensuslevels !== '') {
         this.errormsg.push('Please update staffing grid for variable positions for census levels - ' +
           zeroCensuslevels + '. in the \'' + schedule.name + ' \' Schedule tab.');
       }
-    }
 
+      this.isIncluded  = false;
+      this.enabledStaffToPatientVarpos = []
+
+     
+    }
     return isvalid;
   }
 
@@ -194,11 +204,31 @@ export class SubmitPlanModelComponent implements OnInit {
     const isPlanActive = this.alertBox.isDateRangeOverlapping(submittingPlan, planData);
     return isPlanActive;
   }
+  getEnabledVarpos(schedule : StaffSchedule) {
+    for (const objVarpos of this.planDetails.variableDepartmentPositions) {
+      if (objVarpos.includedInNursingHoursFlag && !(this.enabledStaffToPatientVarpos.indexOf(objVarpos) >= 0)) {
+        this.isIncluded = objVarpos.includedInNursingHoursFlag;
+        this.enabledStaffToPatientVarpos.push(objVarpos);
+      }
+    }
+    for (const shift of schedule.planShiftList) {
+      for (const stp of shift.staffToPatientList) {
+        for (const enabledStpVarpos of this.enabledStaffToPatientVarpos) {
+          if (stp.activeFlag && stp.variablePositionKey === enabledStpVarpos.categoryKey && stp.variablePositionCategoryDescription === enabledStpVarpos.categoryDescription) {
+            const index: number = this.enabledStaffToPatientVarpos.indexOf(enabledStpVarpos);
+            if (index !== -1) {
+              this.enabledStaffToPatientVarpos.splice(index, 1);
+            }
+          }
+        }
+      }
+    }
+  }
 
   getTotal(objstaffGridCensus: StaffGridCensus): string {
     let sum = 0;
     for (const objstaffToPatient of objstaffGridCensus.staffToPatientList) {
-      if (this.checkIsIncluded(objstaffToPatient.variablePositionKey)) {
+      if (this.isIncluded && this.enabledStaffToPatientVarpos.length === 0) {
         sum = (1 * sum) + (1 * objstaffToPatient.staffCount);
       }
     }
@@ -215,5 +245,22 @@ export class SubmitPlanModelComponent implements OnInit {
 
     return isIncluded;
   }
+ 
+ getActivePatientList(objstaffGridCensus: StaffGridCensus): any {
+  const activePatientArr = [];
+  for (const objstaffToPatient of objstaffGridCensus.staffToPatientList.filter(v => v.activeFlag == true)) {
+      activePatientArr.push(objstaffToPatient.staffCount);
+  }
+  return activePatientArr;
+ }
+
+ getSumofRowandCol(array):boolean{
+  if(array.includes(0)){
+    return true;
+  }
+  return false;
+ }
+
+
 
 }

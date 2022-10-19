@@ -267,12 +267,12 @@ export class StaffManagerPlanComponent implements OnInit {
             this.scheduleService.getOGATotalhours() + this.staffmanagerScoreCard.nonVarTotalhours;
           if (this.staffmanagerScoreCard.oASuggestedData !== null || this.staffmanagerScoreCard.oASuggestedData !== undefined) {
             if(this.staffmanagerCalculator.getOGATotalhours() < this.staffmanagerCalculator.ogatotalhours){
-              this.staffVariance.dailyVarianceHours = ((this.staffmanagerScoreCard.oASuggestedData.workHourPerUnitPrimary *
-                this.scheduleService.getAverageCensus()  + this.staffmanagerScoreCard.getPlannedMinusDailyHours()) - ( this.staffmanagerCalculator.ogatotalhours - this.staffmanagerCalculator.getOGATotalhours() ) - this.staffmanagerScoreCard.getActualHour());
+              this.staffVariance.dailyVarianceHours = (this.staffmanagerScoreCard.getActualHour() + (this.staffmanagerCalculator.ogatotalhours - this.staffmanagerCalculator.getOGATotalhours()) - (this.staffmanagerScoreCard.oASuggestedData.workHourPerUnitPrimary *
+                this.scheduleService.getAverageCensus()  + this.staffmanagerScoreCard.getPlannedMinusDailyHours()));
             }
             else{
-              this.staffVariance.dailyVarianceHours = ((this.staffmanagerScoreCard.oASuggestedData.workHourPerUnitPrimary *
-                this.scheduleService.getAverageCensus()  + this.staffmanagerScoreCard.getPlannedMinusDailyHours()) - this.staffmanagerScoreCard.getActualHour());
+              this.staffVariance.dailyVarianceHours = (this.staffmanagerScoreCard.getActualHour() - (this.staffmanagerScoreCard.oASuggestedData.workHourPerUnitPrimary *
+                this.scheduleService.getAverageCensus()  + this.staffmanagerScoreCard.getPlannedMinusDailyHours()));
             }
           }
 
@@ -364,12 +364,12 @@ export class StaffManagerPlanComponent implements OnInit {
     tempStaffVariance.actualHours = this.staffmanagerCalculator.getActualTotalForAllVariablePosition() + this.scheduleService.getOGATotalhours() + this.staffmanagerCalculator.nonVarTotalhours;
     if (!Util.isNullOrUndefined(this.staffmanagerScoreCard.oASuggestedData)) {
       if(this.staffmanagerCalculator.getOGATotalhours() < this.staffmanagerCalculator.ogatotalhours){
-        tempStaffVariance.dailyVarianceHours = ((this.staffmanagerScoreCard.oASuggestedData.workHourPerUnitPrimary *
-          this.scheduleService.getAverageCensus()  + this.staffmanagerScoreCard.getPlannedMinusDailyHours()) - ( this.staffmanagerCalculator.ogatotalhours - this.staffmanagerCalculator.getOGATotalhours() ) - this.staffmanagerScoreCard.getActualHour());
+        tempStaffVariance.dailyVarianceHours = (this.staffmanagerScoreCard.getActualHour() + (this.staffmanagerCalculator.ogatotalhours - this.staffmanagerCalculator.getOGATotalhours()) - (this.staffmanagerScoreCard.oASuggestedData.workHourPerUnitPrimary *
+          this.scheduleService.getAverageCensus()  + this.staffmanagerScoreCard.getPlannedMinusDailyHours()));
       }
       else{
-        tempStaffVariance.dailyVarianceHours = ((this.staffmanagerScoreCard.oASuggestedData.workHourPerUnitPrimary *
-          this.scheduleService.getAverageCensus()  + this.staffmanagerScoreCard.getPlannedMinusDailyHours()) - this.staffmanagerScoreCard.getActualHour());
+        tempStaffVariance.dailyVarianceHours = (this.staffmanagerScoreCard.getActualHour() - (this.staffmanagerScoreCard.oASuggestedData.workHourPerUnitPrimary *
+          this.scheduleService.getAverageCensus()  + this.staffmanagerScoreCard.getPlannedMinusDailyHours()));
       }
 
     }
@@ -407,15 +407,18 @@ export class StaffManagerPlanComponent implements OnInit {
     if (actualCount === 0 && !this.futureFlag) {
       this.alertBox.openAlert('exit-dialog', '175px', '450px',
         'Staffing Calculator', 'Enter actual values.');
+      this.isSaveButtonClicked = false;
     } else if (this.commentsError) {
       const alertMessage = 'Entered Comments should be less than 500 Characters';
 
       this.alertBox.openAlert('exit-dialog', '180px', '450px',
         'Staffing Calculator', alertMessage);
+      this.isSaveButtonClicked = false;
 
     } else if (scheduledCount === 0 && this.futureFlag) {
       this.alertBox.openAlert('exit-dialog', '175px', '450px',
         'Staffing Calculator', 'Enter scheduled values.');
+      this.isSaveButtonClicked = false;
     } else {
       if (tempStaffVariance.staffVarianceSummaries[0].shiftDetailKey && !this.isUserExiting && tempStaffVariance.recordStatusKey !== 4) {
         const dialogRef = this.alertBox.openAlertWithReturn('exit-dialog', '190px', '550px',
@@ -481,12 +484,12 @@ export class StaffManagerPlanComponent implements OnInit {
     tempStaffVariance.actualHours = this.staffmanagerCalculator.getActualTotalForAllVariablePosition() + this.scheduleService.getOGATotalhours() + this.staffmanagerScoreCard.nonVarTotalhours
     if (!Util.isNullOrUndefined(this.staffmanagerScoreCard.oASuggestedData)) {
       if(this.staffmanagerCalculator.getOGATotalhours() < this.staffmanagerCalculator.ogatotalhours){
-        tempStaffVariance.dailyVarianceHours = ((this.staffmanagerScoreCard.oASuggestedData.workHourPerUnitPrimary *
-          this.scheduleService.getAverageCensus() + this.staffmanagerScoreCard.getPlannedMinusDailyHours()) - ( this.staffmanagerCalculator.ogatotalhours - this.staffmanagerCalculator.getOGATotalhours() ) - this.staffmanagerScoreCard.getActualHour());
+        tempStaffVariance.dailyVarianceHours = (this.staffmanagerScoreCard.getActualHour() + (this.staffmanagerCalculator.ogatotalhours - this.staffmanagerCalculator.getOGATotalhours()) - (this.staffmanagerScoreCard.oASuggestedData.workHourPerUnitPrimary *
+          this.scheduleService.getAverageCensus() + this.staffmanagerScoreCard.getPlannedMinusDailyHours()));
       }
       else{
-        tempStaffVariance.dailyVarianceHours = ((this.staffmanagerScoreCard.oASuggestedData.workHourPerUnitPrimary *
-          this.scheduleService.getAverageCensus() + this.staffmanagerScoreCard.getPlannedMinusDailyHours()) - this.staffmanagerScoreCard.getActualHour());
+        tempStaffVariance.dailyVarianceHours = (this.staffmanagerScoreCard.getActualHour() - (this.staffmanagerScoreCard.oASuggestedData.workHourPerUnitPrimary *
+          this.scheduleService.getAverageCensus() + this.staffmanagerScoreCard.getPlannedMinusDailyHours()));
       }
 
     }
@@ -1347,7 +1350,8 @@ export class StaffManagerPlanComponent implements OnInit {
         if(this.staffManagerService){
           this.staffManagerService.planAlreadyInUse = true;
         }
-        this.alertBox.openAlert('exit-dialog', '175px', '450px', 'Cannot update plan at this time', 'Plan is currently being edited by another user');
+        let alertMessage: string = 'Plan is currently being edited by ' + this.staffVariance.activeManagerUser;
+        this.alertBox.openAlert('exit-dialog', '175px', '450px', 'Cannot update plan at this time', alertMessage);
         document.body.classList.add('pr-modal-open');
         window.clearInterval(this.staffManagerService.autoSaveInterval);
         window.clearInterval(this.staffManagerService.autoRedirectInterval);

@@ -22,7 +22,7 @@
             <input type="text" [tabindex]="getTabIndex(i)" [disabled]="staffVariance.recordStatusKey===4 || staffVariance.planAlreadyInUse"
                    name="{{'census-'+i}}" appAutofocus id="{{'census-'+i}}" (keypress)="numberOnlyForCensus($event)"
                    class="actual-text-box-m width-census input-cancel"
-                   (keyup)="censusDialog(i,staffSummary.censusValue)" [value]=staffSummary.censusValue
+                   (keyup)="censusDialog(i,staffSummary.censusValue)" (paste)=alertBox.pasteNumberOnly($event) [value]=staffSummary.censusValue
                    [(ngModel)]=staffSummary.censusValue maxlength="2" data-clear-btn="true">
             <button *ngIf="staffSummary.censusValue&&staffVariance.recordStatusKey!==4" [disabled]="staffVariance.planAlreadyInUse" (click)="clear(i)" class="button-cancel-margin">x</button>
           </div>
@@ -67,10 +67,10 @@
       <td *ngFor="let staffSummary of staffVariance.staffVarianceSummaries;let summaryIndex=index" class="flex-column">
         <div class="row">
           <div class="col"*ngIf="!dateCheck">
-            <input type="text" [tabindex]="getTabIndex(summaryIndex)" [disabled]="!staffSummary.isCensusvalid || staffVariance.recordStatusKey===4 || staffVariance.planAlreadyInUse" (keypress)="numberOnly($event,i,summaryIndex)" class="actual-text-box" [(ngModel)] = "staffSummary.staffVarianceDetails[i].actualCount" maxlength="5">
+            <input type="text" [tabindex]="getTabIndex(summaryIndex)" [disabled]="!staffSummary.isCensusvalid || staffVariance.recordStatusKey===4 || staffVariance.planAlreadyInUse" (keypress)="numberOnly($event,i,summaryIndex)" (paste)=alertBox.pasteNumberAndDecimalOnly($event) class="actual-text-box" [(ngModel)] = "staffSummary.staffVarianceDetails[i].actualCount" maxlength="5">
           </div>
           <div class="col" *ngIf="dateCheck">
-            <input type="text" [tabindex]="getTabIndex(summaryIndex)" [disabled]="!staffSummary.isCensusvalid || staffVariance.recordStatusKey===4|| staffVariance.planAlreadyInUse" (keypress)="numberOnlyforSchedCount($event,i,summaryIndex)" class="actual-text-box" [(ngModel)] = "staffSummary.staffVarianceDetails[i].scheduleCount" maxlength="5">
+            <input type="text" [tabindex]="getTabIndex(summaryIndex)" [disabled]="!staffSummary.isCensusvalid || staffVariance.recordStatusKey===4|| staffVariance.planAlreadyInUse" (keypress)="numberOnlyforSchedCount($event,i,summaryIndex)" (paste)=alertBox.pasteNumberAndDecimalOnly($event) class="actual-text-box" [(ngModel)] = "staffSummary.staffVarianceDetails[i].scheduleCount" maxlength="5">
           </div>
           <div class="col">
             {{this.alertBox.getPlannedhoursForCensus(staffVariance,summaryIndex,staffSummary.censusValue,i,planDetails.censusRange.minimumCensus,planDetails.censusRange.maximumCensus)}}
@@ -112,12 +112,13 @@
           <div class = " pl-0 pr-0 inherit-feather total-hour-feather-align total-hour-val-0" *ngIf="getTotalVarianceForVariablePosition(i)===0">
             <div>{{getTotalVarianceForVariablePosition(i) | number: '0.1'}}</div>
           </div>
-          <div class = " highlight-red inherit-feather pl-0 pr-0 total-hour-feather-align total-hour-feather-icon"  *ngIf="getTotalVarianceForVariablePosition(i)<0">
-            <div class ="width-fit">{{-1 * getTotalVarianceForVariablePosition(i) | number: '0.1'}}</div>
-            <div class="right-fix"><app-svg-icon name="x-circle" color="red"  size="16" class="subicon"></app-svg-icon></div>
+          <div class = "inherit-feather pl-0 pr-0 total-hour-feather-align total-hour-feather-icon"  *ngIf="getTotalVarianceForVariablePosition(i)<0">
+            <div></div>
+            <div class ="width-fit">({{-1 * getTotalVarianceForVariablePosition(i) | number: '0.1'}})</div>
           </div>
-          <div class = "inherit-feather left-width pr-0" *ngIf="getTotalVarianceForVariablePosition(i)>0">
-            <div></div> <div>{{getTotalVarianceForVariablePosition(i) | number: '0.1'}}</div>
+          <div class = "highlight-red inherit-feather pl-0 pr-0 total-hour-feather-align total-hour-feather-icon" *ngIf="getTotalVarianceForVariablePosition(i)>0">
+            <div class="width-fit">{{getTotalVarianceForVariablePosition(i) | number: '0.1'}}</div>
+            <div class="right-fix"><app-svg-icon name="x-circle" color="red"  size="16" class="subicon"></app-svg-icon></div>
           </div>
         </div>
       </td>
@@ -127,7 +128,7 @@
       <td *ngFor="let staffSummary of staffVariance.staffVarianceSummaries; let add=index" class="flex-column">
         <div class="row">
           <div class = "col">
-            <input type="text" [tabindex]="getTabIndex(add)" [disabled]="!staffSummary.isCensusvalid || staffVariance.recordStatusKey===4 ||  staffVariance.planAlreadyInUse" (keypress)="numberAndDecOnly($event,add)"  class="actual-text-box" [(ngModel)] = "staffSummary.additionalStaffHours" [value]= staffSummary.additionalStaffHours maxlength="5">
+            <input type="text" [tabindex]="getTabIndex(add)" [disabled]="!staffSummary.isCensusvalid || staffVariance.recordStatusKey===4 ||  staffVariance.planAlreadyInUse" (keypress)="numberAndDecOnly($event,add)" (paste)=alertBox.pasteNumberAndDecimalOnly($event) class="actual-text-box" [(ngModel)] = "staffSummary.additionalStaffHours" [value]= staffSummary.additionalStaffHours maxlength="5">
           </div>
           <div class = "col">
             0.00
@@ -156,9 +157,12 @@
           <div class = "total-hour-val-0 pl-0 pr-0 inherit-feather total-hour-feather-align" *ngIf="getAdditionalStaffTotalhours()===0">
             <div>{{getAdditionalStaffTotalhours() | number: '0.1'}}</div>
           </div>
-          <div class = "total-hour-feather-icon inherit-feather pl-0 pr-0 total-hour-feather-align" *ngIf="getAdditionalStaffTotalhours()>0">
+          <div class = "total-hour-val-0 pl-0 pr-0 inherit-feather total-hour-feather-align" *ngIf="getAdditionalStaffTotalhours()<0">
+            <div>({{getAdditionalStaffTotalhours() | number: '0.1'}})</div>
+          </div>
+          <div class = "highlight-red total-hour-feather-icon inherit-feather pl-0 pr-0 total-hour-feather-align" *ngIf="getAdditionalStaffTotalhours()>0">
             <div class="width-fit">{{ getAdditionalStaffTotalhours() | number: '0.1'}}</div>
-            <!--<div class="right-fix"><app-svg-icon name="x-circle" color="red"  size="16" class="subicon"></app-svg-icon></div>-->
+            <div class="right-fix"><app-svg-icon name="x-circle" color="red"  size="16" class="subicon"></app-svg-icon></div>
           </div>
         </div>
       </td>
@@ -190,13 +194,12 @@
         <div class = "row width-actual">
           <div class = "total-hour-daily-align total-hour-col-0 pl-0 pr-0">{{getActualTotalForAllVariablePosition() | number: '0.1'}}</div>
           <div class = "total-hour-col-1 pl-0 pr-0">{{getPlannedTotalForAllVariablePosition() | number: '0.1'}}</div>
-          <div class = "total-hour-feather-icon total-hour-feather-align pl-0 pr-0 highlight-red inherit-feather" *ngIf="getTotalVarianceForAllVariablePosition()<0">
-            <div class="width-fit">{{-1 * getTotalVarianceForAllVariablePosition() | number: '0.1'}}</div>
-            <div class="right-fix"><app-svg-icon name="x-circle" color="red"  size="16" class="subicon"></app-svg-icon></div>
-
+          <div class = "total-hour-val-0 total-hour-feather-align pl-0 pr-0 inherit-feather" *ngIf="getTotalVarianceForAllVariablePosition()<0">
+            <div>({{-1 * getTotalVarianceForAllVariablePosition() | number: '0.1'}})</div>
           </div>
-          <div class = "pr-0 left-width inherit-feather" *ngIf="getTotalVarianceForAllVariablePosition()>0">
-            <div>{{getTotalVarianceForAllVariablePosition() | number: '0.1'}}</div>
+          <div class = "highlight-red inherit-feather pl-0 pr-0 total-hour-feather-align total-hour-feather-icon" *ngIf="getTotalVarianceForAllVariablePosition()>0">
+            <div class="width-fit">{{getTotalVarianceForAllVariablePosition() | number: '0.1'}}</div>
+            <div class="right-fix"><app-svg-icon name="x-circle" color="red"  size="16" class="subicon"></app-svg-icon></div>
           </div>
           <div class = "total-hour-val-0 total-hour-feather-align pl-0 pr-0 inherit-feather" *ngIf="getTotalVarianceForAllVariablePosition()===0">
             <div>{{-1 * getTotalVarianceForAllVariablePosition() | number: '0.1'}}</div>
@@ -210,7 +213,7 @@
       <td *ngFor="let staffSummary of staffVariance.staffVarianceSummaries; let summaryIndex = index" class="flex-column">
         <div class="row">
           <div class="col">
-            <input type="text" [tabindex]="getTabIndex(summaryIndex)" [disabled]="staffVariance.recordStatusKey===4|| staffVariance.planAlreadyInUse || staffVariance.disableFlag" (keypress)="numberAndDecimalOnly($event,summaryIndex)" class="oga-text-box" maxlength="5" [(ngModel)] = "staffSummary.offGridActivitiesHour">
+            <input  type="text" [tabindex]="getTabIndex(summaryIndex)" [disabled]="staffVariance.recordStatusKey===4|| staffVariance.planAlreadyInUse || staffVariance.disableFlag" (keypress)="numberAndDecimalOnly($event,summaryIndex)" (paste)=alertBox.pasteNumberAndDecimalOnly($event) class="oga-text-box" maxlength="5" [(ngModel)] = "staffSummary.offGridActivitiesHour">
           </div>
         </div>
       </td>
