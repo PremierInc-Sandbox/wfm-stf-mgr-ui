@@ -58,6 +58,28 @@ stages:
       Charts:
         - Name: stf-mgr-ui
           ContextDirectory: build/dist-bundles/helm-charts/stf-mgr-ui
+  - stage: Security_Scan
+    dependsOn: ['StfMgrUICI']
+    variables:
+      - group: 'SDLC Credentials'
+    jobs:
+    - job: NexusLifecycleScan
+      steps:
+      - bash: |
+          chmod +x ./gradlew && ./gradlew wrapper
+          ./gradlew prepareRelease \
+          -PdisableMavenLocal
+        env:
+          JAVA_HOME: $(SYSTEM_JDK_11)
+          GRADLE_USER_HOME: $(GRADLE_USER_HOME)
+
+      - template: lifecycle-scan.yml@sdlc_templates
+        parameters:
+          IQ_API_TOKEN: $(IQ_API_TOKEN)
+          ARTIFACT_VERSION: "0.1-SNAPSHOT"
+          DISTRIBUTION: Hosted
+          SCAN_TARGETS: build.gradle, package.json, package-lock.json, **/*.jar, *, **/node_modules, **/*.zip, **/*.tgz, **/*.js, **/*.ts            
+  
   - template: aks/helm-deployment.yaml@wfm-templates
     parameters:
       Name: StfMgrUIDev
