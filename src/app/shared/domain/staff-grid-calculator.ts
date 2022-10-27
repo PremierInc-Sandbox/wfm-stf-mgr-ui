@@ -34,8 +34,8 @@ export class StaffGridCalculator {
       // Get the remaining fields for summary page based of formula sheet
       objStaffingMatrixSummaryData.totalPlanDailyhrs = (this.getvarWHPU(cen, planDetails) +
         this.getnonVarWHPU(cen, planDetails) + this.getOGAWHPU(cen, planDetails)) * cen;
-      objStaffingMatrixSummaryData.dailyHrsVarToTarget = (planDetails.targetBudget * cen) -
-        objStaffingMatrixSummaryData.totalPlanDailyhrs;
+      objStaffingMatrixSummaryData.dailyHrsVarToTarget = objStaffingMatrixSummaryData.totalPlanDailyhrs -
+        (planDetails.targetBudget * cen);
       objStaffingMatrixSummaryData.totalPlanAnnualHrs = objStaffingMatrixSummaryData.totalPlanDailyhrs *
         Number(planDetails.censusRange.occurrenceNumber[cen - 1]);
       objStaffingMatrixSummaryData.annualHrsVarToTarget = objStaffingMatrixSummaryData.dailyHrsVarToTarget *

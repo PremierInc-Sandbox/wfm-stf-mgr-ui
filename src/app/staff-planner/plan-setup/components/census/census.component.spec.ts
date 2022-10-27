@@ -561,4 +561,52 @@ describe('CensusComponent', () => {
     component.showOccuranceMsg=true;
     expect(component.checkCensusDatas()).toBe(true)
   });
+
+  it('should validate onPasteMinCensus and return true', () => {
+    const event = {
+      target : {
+        value: null
+      },
+      clipboardData : {
+        types: ['text/plain'],
+        getData(a: number) {
+          return '2.2';
+        }
+      },
+      preventDefault : {
+      }
+    };
+    expect(component.onPasteMinCensus(event));
+    expect(component.plan.censusRange.minimumCensus === 2.2).toBe(false);
+  });
+
+  it('should validate onPasteMaxCensus and return true', () => {
+    const event = {
+      target : {
+        value: null
+      },
+      clipboardData : {
+        types: ['text/plain'],
+        getData(a: number) {
+          return '6.2';
+        }
+      },
+      preventDefault : {
+      }
+    };
+    expect(component.onPasteMaxCensus(event));
+    expect(component.plan.censusRange.maximumCensus === 6.2).toBe(false);
+  });
+  
+  it('should check if census some of are empty should return error', function () {
+    spyOn(component, 'applyToggle').and.stub();
+    testPlanDetailsData[0].censusRange.maximumCensus = 0;
+    testPlanDetailsData[0].censusRange.minimumCensus = 2;
+    component.plan = testPlanDetailsData[0];
+    component.plan.censusRange.occurrenceNumber = ['1','0',''];
+    component.objSavePlanParams.saveNextErrorMessages[0] = 'Enter an Occurrence value.';
+    component.applyCensus();
+    expect(component.objSavePlanParams.saveNextErrorMessages.indexOf('Enter an Occurrence value.')).toBe(0);
+  });
+
 });

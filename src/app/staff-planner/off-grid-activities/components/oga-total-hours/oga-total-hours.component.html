@@ -19,8 +19,11 @@
         <mat-divider [vertical]="true"></mat-divider>
         <div class="col2">
           <div class="title">OGA TARGET HRS</div>
-          <div class="titleValue">{{((planDetails.educationOrientationTargetPaid * planDetails.targetBudget*planDetails.utilizedAverageVolume*this.leapDays)/100 ).toFixed(0)}} <sub>annual</sub></div>
-        </div>       
+          <div class="titleValue">
+            <span>{{getOgaTargetHours()}}</span>
+            <sub>annual</sub>
+          </div>
+        </div>
       </div>
     </mat-card>
   </div>

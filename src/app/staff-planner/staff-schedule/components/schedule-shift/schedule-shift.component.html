@@ -18,7 +18,7 @@
       </div>
       <div class="shiftHours">
         <label for="">Hours</label>
-        <input class="shift-hours" [disabled]="planDetails.planCompleted"  type="number" (keypress)="validateShiftLength($event)" (change)="validatehour(objShift);" min="1" max="24"
+        <input class="shift-hours" [disabled]="planDetails.planCompleted"  type="number" (keypress)="validateShiftLength($event)" (change)="validatehour(objShift);" (paste)=alertBox.pasteNumberOnly($event) min="1" max="24"
                [(ngModel)]="objShift.hours"/>
       </div>
       <div class="shiftStartTime">
@@ -56,7 +56,7 @@
           </div>
           <div>
             <label for="">From 1 to:</label>
-            <input type="number" (keypress)="validateShiftLength($event)" min="0" [disabled]="!patient.activeFlag || planDetails.planCompleted" [(ngModel)]="patient.staffCount" />
+            <input class="schedule-shifts" type="number" (keypress)="validateShiftLength($event)" (paste)=alertBox.pasteNumberOnly($event) min="0" [disabled]="!patient.activeFlag || planDetails.planCompleted" [(ngModel)]="patient.staffCount" />
           </div>
         </div>
       </div>

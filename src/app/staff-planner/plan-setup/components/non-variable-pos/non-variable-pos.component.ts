@@ -119,6 +119,10 @@ export class NonVariablePosComponent implements OnInit {
         if (index !== -1) {
           this.plan.nonVariableDepartmentPositions.splice(index, 1);
           this.isMaxIndex = false;
+          this.isShowError = false;
+          this.emptyErrorFlag = false;
+          this.emptySelectFlag = false;
+          this.emptyHourFlag = false;
         }
       }
       document.body.classList.remove('pr-modal-open');
@@ -137,6 +141,7 @@ export class NonVariablePosComponent implements OnInit {
         return true;
       }
   }
+
   numberOnly(event, summaryIndex: number): boolean {
     this.isShowError = false;
     const charCode = (event.which) ? event.which : event.keyCode;

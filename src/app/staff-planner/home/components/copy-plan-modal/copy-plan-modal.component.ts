@@ -52,13 +52,13 @@ export class CopyPlanModalComponent implements OnInit {
       this.isHide = false;
       const planKey = localStorage.getItem('planId');
       this.planService.getPlandetails(planKey).subscribe(parentplandata => {
-        this.planService.removePlanKeyFromSessionAttributeSubscribe(Number(planKey)).subscribe();
         const objOffgridactivities = parentplandata.offGridActivities;
         this.newPlan = parentplandata;
         this.newPlan.name = copyPlan;
         this.newPlan.isnewlycreated = true;
         this.newPlan.key = null;
         this.newPlan.defaultPlanFlag = false;
+        this.planService.removePlanKeyFromSessionAttributeSubscribe(Number(planKey)).subscribe(removeSession => {
 
         this.planService.createPlan(this.newPlan).subscribe(data => {
           this.newPlankey = data.key;
@@ -68,8 +68,7 @@ export class CopyPlanModalComponent implements OnInit {
           // objoffgridactivity.offGridActivityKey=null;
           // }
           data.offGridActivities = objOffgridactivities;
-          this.planService.createPlan(data).subscribe(planData => {
-          });
+          this.planService.createPlan(data).toPromise();
           const oldstaffScheduleList: StaffSchedule[] = [];
           // copy scheduledata
           this.scheduleServiceScheduleService.getScheduleDetails(planKey).subscribe(scheduleData => {
@@ -110,6 +109,7 @@ export class CopyPlanModalComponent implements OnInit {
             this.router.navigate(['/plan-setup'], {queryParams: {plankey: this.newPlankey}});
           }, 1000);
 
+        });
         });
       });
     }
