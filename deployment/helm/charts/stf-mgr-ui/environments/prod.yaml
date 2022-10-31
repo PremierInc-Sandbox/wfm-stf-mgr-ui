@@ -5,19 +5,29 @@ env:
 
 ingress:
   enabled: true
+  allowedOrigins:
+    - wfm.premierinc.com
+    - wfm-internal.premierinc.com
+    - wfm-east.premierinc.com
+    - wfm-eastinside.premierinc.com
   hosts:
-    - host: pco-stf-gateway-prod.premierinc.com
+    - host: wfm.premierinc.com
       paths:
         - path: /pcops/staff-scheduler-ui/
           pathType: Prefix
           port: 8080
-    - host: pco-stf-gateway-prod-inside.premierinc.com
+    - host: wfm-internal.premierinc.com
       paths:
         - path: /pcops/staff-scheduler-ui/
           pathType: Prefix
           port: 8080
-    - host: pco-stf-gateway-prod-internal.premierinc.com
+    - host: wfm-east.premierinc.com
       paths:
         - path: /pcops/staff-scheduler-ui/
           pathType: Prefix
-          port: 8081
+          port: 8080
+    - host: wfm-eastinside.premierinc.com
+      paths:
+        - path: /pcops/staff-scheduler-ui/
+          pathType: Prefix
+          port: 8080
