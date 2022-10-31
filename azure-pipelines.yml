@@ -20,6 +20,7 @@ resources:
 trigger:
   branches:
     exclude:
+      - main
       - release/*
 
 pr:
@@ -38,15 +39,7 @@ stages:
     steps:
       - bash: |
           chmod +x ./gradlew && ./gradlew wrapper
-          echo "SourceBranch: $(Build.SourceBranch)"
-          if [[ $(Build.SourceBranch) =~ ^refs/heads/develop$|^refs/heads/release/.*|^refs/heads/rc/.*|refs/heads/hotfix/.* ]]; then
-            echo "running release"
-            ./gradlew release -Pregistry.username=${registry_username} -Pregistry.password=${registry_password}
-          else
-            echo "running prepareRelease"
-            ./gradlew prepareRelease -Pregistry.username=${registry_username} -Pregistry.password=${registry_password}
-          fi
-
+          ./gradlew release -Pregistry.username=${registry_username} -Pregistry.password=${registry_password}
         env:
           JAVA_HOME: $(SYSTEM_JDK_11)
           registry_username: $(ucp_username)
@@ -68,24 +61,50 @@ stages:
         artifact: wfm_artifacts
         displayName: Publish Artifacts
 
-  #- job: BlackduckScan
-    #dependsOn: ['WFMStaffMgrUIBuild']
-    #displayName: Blackduck Scan
-    #variables:
-      #- group: 'SDLC Credentials'
-      #- name: APP_VERSION
-        #value: $[ stageDependencies.WFMStaffMgrUIBuild.WFMStaffMgrUIBuild.outputs['set_version.APP_VERSION'] ]
-    #steps:
-    #- bash: chmod +x ./gradlew
-    #- template: blackduck-scan.yml@sdlc_templates
-      #parameters:
-        #BLACKDUCK_API_TOKEN: $(BLACKDUCK_API_TOKEN)
-        #BRANCH_SCAN_LIST: "main*,*develop*"
-        #DISTRIBUTION: "SAAS"
-        #PROJECT_NAME: "pcops:pco-staff-scheduler-ui"
-        #SOURCE_PATH: "$(Build.SourcesDirectory)"
-        #PROJECT_VERSION: "$(APP_VERSION)"
-        #TEAM: "PCOPS"
+  # - job: BlackduckScan
+  #   dependsOn: ['WFMStaffMgrUIBuild']
+  #   displayName: Blackduck Scan
+  #   variables:
+  #     - group: 'SDLC Credentials'
+  #     - name: APP_VERSION
+  #       value: $[ stageDependencies.WFMStaffMgrUIBuild.WFMStaffMgrUIBuild.outputs['set_version.APP_VERSION'] ]
+  #   steps:
+  #   - bash: chmod +x ./gradlew
+  #   - template: blackduck-scan.yml@sdlc_templates
+  #     parameters:
+  #       BLACKDUCK_API_TOKEN: $(BLACKDUCK_API_TOKEN)
+  #       BRANCH_SCAN_LIST: "main*,*develop*"
+  #       DISTRIBUTION: "SAAS"
+  #       PROJECT_NAME: "pcops:pco-staff-scheduler-ui"
+  #       SOURCE_PATH: "$(Build.SourcesDirectory)"
+  #       PROJECT_VERSION: "$(APP_VERSION)"
+  #       TEAM: "PCOPS"
+
+  - job: NexusLifecycle_Scan
+    displayName: Nexus Lifecycle Scan
+    dependsOn: ['WFMStaffMgrUIBuild']
+    variables:
+      - group: 'SDLC Credentials'
+      - group: "wfm-staff-scheduler-ui-dev"
+      - group: "wfm-ucp-np"
+      - name: APP_VERSION
+        value: $[ Dependencies.WFMStaffMgrUIBuild.WFMStaffMgrUIBuild.outputs['set_version.APP_VERSION'] ]
+    steps:
+      - bash: |
+          chmod +x ./gradlew && ./gradlew wrapper
+          ./gradlew release -Pregistry.username=${registry_username} -Pregistry.password=${registry_password}
+        env:
+          JAVA_HOME: $(SYSTEM_JDK_11)
+          registry_username: $(ucp_username)
+          registry_password: $(ucp_password)
+        displayName: WFMStaffMgrUIBuild
+
+      - template: lifecycle-scan.yml@sdlc_templates
+        parameters:
+          IQ_API_TOKEN: $(IQ_API_TOKEN)
+          ARTIFACT_VERSION: "$(APP_VERSION)"
+          DISTRIBUTION: Hosted
+          SCAN_TARGETS: build.gradle, package.json, package-lock.json, **/*.jar, *, **/node_modules, **/*.zip, **/*.tgz, **/*.js, **/*.ts
 
 - stage: 'DEV_DEPLOY'
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
