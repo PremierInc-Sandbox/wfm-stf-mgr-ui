@@ -1,0 +1,33 @@
+env:
+  SPRING_PROFILES_ACTIVE: "uat"
+  ENV_NAME: "uat"
+  JAVA_TOOL_OPTIONS: "-Xms512m -Xmx512m -Xshare:off -XX:MaxMetaspaceSize=128m -XX:ReservedCodeCacheSize=256m"
+
+ingress:
+  enabled: true
+  allowedOrigins:
+    - wfm-uat.premierinc.com
+    - wfm-uat-internal.premierinc.com
+    - wfm-uat-east.premierinc.com
+    - wfm-uat-eastinside.premierinc.com
+  hosts:
+    - host: wfm-uat.premierinc.com
+      paths:
+        - path: /pcops/staff-scheduler-ui/
+          pathType: Prefix
+          port: 8080
+    - host: wfm-uat-internal.premierinc.com
+      paths:
+        - path: /pcops/staff-scheduler-ui/
+          pathType: Prefix
+          port: 8080
+    - host: wfm-uat-east.premierinc.com
+      paths:
+        - path: /pcops/staff-scheduler-ui/
+          pathType: Prefix
+          port: 8080
+    - host: wfm-uat-eastinside.premierinc.com
+      paths:
+        - path: /pcops/staff-scheduler-ui/
+          pathType: Prefix
+          port: 8080

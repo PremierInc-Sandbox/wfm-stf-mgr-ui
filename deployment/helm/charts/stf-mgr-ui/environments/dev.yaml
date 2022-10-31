@@ -1,0 +1,28 @@
+env:
+  SPRING_PROFILES_ACTIVE: "dev"
+  ENV_NAME: "dev"
+  JAVA_TOOL_OPTIONS: "-Xms512m -Xmx512m -Xshare:off -XX:MaxMetaspaceSize=128m -XX:ReservedCodeCacheSize=256m"
+
+ingress:
+  enabled: true
+  hosts:
+    - host: wfm-dev.premierinc.com
+      paths:
+        - path: /pcops/staff-scheduler-ui/
+          pathType: Prefix
+          port: 8080
+    - host: wfm-dev-internal.premierinc.com
+      paths:
+        - path: /pcops/staff-scheduler-ui/
+          pathType: Prefix
+          port: 8080
+    - host: wfm-dev-east.premierinc.com
+      paths:
+        - path: /pcops/staff-scheduler-ui/
+          pathType: Prefix
+          port: 8080
+    - host: wfm-dev-eastinside.premierinc.com
+      paths:
+        - path: /pcops/staff-scheduler-ui/
+          pathType: Prefix
+          port: 8080

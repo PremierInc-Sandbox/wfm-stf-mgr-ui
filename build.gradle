@@ -1,181 +1,75 @@
 plugins {
-  id "org.sonarqube" version "2.7"
-  id "maven-publish"
-  id "com.github.node-gradle.node" version "2.2.4"
-
-  id "com.gorylenko.gradle-git-properties" version "2.3.1"
+//  id "org.sonarqube" version "2.7"
+    id "maven-publish"
+    id "com.gorylenko.gradle-git-properties" version "2.4.0"
+    id "premierinc.wfm.stfmgr.node"
+    id "wfm.core"
+    id "wfm.docker"
+    id "wfm.helm"
 }
 
-ext{
-  group 'com.premierinc.pcops.stfs'
-  version '7.7.0.1'
+ext {
+    group 'com.premierinc.pcops.stfs'
+    version '8.0.0.0'
 
-  registry = 'dtr.premierinc.com'
-  image = "${registry}/pcops_org/pco-staff-scheduler-ui:${version}"
+    registry = 'dtr.premierinc.com'
+    image = "${registry}/pcops_org/pco-staff-scheduler-ui:${version}"
 }
 
 repositories {
-  mavenLocal()
-  maven { url "https://code.premierinc.com/artifacts/content/groups/public" }
+    mavenLocal()
+    maven { url "https://code.premierinc.com/artifacts/content/groups/public" }
 }
 
-node {
-  download = true
-  distBaseUrl = 'https://code.premierinc.com/artifacts/repository/nodejs/'
-  version = '14.18.0'
-  npmVersion = '8.5.5'
-}
-
-sonarqube {
-  properties {
-    property("sonar.sources", "src/app")
-    property("sonar.tests", "src/app")
-    property("sonar.test.inclusions", "**/*.spec.ts")
-    property("sonar.typescript.lcov.reportPaths", "coverage/wtf/lcov.info")
-    property("sonar.exclusions","**/*.spec.ts," + "src/app/shared/service/fixtures/user-access-data.ts," + "src/app/shared/service/messages.service.ts")
-  }
-}
+//sonarqube {
+//  properties {
+//    property("sonar.sources", "src/app")
+//    property("sonar.tests", "src/app")
+//    property("sonar.test.inclusions", "**/*.spec.ts")
+//    property("sonar.typescript.lcov.reportPaths", "coverage/wtf/lcov.info")
+//    property("sonar.exclusions","**/*.spec.ts," + "src/app/shared/service/fixtures/user-access-data.ts," + "src/app/shared/service/messages.service.ts")
+//  }
+//}
 
 wrapper {
-  distributionUrl = "https://code.premierinc.com/artifacts/repository/gradle-distributions/gradle-6.6-bin.zip"
-}
-
-// Project build tasks
-
-npmInstall {
-  //dependsOn "createShrinkwrap"
-  args = [ '--registry=https://code.premierinc.com/artifacts/repository/npm/'  ]
-  execOverrides { e ->
-    e.standardOutput = System.out
-  }
+    distributionUrl = "https://code.premierinc.com/artifacts/repository/gradle-distributions/gradle-7.4-bin.zip"
 }
 
 tasks.register("clean", Delete) {
-  delete project.buildDir
-}
-
-tasks.register("test", NpmTask) { t ->
-  t.group = "verification"
-  dependsOn "npmInstall"
-  args = [ "run", "test-headless" ]
-}
-
-tasks.register("buildUI", NpmTask) { t ->
-  t.group = "build"
-  dependsOn "npmInstall","test"
-  args = [ "run", "build-cli" ]
-}
-
-tasks.register("createDockerContext", Copy) {
-  dependsOn "generateGitProperties", "buildUI"
-  from("Dockerfile.tpl") {
-    rename { "Dockerfile" }
-    expand(static_server_version: "2.6.0.0")
-  }
-  from("dist") {
-    into "dist"
-  }
-  from(file("build/git.properties"))
-  into "${project.buildDir}/deployment"
-}
-
-tasks.register("migrateStacks", Copy) {
-  group = "release"
-  description = "copies over any .yml file into the root project under the buildDir/stacks directory and prefixes the file name with this project's name"
-  from("src/deployment") {
-    include("*.yml")
-    rename { "${project.name}-$it" }
-  }
-  from("src/deployment") {
-    exclude("*.yml")
-  }
-  into("${project.rootProject.buildDir}/stacks")
-}
-
-
-tasks.register("prepareRelease") { t ->
-  t.group = "release"
-  dependsOn "createDockerContext", "migrateStacks"
-  doLast {
-    cmd 'docker', 'build', '--no-cache', '-t', project.image, "${project.buildDir}/deployment"
-  }
-}
-
-tasks.register("releaseLocal") { t ->
-  t.group = "release"
-  dependsOn "prepareRelease"
-}
-
-tasks.register("release") { t ->
-  t.group = "release"
-  dependsOn "prepareRelease"
-  doLast {
-    publishDockerImage()
-  }
-
+    delete project.buildDir
 }
 
 gitProperties {
-  gitPropertiesDir = file("$buildDir")
-  dateFormat = "yyyy-MM-dd hh:mm:ss a z"
-  dateFormatTimeZone = 'EST'
+    gitPropertiesDir.set(layout.buildDirectory)
+    dateFormat = "yyyy-MM-dd hh:mm:ss a z"
+    dateFormatTimeZone = 'EST'
 
-  customProperty "build.version", { project.version }
-  customProperty "version", { project.version }
+    customProperty "build.version", { project.version }
+    customProperty "version", { project.version }
 }
 
-//Run this task locally if you get a sass error while building the docker image
-task rebuildNodeSass(type: NpmTask) {
-  args = ["rebuild", "node-sass", "--force"]
+wfmHelm {
+    sourceDirectory(layout.projectDirectory.dir("deployment/helm/charts"))
+    charts {
+        create("stfMgrUi") {}
+    }
 }
 
-tasks.register("deletePackageLock", Delete) { t->
-  t.delete(file("package-lock.json"), file("npm-shrinkwrap.json"))
+wfmDocker {
+    images {
+        create("UI") {
+            dockerFile file("Dockerfile")
+            additionalFiles {
+                from(tasks.named("buildUI")) {
+                    into("assets")
+                }
+                from(generateGitProperties)
+            }
+        }
+    }
 }
 
-tasks.register("createPackageLock", NpmTask) { t ->
-  t.dependsOn("deletePackageLock")
-  t.args = [ "ci", "--force", "--package-lock-only", "--info", "--ignore-scripts", '--registry=https://code.premierinc.com/artifacts/repository/npm/']
-}
-
-tasks.register("forceResolution", NpxTask) { t ->
-  t.dependsOn "createPackageLock"
-  t.command = 'force-resolutions'
-}
-
-tasks.register("createShrinkwrap", NpmTask) { t ->
-  t.dependsOn "forceResolution"
-  t.outputs.file("npm-shrinkwrap.json")
-  t.args = ["shrinkwrap"]
-}
-
-// Functions
-
-def <T extends CharSequence> void cmd(T[] cmd) {
-  def result = exec {
-    commandLine cmd
-    standardOutput = System.out
-    ignoreExitValue = false
-  }
-
-  if (result.exitValue != 0) {
-    result.rethrowFailure()
-  }
-}
-
-def publishDockerImage() {
-  String userName = project.property("registry.username") ?: ""
-  String password = project.property("registry.password") ?: ""
-
-  cmd 'docker', 'login', '-u', userName, '-p', password, project.registry
-
-  try {
-    cmd 'docker', 'push', project.image
-  } finally {
-    cmd 'docker', 'logout', project.registry
-  }
-}
-
-tasks.register("npmLs", NpmTask) { t ->
-  t.args = ["ls", project.hasProperty("package") ? project.property("package") : "-a"]
+tasks.register("prepareRelease") { t ->
+    t.group = "release"
+    t.dependsOn(createDockerContext, createHelmCharts)
 }
